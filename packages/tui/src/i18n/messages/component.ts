@@ -17,6 +17,7 @@ export const component = {
   "Debug info copied to clipboard": "调试信息已复制到剪贴板",
   "Copy debug info": "复制调试信息",
   "Share this when reporting an issue": "报告问题时请附上此信息",
+  "Share this when reporting an issue.": "报告问题时请附上此信息",
 
   // Error details dialog.
   "Copy details": "复制详情",

@@ -843,7 +843,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                 }
                 attributes={confirm() ? TextAttributes.BOLD : undefined}
               >
-                Submit
+                {t("Submit")}
               </text>
             </box>
           </box>

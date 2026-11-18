@@ -1593,7 +1593,7 @@ export function Session(props: {
                   <text
                     fg={latestHovered() ? theme.text.action.secondary.hovered : theme.text.action.secondary.base}
                   >
-                    Jump to latest ↓
+                    {t("Jump to latest ↓")}
                   </text>
                 </box>
               </Show>
@@ -1927,7 +1927,9 @@ function BackgroundToolHint(props: { messages: SessionMessageInfo[] }) {
       {(value) => (
         <box marginTop={1} paddingLeft={3} flexShrink={0}>
           <text fg={theme.text.muted}>
-            Press <span style={{ fg: theme.text.base }}>{value()}</span> to move running work to the background
+            {t("Press")}{" "}
+            <span style={{ fg: theme.text.base }}>{value()}</span>{" "}
+            {t("to move running work to the background")}
           </text>
         </box>
       )}
@@ -2069,7 +2071,7 @@ function AssistantFooter(props: { message: SessionMessageAssistant }) {
             {(value) => <span style={{ fg: theme.text.muted }}> · {value().toFixed(1)} tok/s</span>}
           </Show>
           <Show when={interrupted()}>
-            <span style={{ fg: theme.text.muted }}> · interrupted</span>
+            <span style={{ fg: theme.text.muted }}>{t(" · interrupted")}</span>
           </Show>
         </text>
       </box>
@@ -2338,7 +2340,8 @@ function RevertMessage(props: {
           </box>
         </Show>
         <text fg={theme.text.muted}>
-          <span style={{ fg: theme.text.base }}>{redoKey()}</span> or /redo to restore
+          <span style={{ fg: theme.text.base }}>{redoKey()}</span>{" "}
+          {t("or /redo to restore")}
         </text>
       </box>
     </box>

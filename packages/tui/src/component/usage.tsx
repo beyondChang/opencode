@@ -65,8 +65,8 @@ export function limitLabel(usage: ModelUsage | undefined, model: ModelInfo) {
   if (!usage) return undefined
   const level = usageLevel(usage, model)
   if (level === "plenty") return undefined
-  if (level === "reached") return { text: "Limit reached", danger: true }
-  return { text: `${formatDollars(usage.left)} left`, danger: level === "out" }
+  if (level === "reached") return { text: t("Limit reached"), danger: true }
+  return { text: t("{amount} left", { amount: formatDollars(usage.left) }), danger: level === "out" }
 }
 
 /** `/usage`: the models the workspace limits, with what each has left. */
@@ -95,10 +95,10 @@ export function DialogUsage() {
       <Match when={limits.info()}>
         {(info) => (
           <DialogSelect
-            title="Usage"
+            title={t("Usage")}
             description={[
-              info().workspace.name ? `Workspace: ${info().workspace.name}` : undefined,
-              rows().length > 0 ? `Resets ${formatReset(resets())}` : undefined,
+              info().workspace.name ? t("Workspace: {name}", { name: info().workspace.name }) : undefined,
+              rows().length > 0 ? t("Resets {time}", { time: formatReset(resets()) }) : undefined,
             ]
               .filter(Boolean)
               .join(" · ")}
@@ -106,7 +106,7 @@ export function DialogUsage() {
             options={rows().map((row) => ({
               title: row.model.name,
               value: key(row.model),
-              footer: selected() === key(row.model) ? `${formatDollars(row.usage.left)} left` : undefined,
+              footer: selected() === key(row.model) ? t("{amount} left", { amount: formatDollars(row.usage.left) }) : undefined,
               footerColor: row.level === "out" || row.level === "reached" ? theme.text.feedback.error.base : undefined,
               onSelect: () => dialog.replace(() => <DialogUsageModel model={row.model} />),
             }))}
@@ -114,23 +114,22 @@ export function DialogUsage() {
             emptyView={
               <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
                 <text fg={theme.text.muted} wrapMode="word">
-                  No limits apply to your models. Paid models stop only if the workspace runs out of credits.
-                </text>
+                  {t("No limits apply to your models. Paid models stop only if the workspace runs out of credits.")}                </text>
               </box>
             }
           />
         )}
       </Match>
       <Match when={limits.info() === null}>
-        <DialogLayout header={<DialogHeader title="Usage" />}>
+        <DialogLayout header={<DialogHeader title={t("Usage")} />}>
           <text fg={theme.text.muted} wrapMode="word">
-            Sign in to OpenCode Console with /connect to see your workspace's usage limits.
+            {t("Sign in to OpenCode Console with /connect to see your workspace's usage limits.")}
           </text>
         </DialogLayout>
       </Match>
       <Match when={true}>
-        <DialogLayout header={<DialogHeader title="Usage" />}>
-          <text fg={theme.text.muted}>Loading…</text>
+        <DialogLayout header={<DialogHeader title={t("Usage")} />}>
+          <text fg={theme.text.muted}>{t("Loading…")}</text>
         </DialogLayout>
       </Match>
     </Switch>
@@ -156,24 +155,24 @@ export function DialogUsageModel(props: { model: ModelInfo }) {
         <DialogHeader
           titleView={
             <text fg={theme.text.base}>
-              <span style={{ fg: theme.text.muted }}>Usage › </span>
+              <span style={{ fg: theme.text.muted }}>{t("Usage › ")}</span>
               {props.model.name}
             </text>
           }
         />
       }
     >
-      <Show when={usage()} fallback={<text fg={theme.text.muted}>No limits apply to {props.model.name}.</text>}>
+      <Show when={usage()} fallback={<text fg={theme.text.muted}>{t("No limits apply to {name}.", { name: props.model.name })}</text>}>
         {(value) => (
           <box gap={1}>
             <box>
               <text fg={short() ? theme.text.feedback.error.base : theme.text.base} attributes={TextAttributes.BOLD}>
-                {formatDollars(value().left)} remaining
+                {t("{amount} remaining", { amount: formatDollars(value().left) })}
               </text>
-              <text fg={theme.text.muted}>Resets {formatReset(value().resetsAt)}</text>
+              <text fg={theme.text.muted}>{t("Resets {time}", { time: formatReset(value().resetsAt) })}</text>
             </box>
             <box>
-              <text fg={theme.text.muted}>Limits</text>
+              <text fg={theme.text.muted}>{t("Limits")}</text>
               <For each={value().limits}>
                 {(item, index) => (
                   <box>
@@ -190,7 +189,7 @@ export function DialogUsageModel(props: { model: ModelInfo }) {
                       >
                         {index() === 0 ? "•" : "-"}{" "}
                       </span>
-                      {formatDollars(item.spent)} used of {formatDollars(item.budget.limit)}
+                      {t("{spent} used of {limit}", { spent: formatDollars(item.spent), limit: formatDollars(item.budget.limit) })}
                     </text>
                     <box paddingLeft={2}>
                       <text fg={theme.text.muted} wrapMode="word">
@@ -283,8 +282,8 @@ export function useLimitNotice(message: () => SessionMessageAssistant) {
       }
     if (error.status === 402 && limits.served(value.model.providerID))
       return {
-        title: `${limits.info()?.workspace.name ?? "Your workspace"} is out of credits`,
-        body: "Paid models are paused until an admin adds credits in OpenCode Console.",
+        title: t("{workspace} is out of credits", { workspace: limits.info()?.workspace.name ?? t("Your workspace") }),
+        body: t("Paid models are paused until an admin adds credits in OpenCode Console."),
       }
     return undefined
   })
@@ -311,7 +310,7 @@ export function UsageLimitNotice(props: {
           {(key) => (
             <>
               {" "}
-              <span style={{ fg: theme.text.base }}>{key()}</span> to continue.
+              <span style={{ fg: theme.text.base }}>{key()}</span>{t(" to continue.")}
             </>
           )}
         </Show>

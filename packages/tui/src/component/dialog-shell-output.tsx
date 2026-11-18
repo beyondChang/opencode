@@ -109,8 +109,8 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
 
   const copyAction = (kind: "command" | "output", key: string) =>
     copied() === kind
-      ? { title: "✓ copied", color: theme.text.feedback.success.base, onTrigger: () => copy(kind) }
-      : { title: `copy ${kind}`, key, onTrigger: () => copy(kind) }
+      ? { title: t("✓ copied"), color: theme.text.feedback.success.base, onTrigger: () => copy(kind) }
+      : { title: t(kind === "command" ? "copy command" : "copy output"), key, onTrigger: () => copy(kind) }
 
   Keymap.createLayer(() => ({
     mode: "modal",
@@ -147,7 +147,7 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
       footer={{
         actions: {
           primary: [
-            { title: "follow", key: "end", onTrigger: () => scroll?.scrollTo(Infinity) },
+            { title: t("follow"), key: "end", onTrigger: () => scroll?.scrollTo(Infinity) },
             copyAction("command", "c"),
             copyAction("output", "o"),
           ],
@@ -157,9 +157,9 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
         <DialogFooter
           actions={{
             secondary: [
-              { title: "scroll", key: "↑/↓" },
-              { title: "follow", key: "end" },
-              { title: "back", key: "esc" },
+              { title: t("scroll"), key: "↑/↓" },
+              { title: t("follow"), key: "end" },
+              { title: t("back"), key: "esc" },
             ],
           }}
         />
@@ -170,7 +170,7 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
           {props.shell.command}
         </text>
         <Show when={omitted()}>
-          <text fg={theme.text.muted}>Earlier output omitted · showing recent output</text>
+          <text fg={theme.text.muted}>{t("Earlier output omitted · showing recent output")}</text>
         </Show>
         <scrollbox
           id="shell-output-scroll"
@@ -183,8 +183,8 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
           <text fg={theme.text.base} wrapMode="word">
             {text() ||
               (output() === undefined
-                ? "Loading output…"
-                : "No captured output. Output redirected to files is not shown here.")}
+                ? t("Loading output…")
+                : t("No captured output. Output redirected to files is not shown here."))}
           </text>
         </scrollbox>
         <Show when={error()}>

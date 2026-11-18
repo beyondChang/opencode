@@ -129,7 +129,7 @@ export const mini = {
   "enter steer": "enter 引导",
   "No pending prompts": "没有待处理提示",
   "Free": "免费",
-  "Select variant": "选择变体",
+  "Select variant": "选择思考强度",
   "Select model": "选择模型",
   "Models loading": "模型加载中",
   "No matching items": "没有匹配项",

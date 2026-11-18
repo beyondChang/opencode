@@ -24,7 +24,7 @@ export function DialogVariant() {
       .filter((variant) => variant !== "default")
       .map((variant) => ({
         value: variant,
-        title: variant,
+        title: t(variant),
         onSelect: () => {
           dialog.clear()
           local.model.variant.set(variant)

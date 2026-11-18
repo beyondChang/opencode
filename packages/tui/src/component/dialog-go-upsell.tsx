@@ -115,8 +115,7 @@ export function DialogGoUpsell(props: {
       onMouseOver={() => setSelected(action)}
       onMouseUp={() => run(action)}
     >
-      <text
-        fg={
+      <text        fg={
           selected() === action
             ? theme.text.action.primary.focused
             : action === "subscribe"
@@ -126,7 +125,7 @@ export function DialogGoUpsell(props: {
         bg={selected() === action ? undefined : textBg()}
         attributes={selected() === action ? TextAttributes.BOLD : undefined}
       >
-        {action}
+        {t(action)}
       </text>
     </box>
   )
@@ -168,10 +167,11 @@ export function DialogGoUpsell(props: {
           fallback={
             <scrollbox maxHeight={bodyMaxHeight()} flexShrink={1}>
               <text fg={theme.text.muted} bg={textBg()} wrapMode="word">
-                You've used today's free messages.{props.reset ? ` Resets at ${props.reset}.` : ""}
+                {t("You've used today's free messages.")}
+                {props.reset ? t(" Resets at {time}.", { time: props.reset }) : ""}
               </text>
               <text fg={theme.text.muted} bg={textBg()} wrapMode="word">
-                OpenCode Go gives you reliable access to the best open-source models for $10/month.
+                {t("OpenCode Go gives you reliable access to the best open-source models for $10/month.")}
               </text>
               <Link href={GO_URL} fg={primary()} bg={textBg()} wrapMode="none" />
             </scrollbox>
@@ -179,10 +179,11 @@ export function DialogGoUpsell(props: {
         >
           <box>
             <text fg={theme.text.muted} bg={textBg()} wrapMode="word">
-              You've used today's free messages.{props.reset ? ` Resets at ${props.reset}.` : ""}
+              {t("You've used today's free messages.")}
+              {props.reset ? t(" Resets at {time}.", { time: props.reset }) : ""}
             </text>
             <text fg={theme.text.muted} bg={textBg()} wrapMode="word">
-              OpenCode Go gives you reliable access to the best open-source models for $10/month.
+              {t("OpenCode Go gives you reliable access to the best open-source models for $10/month.")}
             </text>
           </box>
           <box ref={setAnchor} height={7} paddingBottom={1} alignItems="center" justifyContent="flex-end">
@@ -274,7 +275,7 @@ function DialogGoUpsellConnect(props: { canContinue?: () => boolean; onSubscribe
     if (closed || dialog.stack.length === 0) return false
     if (!valid()) return null
     if (announce) {
-      toast.show({ variant: "success", message: `Connected ${integration()?.name ?? "OpenCode Console"}` })
+      toast.show({ variant: "success", message: t("Connected {name}", { name: integration()?.name ?? "OpenCode Console" }) })
     }
     finish()
     return true
@@ -303,7 +304,7 @@ function DialogGoUpsellConnect(props: { canContinue?: () => boolean; onSubscribe
           }
           toast.show({
             variant: "error",
-            message: status.status === "failed" ? status.message : "Authorization expired",
+            message: status.status === "failed" ? status.message : t("Authorization expired"),
           })
           dialog.clear()
         } catch (cause) {
@@ -413,7 +414,7 @@ function DialogGoUpsellConnect(props: { canContinue?: () => boolean; onSubscribe
     ],
   }))
 
-  const title = () => method()?.label ?? "Connect an integration"
+  const title = () => method()?.label ?? t("Connect an integration")
 
   return (
     <DialogLayout
@@ -423,11 +424,11 @@ function DialogGoUpsellConnect(props: { canContinue?: () => boolean; onSubscribe
           primary: attempt()
             ? [
                 {
-                  title: attempt()?.instructions.match(OAUTH_CODE) ? "copy code" : "copy link",
+                  title: attempt()?.instructions.match(OAUTH_CODE) ? t("copy code") : t("copy link"),
                   key: "c",
                   onTrigger: copy,
                 },
-                { title: "open link", key: "enter", onTrigger: open },
+                { title: t("open link"), key: "enter", onTrigger: open },
               ]
             : [],
         },
@@ -437,8 +438,8 @@ function DialogGoUpsellConnect(props: { canContinue?: () => boolean; onSubscribe
           actions={{
             secondary: attempt()
               ? [
-                  { title: "open", key: "o" },
-                  { title: "copy", key: "c" },
+                  { title: t("open"), key: "o" },
+                  { title: t("copy"), key: "c" },
                 ]
               : [],
           }}
@@ -456,7 +457,7 @@ function DialogGoUpsellConnect(props: { canContinue?: () => boolean; onSubscribe
             </box>
           )}
         </Show>
-        <text fg={theme.text.muted}>{attempt() ? "Waiting for authorization…" : "Starting authorization…"}</text>
+        <text fg={theme.text.muted}>{t(attempt() ? "Waiting for authorization…" : "Starting authorization…")}</text>
       </box>
     </DialogLayout>
   )

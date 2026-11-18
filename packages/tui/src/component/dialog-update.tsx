@@ -47,13 +47,13 @@ export function DialogUpdate(props: {
     if (type === "installing") return []
     const confirm =
       type === "available"
-        ? { label: "Update", run: props.install }
+        ? { label: t("Update"), run: props.install }
         : type === "installed"
-          ? { label: "Restart", run: props.restart }
+          ? { label: t("Restart"), run: props.restart }
           : undefined
     return [
       {
-        label: "Skip",
+        label: t("Skip"),
         run: () => {
           props.skip()
           dialog.clear()
@@ -87,10 +87,10 @@ export function DialogUpdate(props: {
         <DialogHeader
           title={
             state().type === "installing"
-              ? "Updating OpenCode"
+              ? t("Updating OpenCode")
               : state().type === "available" || state().type === "failed"
-                ? "Update available"
-                : "Update"
+                ? t("Update available")
+                : t("Update")
           }
         />
       }
@@ -108,25 +108,25 @@ export function DialogUpdate(props: {
         {(current) => (
           <Switch>
             <Match when={current.type === "checking"}>
-              <Spinner shimmer={theme.text.base}>Checking for updates…</Spinner>
+              <Spinner shimmer={theme.text.base}>{t("Checking for updates…")}</Spinner>
             </Match>
             <Match when={current.type === "available"}>
               <text fg={theme.text.muted}>
-                An update is available. After installing, you'll be prompted to restart OpenCode.
+                {t("An update is available. After installing, you'll be prompted to restart OpenCode.")}
               </text>
             </Match>
             <Match when={current.type === "installing"}>
               <Spinner shimmer={theme.text.base}>
-                {current.type === "installing" ? `Installing OpenCode ${current.version}…` : ""}
+                {current.type === "installing" ? t("Installing OpenCode {version}…", { version: current.version }) : ""}
               </Spinner>
             </Match>
             <Match when={current.type === "installed"}>
               <text fg={theme.text.muted} wrapMode="word">
-                Update successful! Restart closes OpenCode, then run opencode to use the new version.
+                {t("Update successful! Restart closes OpenCode, then run opencode to use the new version.")}
               </text>
             </Match>
             <Match when={current.type === "current"}>
-              <text fg={theme.text.muted}>OpenCode is already up to date.</text>
+              <text fg={theme.text.muted}>{t("OpenCode is already up to date.")}</text>
             </Match>
             <Match when={current.type === "unavailable"}>
               <text fg={theme.text.muted} wrapMode="word">

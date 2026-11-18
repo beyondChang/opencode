@@ -1162,7 +1162,7 @@ export function DiffViewerContent(props: {
               <span style={focused() ? { fg: theme.text.muted } : {}}>{docked() ? " focus prompt" : " close"}</span>
             </text>
             <box flexShrink={0}>
-              <HelpShortcut label="see all" muted={!focused()} />
+              <HelpShortcut label={t("see all")} muted={!focused()} />
             </box>
           </box>
           <Show when={docked()}>

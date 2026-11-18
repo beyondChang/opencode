@@ -68,7 +68,7 @@ export function DialogDebug() {
         actions: { primary: [copyAction()] },
         get children() {
           if (newDesigns()) return undefined
-          return <text fg={theme.text.muted}>Share this when reporting an issue.</text>
+          return <text fg={theme.text.muted}>{t("Share this when reporting an issue.")}</text>
         },
       }}
     >

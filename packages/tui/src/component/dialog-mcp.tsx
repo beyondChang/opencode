@@ -11,6 +11,7 @@ import { useToast } from "../ui/toast"
 import { DialogErrorDetails } from "./dialog-error-details"
 import { DialogIntegration } from "./dialog-integration"
 import { useLocation } from "../context/location"
+import { t } from "../i18n"
 
 function statusError(status: McpServer["status"]) {
   if (status.status === "failed" || status.status === "needs_auth") return status.error
@@ -19,18 +20,18 @@ function statusError(status: McpServer["status"]) {
 
 function Status(props: { status: McpServer["status"]; loading: boolean }) {
   if (props.loading || props.status.status === "pending") {
-    return <>Connecting …</>
+    return <>{t("Connecting …")}</>
   }
   if (props.status.status === "connected") {
-    return <span style={{ attributes: TextAttributes.BOLD }}>Connected ✓</span>
+    return <span style={{ attributes: TextAttributes.BOLD }}>{t("Connected ✓")}</span>
   }
   if (props.status.status === "failed") {
-    return <>Failed !</>
+    return <>{t("Failed !")}</>
   }
   if (props.status.status === "needs_auth") {
-    return <>Sign in required →</>
+    return <>{t("Sign in required →")}</>
   }
-  return <>Disabled ○</>
+  return <>{t("Disabled ○")}</>
 }
 
 export function DialogMcp(props: { initialServer?: string; details?: boolean } = {}) {
@@ -84,10 +85,10 @@ export function DialogMcp(props: { initialServer?: string; details?: boolean } =
 
   const toggleTitle = createMemo(() => {
     const status = focusedServer()?.status.status
-    if (status === "connected") return "disconnect"
-    if (status === "failed") return "retry"
-    if (status === "needs_auth") return "sign in"
-    return "connect"
+    if (status === "connected") return t("disconnect")
+    if (status === "failed") return t("retry")
+    if (status === "needs_auth") return t("sign in")
+    return t("connect")
   })
 
   const focusedError = createMemo(() => {
@@ -143,9 +144,9 @@ export function DialogMcp(props: { initialServer?: string; details?: boolean } =
         when={detail()}
         fallback={
           <DialogSelect
-            title="MCP servers"
+            title={t("MCP servers")}
             searchInTitle
-            titlePlaceholder="Search MCP servers"
+            titlePlaceholder={t("Search MCP servers")}
             options={options()}
             preserveSelection
             focusTarget={props.initialServer}
@@ -161,17 +162,19 @@ export function DialogMcp(props: { initialServer?: string; details?: boolean } =
                 },
               },
             ]}
-            footerHints={focusedError() ? [{ title: "view error", label: "enter", group: "primary" }] : []}
+            footerHints={focusedError() ? [{ title: t("view error"), label: "enter", group: "primary" }] : []}
           />
         }
       >
         {(server) => (
           <DialogErrorDetails
-            title={`MCP server: ${server().name}`}
-            error={statusError(server().status) ?? "Unknown MCP connection error"}
-            context={`Status: ${server().status.status}\nConfiguration: mcp.servers.${server().name}${
-              server().integrationID ? `\nIntegration: ${server().integrationID}` : ""
-            }`}
+            title={t("MCP server: {name}", { name: server().name })}
+            error={statusError(server().status) ?? t("Unknown MCP connection error")}
+            context={t("Status: {status}", { status: server().status.status }) + "\n" + t("Configuration: {config}", {
+              config: `mcp.servers.${server().name}${
+                server().integrationID ? `\n${t("Integration: {name}", { name: server().integrationID! })}` : ""
+              }`,
+            })}
             onBack={() => {
               setDetail(undefined)
               dialog.setSize("medium")

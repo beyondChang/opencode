@@ -1,4 +1,5 @@
 import { useTheme } from "../context/theme"
+import { t } from "../i18n"
 
 export function PluginRouteMissing(props: { id: string; name: string; onHome: () => void }) {
   const theme = useTheme()
@@ -14,7 +15,7 @@ export function PluginRouteMissing(props: { id: string; name: string; onHome: ()
         paddingLeft={1}
         paddingRight={1}
       >
-        <text fg={theme.text.action.primary.hovered}>go home</text>
+        <text fg={theme.text.action.primary.hovered}>{t("go home")}</text>
       </box>
     </box>
   )
