@@ -36,6 +36,7 @@ export const commands = {
   "Open docs": "打开文档",
   "Exit the app": "退出应用",
   "Switch model variant": "切换 Model 变体",
+  "Switch thinking effort": "切换思考强度",
   "Variant cycle": "循环切换变体",
   "No variants available": "没有可用变体",
   "Switch to session in quick slot {slot}": "切换到快速槽位 {slot} 的会话",
