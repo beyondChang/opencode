@@ -96,7 +96,7 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
         value: entry.key,
         category: entry.runtime === "tui" ? "TUI" : "Server",
         searchText: entry.runtime === "tui" ? entry.target : source(entry.plugin, props.context),
-        footer: updating(entry) ? "updating" : footer(entry),
+        footer: updating(entry) ? t("updating") : footer(entry),
         footerColor:
           status(entry) === "failed"
             ? props.context.theme.text.feedback.error.base
@@ -119,8 +119,8 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
   })
   const toggleTitle = createMemo(() => {
     const entry = focusedTui()
-    if (!entry) return "toggle"
-    return props.plugins.registered().find((plugin) => plugin.id === entry.id)?.active ? "disable" : "enable"
+    if (!entry) return t("toggle")
+    return props.plugins.registered().find((plugin) => plugin.id === entry.id)?.active ? t("disable") : t("enable")
   })
   const toggle = (entry: Entry | undefined) => {
     if (locked() || entry?.runtime !== "tui" || !entry.id) return
@@ -130,7 +130,7 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
     void (current.active ? props.plugins.deactivate(current.id) : props.plugins.activate(current.id))
       .then((ok) => {
         if (ok) return
-        props.context.ui.toast.show({ variant: "error", message: `Failed to update plugin ${current.id}` })
+        props.context.ui.toast.show({ variant: "error", message: t("Failed to update plugin {name}", { name: current.id }) })
       })
       .catch((cause) => {
         props.context.ui.toast.show({
@@ -307,7 +307,7 @@ function outdated(entry: Entry) {
 function footer(entry: Entry) {
   const details = [
     ...(status(entry) === "active" ? [] : [status(entry)]),
-    ...(isLocal(entry) ? ["local"] : []),
+    ...(isLocal(entry) ? [t("local")] : []),
     ...(entry.runtime === "server" && entry.plugin.source.type === "package" && entry.plugin.source.version
       ? [displayVersion(entry.plugin.source.version)]
       : []),

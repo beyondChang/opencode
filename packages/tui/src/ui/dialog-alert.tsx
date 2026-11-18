@@ -1,6 +1,8 @@
 import { Keymap } from "../context/keymap"
 import { useTheme } from "../context/theme"
 import { DialogHeader, DialogLayout, useDialog } from "./dialog"
+import { t } from "../i18n"
+
 
 export type DialogAlertProps = {
   title: string
@@ -22,7 +24,7 @@ export function DialogAlert(props: DialogAlertProps) {
     commands: [
       {
         bind: "return",
-        title: "Confirm alert",
+        title: t("Confirm alert"),
         group: "Dialog",
         run: confirm,
       },
@@ -31,7 +33,7 @@ export function DialogAlert(props: DialogAlertProps) {
   return (
     <DialogLayout
       header={<DialogHeader title={props.title} />}
-      footer={{ actions: { primary: [{ title: "ok", key: "enter", onTrigger: confirm }] } }}
+      footer={{ actions: { primary: [{ title: t("ok"), key: "enter", onTrigger: confirm }] } }}
       legacyFooter={
         <box flexDirection="row" justifyContent="flex-end">
           <box
@@ -40,7 +42,7 @@ export function DialogAlert(props: DialogAlertProps) {
             backgroundColor={theme.background.action.primary.focused}
             onMouseUp={confirm}
           >
-            <text fg={theme.text.action.primary.focused}>ok</text>
+            <text fg={theme.text.action.primary.focused}>{t("ok")}</text>
           </box>
         </box>
       }

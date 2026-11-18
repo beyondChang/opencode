@@ -5,6 +5,8 @@ import { SplitBorder } from "../ui/border"
 import { useToast } from "../ui/toast"
 import { errorMessage } from "../util/error"
 import { Spinner } from "./spinner"
+import { t } from "../i18n"
+
 
 type Progress = { label: string; numerator?: number; denominator?: number }
 
@@ -30,7 +32,7 @@ export function MigrationOverlay() {
       setProgress(undefined)
       toast.show({
         variant: "error",
-        title: "Data migration failed",
+        title: t("Data migration failed"),
         message: errorMessage(error),
         duration: 10_000,
       })

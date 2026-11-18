@@ -81,7 +81,7 @@ export function DiffViewerImage(props: {
                       <box flexDirection="row" justifyContent="space-between">
                         <text fg={theme.text.muted}>{value()}</text>
                         <text fg={theme.text.action.secondary.base} onMouseUp={open}>
-                          Click to enlarge
+                          {t("Click to enlarge")}
                         </text>
                       </box>
                     )}

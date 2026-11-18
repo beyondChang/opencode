@@ -27,8 +27,10 @@ import { useConfig, useNewDesigns } from "../config"
 import { useStorageOptional } from "./storage"
 import { DevTools } from "../devtools"
 import { configDirectories } from "../util/config-directories"
+import { t } from "../i18n"
 
-const themePerformance = DevTools.register({ id: "theme-performance", title: "Theme performance" })
+
+const themePerformance = DevTools.register({ id: "theme-performance", title: t("Theme performance") })
 export type ThemeError = { name: string; error: Error }
 type ThemeErrorHandler = (event: ThemeError) => void
 

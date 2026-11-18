@@ -515,7 +515,7 @@ export function RunFormBody(props: {
                             : props.theme.formfieldText
                         }
                       >
-                        Type your own answer
+                        {t("Type your own answer")}
                       </text>
                     </box>
                   </Show>

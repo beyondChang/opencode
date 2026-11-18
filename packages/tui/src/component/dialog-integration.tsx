@@ -91,7 +91,7 @@ export function credentialConnections(integration: IntegrationInfo) {
 // A count keeps several long labels from squeezing the integration name off the row.
 export function connectionSummary(integration: IntegrationInfo) {
   const connections = integration.connections
-  if (connections.length > 1) return `${connections.length} connections`
+  if (connections.length > 1) return t("{count} connections", { count: connections.length })
   const connection = connections[0]
   if (!connection) return ""
   return connection.type === "credential" ? connection.label : `$${connection.name}`
@@ -137,7 +137,7 @@ export function DialogIntegration(
         title: integration.name,
         value: integration.id,
         description: methods.length === 0 ? t("Environment only") : undefined,
-        footer: status ? "Sign in required →" : connectionSummary(integration) || undefined,
+        footer: status ? t("Sign in required →") : connectionSummary(integration) || undefined,
         footerColor: status ? theme.text.feedback.warning.base : undefined,
         category,
         disabled: methods.length === 0 && credentials.length === 0,
@@ -217,10 +217,10 @@ function manageConnections(
               const confirming = deleting() === connection.id
               return {
                 title: confirming
-                  ? `Press ${shortcuts.get("dialog.integration.delete")} again to confirm`
+                  ? t("Press {key} again to confirm", { key: shortcuts.get("dialog.integration.delete") })
                   : connection.label,
                 value: connection.id,
-                footer: connection.status ? "Sign in required →" : undefined,
+                footer: connection.status ? t("Sign in required →") : undefined,
                 footerColor: connection.status ? theme.text.feedback.warning.base : undefined,
                 category: "Connected accounts",
                 bg: confirming ? theme.background.action.destructive.focused : undefined,
@@ -274,7 +274,7 @@ function manageConnections(
                 .then(() => {
                   setDeleting(undefined)
                   if (!final) return
-                  toast.show({ variant: "success", message: `Disconnected ${integration.name}` })
+                  toast.show({ variant: "success", message: t("Disconnected {name}", { name: integration.name }) })
                   dialog.clear()
                 })
                 .catch((error) => {
@@ -496,7 +496,7 @@ function CommandPending(props: {
         }
         toast.show({
           variant: "error",
-          message: status.status === "failed" ? status.message : "Authentication expired",
+          message: status.status === "failed" ? status.message : t("Authentication expired"),
         })
         dialog.clear()
       })
@@ -674,7 +674,7 @@ function OAuthAuto(props: {
   const open = () => {
     openUrl(props.attempt.url).catch(() =>
       toast.show({
-        message: "Could not open the browser. Copy the URL and continue manually.",
+        message: t("Could not open the browser. Copy the URL and continue manually."),
         variant: "error",
       }),
     )
@@ -684,7 +684,7 @@ function OAuthAuto(props: {
     const value = props.attempt.instructions.match(OAUTH_CODE)?.[0] ?? props.attempt.url
     clipboard
       .write(value)
-      .then(() => toast.show({ message: "Copied to clipboard", variant: "info" }))
+      .then(() => toast.show({ message: t("Copied to clipboard"), variant: "info" }))
       .catch(toast.error)
   }
 
@@ -730,7 +730,7 @@ function OAuthAuto(props: {
           void connected(props.integration, props.location, data, dialog, toast, props.onConnected)
           return
         }
-        toast.show({ variant: "error", message: status.status === "failed" ? status.message : "Authorization expired" })
+        toast.show({ variant: "error", message: status.status === "failed" ? status.message : t("Authorization expired") })
         dialog.clear()
       })
       .catch((cause) => {
@@ -759,7 +759,7 @@ function OAuthAuto(props: {
           title={props.title}
           url={props.attempt.url}
           instructions={props.attempt.instructions}
-          message="Waiting for authorization…"
+          message={t("Waiting for authorization…")}
           onCopy={copy}
           onOpen={open}
         />
@@ -782,8 +782,7 @@ function OAuthAuto(props: {
             <text fg={theme.text.muted}>{props.attempt.instructions}</text>
             <Link href={props.attempt.url} fg={theme.markdown.link} />
             <text fg={theme.text.muted}>
-              Waiting for authorization… Press enter to open the link. If the browser can't reach this machine, paste
-              the URL it was redirected to.
+              {t("Waiting for authorization… Press enter to open the link. If the browser can't reach this machine, paste the URL it was redirected to.")}
             </text>
             <Show when={error()}>{(value) => <text fg={theme.text.feedback.error.base}>{value()}</text>}</Show>
           </box>
@@ -1306,7 +1305,7 @@ async function connected(
     data.location.model.sync(location),
     data.location.provider.sync(location),
   ])
-  toast.show({ variant: "success", message: `Connected ${integration.name}` })
+  toast.show({ variant: "success", message: t("Connected {name}", { name: integration.name }) })
   if (onConnected) {
     onConnected(providerID(data, location, integration.id))
     return

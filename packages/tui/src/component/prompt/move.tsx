@@ -8,6 +8,8 @@ import { DialogWorkspaces, type WorkspaceSelection } from "../dialog-workspaces"
 import { useData } from "../../context/data"
 import { useLocation } from "../../context/location"
 import { useRoute } from "../../context/route"
+import { t } from "../../i18n"
+
 
 export function usePromptMove(input: { projectID: () => string | undefined; sessionID: () => string | undefined }) {
   const dialog = useDialog()
@@ -29,7 +31,7 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
 
   async function create(name: string) {
     setCreating(true)
-    setProgress("Creating worktree")
+    setProgress(t("Creating worktree"))
     try {
       const sessionID = input.sessionID()
       const session = sessionID ? await resolveSession(sessionID) : undefined
@@ -50,13 +52,13 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
       // optimistic session without its project until the create request echoes.
       await data.location.syncInfo({ directory })
 
-      setProgress("Creating session")
+      setProgress(t("Creating session"))
       return directory
     } catch (err) {
       setDestination(undefined)
       setProgress(undefined)
       setCreating(false)
-      toast.show({ title: "Creating workspace failed", message: errorMessage(err), variant: "error" })
+      toast.show({ title: t("Creating workspace failed"), message: errorMessage(err), variant: "error" })
       return
     }
   }
@@ -64,7 +66,7 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
   async function open() {
     const projectID = await resolveProjectID()
     if (!projectID) {
-      toast.show({ message: "Unable to determine current project", variant: "error" })
+      toast.show({ message: t("Unable to determine current project"), variant: "error" })
       return
     }
     const sessionID = input.sessionID()
@@ -144,7 +146,7 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
   }
 
   function startSubmit() {
-    if (progress()) setProgress("Submitting prompt")
+    if (progress()) setProgress(t("Submitting prompt"))
   }
 
   function finishSubmit() {

@@ -6,13 +6,14 @@ import { home } from "./home"
 import { integration } from "./integration"
 import { keybinds } from "./keybinds"
 import { mini } from "./mini"
+import { misc } from "./misc"
 import { prompt } from "./prompt"
 import { session } from "./session"
 import { settings } from "./settings"
 import { sidebar } from "./sidebar"
 import { system } from "./system"
 
-const parts = { common, commands, component, dialogs, home, integration, keybinds, mini, prompt, session, settings, sidebar, system }
+const parts = { common, commands, component, dialogs, home, integration, keybinds, mini, misc, prompt, session, settings, sidebar, system }
 
 /**
  * Flat source-string to Chinese catalog. Area files must not repeat a source string; the

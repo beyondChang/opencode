@@ -280,7 +280,7 @@ export function DialogSessionList() {
               .catch((error) => {
                 setToDelete(undefined)
                 toast.show({
-                  message: `Failed to delete session: ${errorMessage(error)}`,
+                  message: t("Failed to delete session: {error}", { error: errorMessage(error) }),
                   variant: "error",
                   duration: 5000,
                 })

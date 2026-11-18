@@ -112,7 +112,7 @@ export function Answer(props: {
 
   Keymap.createLayer(() => ({
     mode: "modal",
-    commands: [{ bind: "c", title: "Copy answer", group: "Dialog", run: copy }],
+    commands: [{ bind: "c", title: t("Copy answer"), group: "Dialog", run: copy }],
   }))
 
   useKeyboard((event) => {
@@ -145,8 +145,8 @@ export function Answer(props: {
         actions: {
           primary: [
             copied()
-              ? { title: "✓ copied", color: theme.text.feedback.success.base, onTrigger: copy }
-              : { title: "copy response", key: "c", onTrigger: copy },
+              ? { title: t("✓ copied"), color: theme.text.feedback.success.base, onTrigger: copy }
+              : { title: t("copy response"), key: "c", onTrigger: copy },
           ],
         },
       }}
@@ -155,9 +155,9 @@ export function Answer(props: {
           actions={{
             secondary: [
               copied()
-                ? { title: "✓ copied", color: theme.text.feedback.success.base, onTrigger: copy }
-                : { title: "copy", key: "c", onTrigger: copy },
-              { title: "scroll", key: "j/k ↑/↓" },
+                ? { title: t("✓ copied"), color: theme.text.feedback.success.base, onTrigger: copy }
+                : { title: t("copy"), key: "c", onTrigger: copy },
+              { title: t("scroll"), key: "j/k ↑/↓" },
             ],
           }}
         />

@@ -69,7 +69,7 @@ export function DialogPrompt(props: DialogPromptProps) {
     commands: [
       {
         id: "dialog.prompt.submit",
-        title: "Submit dialog prompt",
+        title: t("Submit dialog prompt"),
         group: "Dialog",
         run: confirm,
       },
@@ -89,7 +89,7 @@ export function DialogPrompt(props: DialogPromptProps) {
     commands: [
       {
         bind: "escape",
-        title: "Back",
+        title: t("Back"),
         group: "Dialog",
         run: () => {
           if (renderer.getSelection()) {
@@ -144,15 +144,15 @@ export function DialogPrompt(props: DialogPromptProps) {
         actions: {
           primary: [
             ...extraActions(),
-            { title: "submit", command: "dialog.prompt.submit", disabled: props.busy, onTrigger: confirm },
+            { title: t("submit"), command: "dialog.prompt.submit", disabled: props.busy, onTrigger: confirm },
           ],
         },
       }}
       legacyFooter={
-        <Show when={!props.busy} fallback={<text fg={theme.text.muted}>processing…</text>}>
+        <Show when={!props.busy} fallback={<text fg={theme.text.muted}>{t("processing…")}</text>}>
           <DialogFooter
             actions={{
-              secondary: [{ title: "submit", command: "dialog.prompt.submit", onTrigger: confirm }, ...extraActions()],
+              secondary: [{ title: t("submit"), command: "dialog.prompt.submit", onTrigger: confirm }, ...extraActions()],
             }}
           />
         </Show>
@@ -176,7 +176,7 @@ export function DialogPrompt(props: DialogPromptProps) {
           cursorStyle={cursorStyle()}
         />
         <Show when={props.busy}>
-          <Spinner color={theme.text.muted}>{props.busyText ?? "Working…"}</Spinner>
+          <Spinner color={theme.text.muted}>{props.busyText ?? t("Working…")}</Spinner>
         </Show>
       </box>
     </DialogLayout>

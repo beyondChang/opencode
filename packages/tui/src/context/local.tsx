@@ -26,6 +26,8 @@ import { useData } from "./data"
 import { usePermission } from "./permission"
 import { useLocation } from "./location"
 import { parse } from "../util/model"
+import { t } from "../i18n"
+
 
 export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
   name: "Local",
@@ -101,7 +103,7 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           if (!agents().some((agent) => agent.id === id))
             return toast.show({
               variant: "warning",
-              message: `Agent not found: ${id}`,
+              message: t("Agent not found: {id}", { id }),
               duration: 3000,
             })
           batch(() => {
@@ -399,8 +401,8 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           const value = currentSelection()
           if (!value) {
             return {
-              provider: "Connect a provider",
-              model: "No provider selected",
+              provider: t("Connect a provider"),
+              model: t("No provider selected"),
               reasoning: false,
             }
           }
@@ -408,7 +410,7 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           const info = models()?.find((item) => item.providerID === value.providerID && item.id === value.modelID)
           return {
             provider: provider?.name ?? value.providerID,
-            model: info?.name ?? `${value.modelID} (unavailable)`,
+            model: info?.name ?? t("{name} (unavailable)", { name: value.modelID }),
             reasoning: (info?.variants?.length ?? 0) !== 0,
           }
         }),
@@ -429,7 +431,7 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           if (!favorites.length) {
             toast.show({
               variant: "info",
-              message: "Add a favorite model to use this shortcut",
+              message: t("Add a favorite model to use this shortcut"),
               duration: 3000,
             })
             return
