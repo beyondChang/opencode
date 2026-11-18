@@ -18,7 +18,7 @@ export const commands = {
   "Previous unread tab": "上一个未读标签页",
   "Close tab": "关闭标签页",
   "Reopen closed tab": "重新打开已关闭标签页",
-  "Switch model": "切换 Model",
+  "Switch model": "切换模型",
   "Model cycle": "循环切换 Model",
   "Model cycle reverse": "反向循环切换 Model",
   "Favorite cycle": "循环切换收藏 Model",
@@ -78,6 +78,7 @@ export const commands = {
   "translate English to other languages": "把英文翻译成其他语言",
   "create an automation, or list, pause, resume and delete this project's automations":
     "创建自动化任务，或列出、暂停、恢复、删除本项目的自动化任务",
+  "keep working until an objective is met [pause|resume|clear]": "持续工作直到达成目标 [pause|resume|clear]",
 
   // Autocomplete empty / loading states.
   "No matching commands": "没有匹配的命令",
