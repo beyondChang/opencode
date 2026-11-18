@@ -7,7 +7,7 @@ export const component = {
 
   // Agent / variant / model selection dialogs.
   "Search agents": "搜索 Agent",
-  "Search models": "搜索 Model",
+  "Search models": "搜索模型",
 
   // Debug dialog.
   Version: "版本",
@@ -60,8 +60,8 @@ export const component = {
   "Needs authentication: {error}": "需要认证：{error}",
 
   // Free models dialog.
-  "Free models": "免费 Model",
-  "Connect a provider for access to more models": "连接服务商以使用更多 Model",
+  "Free models": "免费模型",
+  "Connect a provider for access to more models": "连接服务商以使用更多模型",
   "connect provider": "连接服务商",
   favorite: "收藏",
   unfavorite: "取消收藏",

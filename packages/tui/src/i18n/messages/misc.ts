@@ -28,7 +28,7 @@ export const misc = {
   "Connect a provider": "连接一个 provider",
   "No provider selected": "未选择 provider",
   "{name} (unavailable)": "{name}（不可用）",
-  "Add a favorite model to use this shortcut": "收藏一个 Model 后才能使用此快捷键",
+  "Add a favorite model to use this shortcut": "收藏一个模型后才能使用此快捷键",
 
   // Worktree / session progress.
   "Creating worktree": "正在创建 worktree",
@@ -49,7 +49,7 @@ export const misc = {
   // Error toasts.
   "Data migration failed": "数据迁移失败",
   "Failed to load theme: {name}": "加载主题 {name} 失败",
-  "Invalid model format: {model}": "Model 格式无效：{model}",
+  "Invalid model format: {model}": "模型格式无效：{model}",
   "Failed to delete session: {error}": "删除会话失败：{error}",
   "{id}: cleanup failed: {error}": "{id}：清理失败：{error}",
 

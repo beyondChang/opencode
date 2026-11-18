@@ -78,7 +78,7 @@ export const session = {
   "Switched agent from {from} to {to}": "Agent 已从 {from} 切换为 {to}",
   "Switched agent to {agent}": "Agent 已切换为 {agent}",
   "Switched variant to {variant}": "变体已切换为 {variant}",
-  "Switched model to {model}": "Model 已切换为 {model}",
+  "Switched model to {model}": "模型已切换为 {model}",
   default: "默认",
 
   // Debug turn usage table.
@@ -375,7 +375,7 @@ export const session = {
   // Composer commands and feedback not covered by the command registry.
   "This prompt cannot be queued": "此提示无法排队",
   "Editor context cannot be queued": "编辑器上下文无法排队",
-  "Model unavailable": "Model 不可用",
+  "Model unavailable": "模型不可用",
   "Directory is required": "请指定目录",
   "Failed to change directory": "切换目录失败",
   "Connect an integration to send prompts": "连接服务商后才能发送提示",

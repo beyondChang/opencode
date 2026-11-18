@@ -15,8 +15,8 @@ export const sidebar = {
   Error: "错误",
   "Sign in": "登录",
   "Getting started": "开始使用",
-  "OpenCode includes free models so you can start immediately.": "OpenCode 内置免费 Model，开箱即用。",
+  "OpenCode includes free models so you can start immediately.": "OpenCode 内置免费模型，开箱即用。",
   "Connect from 75+ providers to use other models, including Claude, GPT, Gemini etc":
-    "连接 75+ 服务商以使用其他 Model，包括 Claude、GPT、Gemini 等",
+    "连接 75+ 服务商以使用其他模型，包括 Claude、GPT、Gemini 等",
   "Connect provider": "连接服务商",
 } as const

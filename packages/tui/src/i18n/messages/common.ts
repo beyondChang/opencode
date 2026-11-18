@@ -27,7 +27,7 @@ export const common = {
   Tokens: "Token",
   Context: "上下文",
   Cost: "花费",
-  Model: "Model",
+  Model: "模型",
   Agent: "Agent",
   Session: "会话",
   "Session done": "会话完成",
