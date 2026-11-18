@@ -55,6 +55,7 @@ import { locationKey, useData } from "../../context/data"
 import { useLocation } from "../../context/location"
 import { useArgs } from "../../context/args"
 import { Keymap, type KeymapCommand } from "../../context/keymap"
+import { t } from "../../i18n"
 import { useInteractivity } from "../../context/interactivity"
 import { abbreviateHome } from "../../runtime"
 import { Slot } from "../../plugin/render"
@@ -1615,10 +1616,10 @@ export function Prompt(props: PromptProps) {
     const value = (() => {
       if (store.mode === "shell") {
         if (!shell().length) return undefined
-        return `Run a command… "${shell()[store.placeholder % shell().length]}"`
+        return t("Run a command… \"{example}\"", { example: shell()[store.placeholder % shell().length] })
       }
       if (!list().length) return undefined
-      return `Ask anything… "${list()[store.placeholder % list().length]}"`
+      return t("Ask anything… \"{example}\"", { example: list()[store.placeholder % list().length] })
     })()
     if (!value) return undefined
     const width = dimensions().width < 44 ? dimensions().width - 5 : Math.min(75, dimensions().width - 4) - 5
@@ -1724,7 +1725,7 @@ export function Prompt(props: PromptProps) {
                           when={!failed()}
                           fallback={
                             <box width="100%" height="100%" alignItems="center" justifyContent="center">
-                              <text fg={theme.text.muted}>No preview</text>
+                              <text fg={theme.text.muted}>{t("No preview")}</text>
                             </box>
                           }
                         >
@@ -1757,7 +1758,7 @@ export function Prompt(props: PromptProps) {
                     }}
                   >
                     <text fg={theme.text.muted} wrapMode="none" truncate>
-                      +{imageAttachments().length - visibleImageAttachments().length} more
+                      {t("+{count} more", { count: imageAttachments().length - visibleImageAttachments().length })}
                     </text>
                   </box>
                 </Show>
@@ -1948,7 +1949,7 @@ export function Prompt(props: PromptProps) {
                   <Match when={move.pendingNew()}>
                     <box paddingLeft={3} height={1} minHeight={0} flexShrink={1}>
                       <text fg={theme.hue.accent[500]} wrapMode="none" truncate>
-                        (new worktree)
+                        {t("(new worktree)")}
                       </text>
                     </box>
                   </Match>
@@ -2005,13 +2006,13 @@ export function Prompt(props: PromptProps) {
             return {
               display: value,
               value,
-              description: "recent",
+              description: t("recent"),
               isDirectory: true,
               path: value,
               absolute: item.directory,
               destructive: {
                 id: item.directory,
-                confirm: "Press ctrl+d to confirm",
+                confirm: t("Press ctrl+d to confirm"),
                 run: () => directoryRecents.remove(projectID, item.directory),
               },
             }

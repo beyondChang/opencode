@@ -3,6 +3,7 @@ import { createMemo, Match, Show, Switch } from "solid-js"
 import { useTerminalDimensions } from "@opentui/solid"
 import { usePlugin } from "../../plugin/context"
 import { Slot } from "../../plugin/render"
+import { t } from "../../i18n"
 
 export function homeFooterVisibility(width: number) {
   return {
@@ -26,7 +27,7 @@ function Mcp(props: { context: Plugin.Context }) {
           <Switch>
             <Match when={failed()}>
               <span style={{ fg: props.context.theme.text.feedback.error.base }}>⊙ </span>
-              {failed()} MCP failed
+              {t("{count} MCP failed", { count: failed() })}
             </Match>
             <Match when={true}>
               <span
@@ -37,7 +38,7 @@ function Mcp(props: { context: Plugin.Context }) {
               >
                 ⊙{" "}
               </span>
-              {count()} MCP
+              {t("{count} MCP", { count: count() })}
             </Match>
           </Switch>
         </text>
@@ -64,7 +65,7 @@ function Plugins(props: { context: Plugin.Context }) {
       <box gap={1} flexDirection="row" flexShrink={0} onMouseUp={() => props.context.keymap.dispatch("plugins.list")}>
         <text fg={props.context.theme.text.base}>
           <span style={{ fg: props.context.theme.text.feedback.error.base }}>⊙ </span>
-          {failed()} plugin{failed() === 1 ? "" : "s"} failed
+          {failed() === 1 ? t("{count} plugin failed", { count: failed() }) : t("{count} plugins failed", { count: failed() })}
         </text>
         <Show when={visibility().pluginCommand}>
           <text fg={props.context.theme.text.muted}>/plugins</text>

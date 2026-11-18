@@ -15,12 +15,9 @@ import { useTheme } from "../context/theme"
 import { useUpdateNotification } from "../context/update-notification"
 import { useExit } from "../context/exit"
 import { FadeInText } from "../component/fade-in-text"
+import { t } from "../i18n"
 
 let once = false
-const placeholder = {
-  normal: ["Fix a TODO in the codebase", "What is the tech stack of this project?", "Fix broken tests"],
-  shell: ["ls -la", "git status", "pwd"],
-}
 
 export function Home() {
   const route = useRouteData("home")
@@ -35,6 +32,10 @@ export function Home() {
   const [logoWidth, setLogoWidth] = createSignal(0)
   // Global MCP elicitations can arrive without a session route, so keep them reachable from Home.
   const currentLocation = () => route.location ?? data.location.default()
+  const placeholders = createMemo(() => ({
+    normal: [t("Fix a TODO in the codebase"), t("What is the tech stack of this project?"), t("Fix broken tests")],
+    shell: ["ls -la", "git status", "pwd"],
+  }))
   const forms = createMemo(() => data.session.form.list("global", currentLocation()) ?? [])
   let sent = false
 
@@ -99,7 +100,7 @@ export function Home() {
         <box height={1} flexShrink={0} />
         <UpdateNotification width={logoWidth()} />
         <box width="100%" maxWidth={75} zIndex={1000} paddingTop={1} flexShrink={0} position="relative">
-          <Prompt ref={bind} placeholders={placeholder} disabled={forms().length > 0} />
+          <Prompt ref={bind} placeholders={placeholders()} disabled={forms().length > 0} />
         </box>
         <box flexGrow={1} minHeight={0} />
       </box>
@@ -162,10 +163,10 @@ function UpdateNotification(props: { width: number }) {
                   </span>
                 </Show>
                 {remote
-                  ? "remote server update available"
+                  ? t("remote server update available")
                   : state.type === "installed"
-                    ? ` restart to use v${state.version}`
-                    : ` to install v${state.version}`}
+                    ? t("restart to use v{version}", { version: state.version })
+                    : t("to install v{version}", { version: state.version })}
               </FadeInText>
             </box>
           </Show>
