@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { detectLocale, getLocale, setLocale, t } from "../src/i18n"
+import { skillDescription } from "../src/i18n/skill-descriptions"
 import { messageParts } from "../src/i18n/messages"
 
 describe("i18n", () => {
@@ -49,6 +50,17 @@ describe("i18n", () => {
     setLocale("en")
     expect(t("auto accept")).toBe("auto accept")
     expect(t("prompt")).toBe("prompt")
+  })
+
+  test("uses Chinese skill descriptions from the display-only map in a Chinese locale", () => {
+    setLocale("zh-CN")
+    expect(skillDescription("ego-browser", "original")).toContain("需要浏览器时默认读取此技能")
+    expect(skillDescription("unit-tests", "original")).toContain("单元测试")
+    // Unknown skills and missing descriptions keep the source text.
+    expect(skillDescription("custom-skill", "original")).toBe("original")
+    expect(skillDescription("ego-browser", undefined)).toBeUndefined()
+    setLocale("en")
+    expect(skillDescription("ego-browser", "original")).toBe("original")
   })
 
   test("keeps the source text in English", () => {

@@ -7,6 +7,7 @@ import { errorMessage } from "../util/error"
 import { useData } from "../context/data"
 import type { LocationRef } from "@opencode/client"
 import { t } from "../i18n"
+import { skillDescription } from "../i18n/skill-descriptions"
 
 export type DialogSkillProps = {
   location?: LocationRef
@@ -45,7 +46,7 @@ export function DialogSkill(props: DialogSkillProps) {
     const maxWidth = Math.max(0, ...list.map((s) => s.name.length))
     return list.map((skill) => ({
       title: skill.name.padEnd(maxWidth),
-      description: skill.description?.replace(/\s+/g, " ").trim(),
+      description: skillDescription(skill.id, skill.description?.replace(/\s+/g, " ").trim()),
       value: skill.id,
       onSelect: () => {
         props.onSelect(skill.id)
