@@ -34,6 +34,9 @@ describe("i18n", () => {
     expect(t("low")).toBe("低")
     expect(t("medium")).toBe("中")
     expect(t("high")).toBe("高")
+    expect(t("review changes [commit|branch|pr], defaults to uncommitted")).toBe(
+      "查看改动 [commit|branch|pr]，默认查看未提交的改动",
+    )
     setLocale("en")
     expect(t("Build")).toBe("Build")
     expect(t("high")).toBe("high")

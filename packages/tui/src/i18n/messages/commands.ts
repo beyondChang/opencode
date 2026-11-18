@@ -64,6 +64,9 @@ export const commands = {
   "The current model does not support any variants.": "当前 Model 不支持任何变体。",
 
   // Slash command descriptions from markdown commands and built-in tools.
+  "guided AGENTS.md setup": "引导式 AGENTS.md 设置",
+  "review changes [commit|branch|pr], defaults to uncommitted":
+    "查看改动 [commit|branch|pr]，默认查看未提交的改动",
   "Bump AI sdk dependencies minor / patch versions only": "仅升级 AI SDK 依赖的次版本 / 修订版本",
   "git commit and push": "git 提交并推送",
   "find issue(s) on github": "在 github 上查找 issue",
