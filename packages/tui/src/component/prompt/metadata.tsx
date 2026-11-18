@@ -9,6 +9,7 @@ import { stringWidth } from "../../util/string-width"
 export function PromptMetadataRow(props: {
   mode: "normal" | "shell"
   agent?: string
+  /** Whether permission requests are accepted without asking. */
   auto: boolean
   model: string
   provider: string
@@ -29,7 +30,7 @@ export function PromptMetadataRow(props: {
       width: Math.max(0, dimensions().width - (dimensions().width < 44 ? 9 : 13)),
       terminalWidth: dimensions().width,
       agent: props.agent ? t(props.agent) : "",
-      auto: props.auto,
+      permission: props.auto ? t("auto accept") : t("prompt"),
       model: props.model,
       provider: props.provider,
       variant: props.variant ? t(props.variant) : undefined,
@@ -46,8 +47,8 @@ export function PromptMetadataRow(props: {
         <Show when={layout().agent}>
           {(agent) => <text fg={fade(props.highlight, props.agentAlpha)}>{agent()}</text>}
         </Show>
-        <Show when={props.mode === "normal" && layout().auto}>
-          <text fg={fade(theme.text.muted, props.agentAlpha)}>auto</text>
+        <Show when={props.mode === "normal" && layout().permission}>
+          {(permission) => <text fg={fade(theme.text.muted, props.agentAlpha)}>{permission()}</text>}
         </Show>
         <Show when={props.mode === "normal" && layout().model}>
           <box flexDirection="row" gap={1} flexGrow={1} flexShrink={1} minWidth={0}>
@@ -108,7 +109,7 @@ function fade(color: RGBA, alpha: number) {
 
 type Layout = {
   agent?: string
-  auto?: boolean
+  permission?: string
   model: string
   provider?: string
   variant?: string
@@ -119,7 +120,7 @@ function promptMetadataLayout(input: {
   width: number
   terminalWidth: number
   agent: string
-  auto?: boolean
+  permission?: string
   model: string
   provider: string
   variant?: string
@@ -129,7 +130,7 @@ function promptMetadataLayout(input: {
   const provider = input.terminalWidth < 44 ? "" : input.provider
   const limit = input.limit
   const candidates: Layout[] = [
-    { agent, auto: input.auto, model: input.model, provider, variant: input.variant, limit },
+    { agent, permission: input.permission, model: input.model, provider, variant: input.variant, limit },
     { agent, model: input.model, provider, variant: input.variant, limit },
     {
       agent,
@@ -159,7 +160,7 @@ function promptMetadataLayout(input: {
 function text(input: Layout) {
   return [
     ...(input.agent ? [input.agent] : []),
-    ...(input.auto ? ["auto"] : []),
+    ...(input.permission ? [input.permission] : []),
     ...(input.model ? [...(input.agent ? ["·"] : []), input.model] : []),
     ...(input.provider ? [input.provider] : []),
     ...(input.variant ? ["·", input.variant] : []),

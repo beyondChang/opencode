@@ -42,6 +42,15 @@ describe("i18n", () => {
     expect(t("high")).toBe("high")
   })
 
+  test("translates the permission mode labels", () => {
+    setLocale("zh-CN")
+    expect(t("auto accept")).toBe("自动接受")
+    expect(t("prompt")).toBe("按需询问")
+    setLocale("en")
+    expect(t("auto accept")).toBe("auto accept")
+    expect(t("prompt")).toBe("prompt")
+  })
+
   test("keeps the source text in English", () => {
     setLocale("en")
     expect(getLocale()).toBe("en")
