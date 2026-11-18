@@ -494,15 +494,20 @@ export function Autocomplete(props: {
   }
 
   const commands = createMemo((): AutocompleteOption[] => {
+    // One row per command: aliases stay searchable through `aliases`, but listing each alias
+    // repeated the same command and description several times in the popup.
     const results: AutocompleteOption[] = keymapCommands().flatMap((command) => {
       const slash = command.slash
       if (!slash) return []
       const description = command.description ?? command.title
-      return [slash.name, ...(slash.aliases ?? [])].map((name) => ({
-        display: `/${name}`,
-        description: description ? t(description) : undefined,
-        onSelect: slash.arguments ? () => insertSlash(name) : command.run,
-      }))
+      return [
+        {
+          display: `/${slash.name}`,
+          aliases: slash.aliases?.map((name) => `/${name}`),
+          description: description ? t(description) : undefined,
+          onSelect: slash.arguments ? () => insertSlash(slash.name) : command.run,
+        },
+      ]
     })
     const commandNames = new Set<string>()
 
