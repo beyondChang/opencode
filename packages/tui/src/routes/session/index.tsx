@@ -1185,7 +1185,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Toggle session scrollbar",
+      title: t("Toggle session scrollbar"),
       id: "session.toggle.scrollbar",
       group: t("Session"),
       palette: undefined,
@@ -1228,7 +1228,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Jump to last user message",
+      title: t("Jump to last user message"),
       id: "session.messages_last_user",
       group: t("Session"),
       palette: undefined,
@@ -1248,35 +1248,35 @@ export function Session(props: {
       },
     },
     {
-      title: "Next message",
+      title: t("Next message"),
       id: "session.message.next",
       group: t("Session"),
       palette: undefined,
       run: () => scrollToMessage("next", dialog),
     },
     {
-      title: "Previous message",
+      title: t("Previous message"),
       id: "session.message.previous",
       group: t("Session"),
       palette: undefined,
       run: () => scrollToMessage("prev", dialog),
     },
     {
-      title: "Next user message",
+      title: t("Next user message"),
       id: "session.message.user.next",
       group: t("Session"),
       palette: undefined,
       run: () => scrollToMessage("next", dialog, true),
     },
     {
-      title: "Previous user message",
+      title: t("Previous user message"),
       id: "session.message.user.previous",
       group: t("Session"),
       palette: undefined,
       run: () => scrollToMessage("prev", dialog, true),
     },
     {
-      title: "Copy last assistant message",
+      title: t("Copy last assistant message"),
       id: "messages.copy",
       group: t("Session"),
       slash: {
@@ -1319,7 +1319,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Copy session ID",
+      title: t("Copy session ID"),
       id: "session.copy.id",
       group: t("Session"),
       run: () => {
@@ -1331,7 +1331,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Copy session transcript",
+      title: t("Copy session transcript"),
       id: "session.copy",
       group: t("Session"),
       run: async () => {
@@ -1349,7 +1349,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Export session transcript",
+      title: t("Export session transcript"),
       id: "session.export",
       group: t("Session"),
       slash: {
@@ -1393,7 +1393,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Background blocking tools",
+      title: t("Background blocking tools"),
       id: "session.background",
       group: t("Session"),
       palette: undefined,
@@ -1403,7 +1403,7 @@ export function Session(props: {
       },
     },
     {
-      title: "Toggle subagent picker",
+      title: t("Toggle subagent picker"),
       id: "session.child.first",
       group: t("Session"),
       run: (tab?: string) => {
@@ -1414,14 +1414,14 @@ export function Session(props: {
       },
     },
     {
-      title: "View queued prompts",
+      title: t("View queued prompts"),
       id: "session.queued_prompts",
       group: "Prompt",
       enabled: queuedPrompts().length > 0,
       run: openQueuedPrompts,
     },
     {
-      title: "Go to parent session",
+      title: t("Go to parent session"),
       id: "session.parent",
       group: t("Session"),
       palette: undefined,

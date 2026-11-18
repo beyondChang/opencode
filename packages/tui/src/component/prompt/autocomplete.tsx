@@ -42,6 +42,8 @@ import { stringWidth } from "../../util/string-width"
 import { parseFileLineRange, stripFileLineRange } from "../../prompt/parse"
 import { moveSelection, reconcileSelectionWindow, revealSelectionOffset } from "../../ui/select-controller"
 import { directoryAutocomplete, slashArgumentAutocomplete } from "../../prompt/directory-completion"
+import { t } from "../../i18n"
+
 
 export type AutocompleteRef = {
   onInput: (value: string) => void
@@ -689,7 +691,7 @@ export function Autocomplete(props: {
     commands: [
       {
         id: "prompt.autocomplete.prev",
-        title: "Previous autocomplete item",
+        title: t("Previous autocomplete item"),
         group: "Autocomplete",
         run() {
           move(-1)
@@ -697,7 +699,7 @@ export function Autocomplete(props: {
       },
       {
         id: "prompt.autocomplete.next",
-        title: "Next autocomplete item",
+        title: t("Next autocomplete item"),
         group: "Autocomplete",
         run() {
           move(1)
@@ -705,7 +707,7 @@ export function Autocomplete(props: {
       },
       {
         id: "prompt.autocomplete.hide",
-        title: "Hide autocomplete",
+        title: t("Hide autocomplete"),
         group: "Autocomplete",
         run() {
           hide()
@@ -713,7 +715,7 @@ export function Autocomplete(props: {
       },
       {
         id: "prompt.clear",
-        title: "Dismiss autocomplete",
+        title: t("Dismiss autocomplete"),
         group: "Autocomplete",
         run() {
           hide(true)
@@ -721,7 +723,7 @@ export function Autocomplete(props: {
       },
       {
         id: "prompt.autocomplete.select",
-        title: "Select autocomplete item",
+        title: t("Select autocomplete item"),
         group: "Autocomplete",
         run() {
           select()
@@ -729,7 +731,7 @@ export function Autocomplete(props: {
       },
       {
         id: "prompt.autocomplete.complete",
-        title: "Complete autocomplete item",
+        title: t("Complete autocomplete item"),
         group: "Autocomplete",
         run() {
           const selected = options()[store.selected]
@@ -743,7 +745,7 @@ export function Autocomplete(props: {
       },
       {
         id: "prompt.autocomplete.destructive",
-        title: "Confirm autocomplete action",
+        title: t("Confirm autocomplete action"),
         group: "Autocomplete",
         bind: "ctrl+d",
         run: triggerDestructive,

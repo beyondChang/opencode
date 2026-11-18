@@ -479,7 +479,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
       commands: [
         {
           id: "dialog.select.prev",
-          title: "Previous item",
+          title: t("Previous item"),
           group: "Dialog",
           run() {
             move(-1)
@@ -487,7 +487,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
         },
         {
           id: "dialog.select.next",
-          title: "Next item",
+          title: t("Next item"),
           group: "Dialog",
           run() {
             move(1)
@@ -495,7 +495,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
         },
         {
           id: "dialog.select.page_up",
-          title: "Page up",
+          title: t("Page up"),
           group: "Dialog",
           run() {
             move(-10)
@@ -503,7 +503,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
         },
         {
           id: "dialog.select.page_down",
-          title: "Page down",
+          title: t("Page down"),
           group: "Dialog",
           run() {
             move(10)
@@ -511,7 +511,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
         },
         {
           id: "dialog.select.home",
-          title: "First item",
+          title: t("First item"),
           group: "Dialog",
           run() {
             if (props.locked) return
@@ -520,7 +520,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
         },
         {
           id: "dialog.select.end",
-          title: "Last item",
+          title: t("Last item"),
           group: "Dialog",
           run() {
             if (props.locked) return
@@ -529,7 +529,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
         },
         {
           id: "dialog.select.submit",
-          title: "Select item",
+          title: t("Select item"),
           group: "Dialog",
           run: submit,
         },
@@ -562,13 +562,13 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
           ? [
               {
                 bind: "alt+up",
-                title: "Previous section",
+                title: t("Previous section"),
                 group: "Dialog",
                 run: () => moveSection(-1),
               },
               {
                 bind: "alt+down",
-                title: "Next section",
+                title: t("Next section"),
                 group: "Dialog",
                 run: () => moveSection(1),
               },

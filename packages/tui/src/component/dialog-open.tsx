@@ -23,6 +23,8 @@ import { withTimestampedFallback } from "@opencode/util/session-title-fallback"
 import { sessionStatusGutter } from "./dialog-session-list"
 import { Spinner } from "./spinner"
 import { projectName } from "../util/project"
+import { t } from "../i18n"
+
 
 const RECENT_LIMIT = 8
 export const DialogOpenKey = Symbol("DialogOpen")
@@ -120,7 +122,7 @@ export function DialogOpen(props: { sessions: SessionInfo[]; onLoad: (sessions: 
   }
   const [worktrees, worktreeActions] = createResource(projectID, (projectID) =>
     client.api.worktree.list({ projectID }).catch((error: unknown) => {
-      toast.show({ title: "Loading worktrees failed", message: errorMessage(error), variant: "error" })
+      toast.show({ title: t("Loading worktrees failed"), message: errorMessage(error), variant: "error" })
       return []
     }),
   )
@@ -387,7 +389,7 @@ export function DialogOpen(props: { sessions: SessionInfo[]; onLoad: (sessions: 
                 ? [
                     {
                       bind: "right",
-                      title: "Show project worktrees",
+                      title: t("Show project worktrees"),
                       group: "Dialog",
                       run: () => {
                         const target = select?.selected?.value
@@ -409,11 +411,11 @@ export function DialogOpen(props: { sessions: SessionInfo[]; onLoad: (sessions: 
                 ? [
                     {
                       bind: "left",
-                      title: "Return to projects",
+                      title: t("Return to projects"),
                       group: "Dialog",
                       run: back,
                     },
-                    { bind: "ctrl+n", title: "New worktree", group: "Dialog", run: newWorktree },
+                    { bind: "ctrl+n", title: t("New worktree"), group: "Dialog", run: newWorktree },
                   ]
                 : []),
             ]}
@@ -451,7 +453,7 @@ export function DialogOpen(props: { sessions: SessionInfo[]; onLoad: (sessions: 
         <DialogPrompt
           size="large"
           title={`${projectName(data.project.get(projectID()!)) ?? "Project"} / New worktree`}
-          placeholder="Worktree name (optional)"
+          placeholder={t("Worktree name (optional)")}
           description={() => <text fg={theme.text.muted}>Leave blank for a random name.</text>}
           busy={creating()}
           busyText="Creating worktree…"
@@ -475,7 +477,7 @@ export function DialogOpen(props: { sessions: SessionInfo[]; onLoad: (sessions: 
                 location.set(target)
               })
               .catch((error: unknown) =>
-                toast.show({ title: "Creating worktree failed", message: errorMessage(error), variant: "error" }),
+                toast.show({ title: t("Creating worktree failed"), message: errorMessage(error), variant: "error" }),
               )
               .finally(() => setCreating(false))
           }}

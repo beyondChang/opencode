@@ -11,6 +11,8 @@ import { Keymap } from "../context/keymap"
 import { useTheme } from "../context/theme"
 import { DialogFooter, DialogHeader, DialogLayout, useDialog } from "../ui/dialog"
 import { useToast } from "../ui/toast"
+import { t } from "../i18n"
+
 
 const PAGE_BYTES = 64 * 1024
 
@@ -74,7 +76,7 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
         .catch((cause: unknown) => {
           if (disposed) return
           missing = isShellNotFoundError(cause)
-          setError(missing ? "Shell output is no longer available." : "Unable to read shell output. Retrying…")
+          setError(missing ? t("Shell output is no longer available.") : t("Unable to read shell output. Retrying…"))
         })
         .then((more) => {
           // Poll only while the viewer is open, including after exit so the final
@@ -115,16 +117,16 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
     commands: [
       ...(newDesigns()
         ? [
-            { bind: "c", title: "Copy command", group: "Shell", run: () => copy("command") },
-            { bind: "o", title: "Copy output", group: "Shell", run: () => copy("output") },
+            { bind: "c", title: t("Copy command"), group: t("Shell"), run: () => copy("command") },
+            { bind: "o", title: t("Copy output"), group: t("Shell"), run: () => copy("output") },
           ]
         : []),
-      { bind: "up", title: "Scroll output up", group: "Shell", run: () => scroll?.scrollBy(-1) },
-      { bind: "down", title: "Scroll output down", group: "Shell", run: () => scroll?.scrollBy(1) },
-      { bind: "pageup", title: "Previous output page", group: "Shell", run: () => scroll?.scrollBy(-height()) },
-      { bind: "pagedown", title: "Next output page", group: "Shell", run: () => scroll?.scrollBy(height()) },
-      { bind: "home", title: "First loaded output", group: "Shell", run: () => scroll?.scrollTo(0) },
-      { bind: "end", title: "Follow shell output", group: "Shell", run: () => scroll?.scrollTo(Infinity) },
+      { bind: "up", title: t("Scroll output up"), group: t("Shell"), run: () => scroll?.scrollBy(-1) },
+      { bind: "down", title: t("Scroll output down"), group: t("Shell"), run: () => scroll?.scrollBy(1) },
+      { bind: "pageup", title: t("Previous output page"), group: t("Shell"), run: () => scroll?.scrollBy(-height()) },
+      { bind: "pagedown", title: t("Next output page"), group: t("Shell"), run: () => scroll?.scrollBy(height()) },
+      { bind: "home", title: t("First loaded output"), group: t("Shell"), run: () => scroll?.scrollTo(0) },
+      { bind: "end", title: t("Follow shell output"), group: t("Shell"), run: () => scroll?.scrollTo(Infinity) },
     ],
   }))
 
@@ -135,7 +137,7 @@ export function DialogShellOutput(props: { shell: ShellInfo; location: LocationR
           gap={dimensions().width < 60 ? 1 : 2}
           titleView={
             <text fg={theme.text.base} attributes={TextAttributes.BOLD} flexGrow={1}>
-              Shell output
+              {t("Shell output")}
             </text>
           }
         >

@@ -5,6 +5,8 @@ import type { UpdateState } from "../context/update-notification"
 import { DialogButtons, DialogHeader, DialogLayout, useDialog } from "../ui/dialog"
 import { errorMessage } from "../util/error"
 import { Spinner } from "./spinner"
+import { t } from "../i18n"
+
 
 export function DialogUpdate(props: {
   check?: (signal: AbortSignal) => Promise<string | undefined>
@@ -71,11 +73,11 @@ export function DialogUpdate(props: {
   Keymap.createLayer(() => ({
     mode: "modal",
     commands: [
-      { bind: "return", title: "Confirm update action", group: "Dialog", run: () => void buttons()[active()]?.run() },
-      { bind: "left", title: "Previous update action", group: "Dialog", run: () => move(-1) },
-      { bind: "shift+tab", title: "Previous update action", group: "Dialog", run: () => move(-1) },
-      { bind: "right", title: "Next update action", group: "Dialog", run: () => move(1) },
-      { bind: "tab", title: "Next update action", group: "Dialog", run: () => move(1) },
+      { bind: "return", title: t("Confirm update action"), group: "Dialog", run: () => void buttons()[active()]?.run() },
+      { bind: "left", title: t("Previous update action"), group: "Dialog", run: () => move(-1) },
+      { bind: "shift+tab", title: t("Previous update action"), group: "Dialog", run: () => move(-1) },
+      { bind: "right", title: t("Next update action"), group: "Dialog", run: () => move(1) },
+      { bind: "tab", title: t("Next update action"), group: "Dialog", run: () => move(1) },
     ],
   }))
 

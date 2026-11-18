@@ -53,6 +53,8 @@ import "./spinner-renderable"
 import { SPINNER_FRAMES } from "./spinner-frames"
 import { SessionTabsRailControls, SessionTabHalfRow } from "./session-tabs-rail"
 import "./title-shimmer"
+import { t } from "../i18n"
+
 
 export const TAB_SPINNERS = {
   dots: { frames: SPINNER_FRAMES, interval: 80 },
@@ -378,7 +380,7 @@ function TabContextMenu(props: { state: TabContextMenuState; tabs: SessionTabsCo
   onCleanup(Keymap.use().mode.push("menu"))
   Keymap.createLayer(() => ({
     mode: "menu",
-    commands: [{ bind: "escape,ctrl+c", title: "Close tab menu", group: "Tabs", run: props.onClose }],
+    commands: [{ bind: "escape,ctrl+c", title: t("Close tab menu"), group: "Tabs", run: props.onClose }],
   }))
   const actions = createMemo<Array<{ title: string; run?: () => void }>>(() => {
     const sessionID = props.state.sessionID
@@ -394,11 +396,11 @@ function TabContextMenu(props: { state: TabContextMenuState; tabs: SessionTabsCo
                 props.tabs.rename ? props.tabs.rename(sessionID) : DialogSessionRename.show(dialog, sessionID, title),
             },
             {
-              title: "Copy session ID",
+              title: t("Copy session ID"),
               run: () =>
                 void clipboard
                   .write(sessionID)
-                  .then(() => toast.show({ message: "Session ID copied to clipboard", variant: "info" }))
+                  .then(() => toast.show({ message: t("Session ID copied to clipboard"), variant: "info" }))
                   .catch(toast.error),
             },
             { title: "Close", run: () => props.tabs.close(sessionID) },
@@ -406,12 +408,12 @@ function TabContextMenu(props: { state: TabContextMenuState; tabs: SessionTabsCo
         : []),
       ...(!sessionID && props.tabs.reopen
         ? [
-            { title: "Recently closed tabs" },
+            { title: t("Recently closed tabs") },
             ...closed.map((tab) => ({
               title: tab.title || "Untitled session",
               run: () => props.tabs.reopen?.(tab.sessionID),
             })),
-            ...(closed.length === 0 ? [{ title: "No recently closed tabs" }] : []),
+            ...(closed.length === 0 ? [{ title: t("No recently closed tabs") }] : []),
           ]
         : []),
     ]

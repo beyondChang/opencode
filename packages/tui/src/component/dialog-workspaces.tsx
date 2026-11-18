@@ -6,6 +6,7 @@ import { DialogSelect, dialogSelectContentWidth, type DialogSelectOption } from 
 import { DIALOG_LIST_INSET, dialogWidth, useDialog } from "../ui/dialog"
 import { useClient } from "../context/client"
 import { Keymap } from "../context/keymap"
+import { t } from "../i18n"
 import { useTheme } from "../context/theme"
 import { useData } from "../context/data"
 import { abbreviateHome } from "../runtime"
@@ -258,8 +259,8 @@ export function DialogWorkspaces(props: DialogWorkspacesProps) {
           .status({ location: { directory: selected.directory } })
           .catch(() => undefined)
         const choice = await DialogWorkspaceFileChanges.show(dialog, status?.data ?? [], {
-          title: "Delete worktree?",
-          message: "This worktree has file changes. Do you want to delete it anyway?",
+          title: t("Delete worktree?"),
+          message: t("This worktree has file changes. Do you want to delete it anyway?"),
           confirm: { title: "delete", key: "d" },
         })
         if (choice !== "yes") {
@@ -279,7 +280,7 @@ export function DialogWorkspaces(props: DialogWorkspacesProps) {
         if (forcedError) {
           toast.show({
             variant: "error",
-            title: "Failed to delete worktree",
+            title: t("Failed to delete worktree"),
             message: errorMessage(forcedError),
           })
           reopen()
@@ -293,7 +294,7 @@ export function DialogWorkspaces(props: DialogWorkspacesProps) {
       }
       toast.show({
         variant: "error",
-        title: "Failed to delete worktree",
+        title: t("Failed to delete worktree"),
         message: errorMessage(error),
       })
       return
@@ -343,7 +344,7 @@ export function DialogWorkspaces(props: DialogWorkspacesProps) {
           showError() ? (
             <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
               <text fg={theme.text.feedback.error.base} attributes={TextAttributes.BOLD}>
-                Could not load worktrees
+                {t("Could not load worktrees")}
               </text>
               <text fg={theme.text.muted}>{errorMessage(loadError())}</text>
               <text fg={theme.text.muted}>Close and reopen Worktrees to try again.</text>

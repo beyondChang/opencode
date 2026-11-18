@@ -4,6 +4,8 @@ import { useNewDesigns } from "../config"
 import { DialogButtons, DialogHeader, DialogLayout, useDialog } from "./dialog"
 import { createStore } from "solid-js/store"
 import { Locale } from "../util/locale"
+import { t } from "../i18n"
+
 
 export type DialogConfirmProps = {
   title: string
@@ -37,11 +39,11 @@ export function DialogConfirm(props: DialogConfirmProps) {
   Keymap.createLayer(() => ({
     mode: "modal",
     commands: [
-      { bind: "return", title: "Confirm dialog selection", group: "Dialog", run: () => choose(store.active) },
-      { bind: "left", title: "Previous dialog option", group: "Dialog", run: toggle },
-      { bind: "right", title: "Next dialog option", group: "Dialog", run: toggle },
-      { bind: "tab", title: "Next dialog option", group: "Dialog", run: toggle },
-      { bind: "shift+tab", title: "Previous dialog option", group: "Dialog", run: toggle },
+      { bind: "return", title: t("Confirm dialog selection"), group: "Dialog", run: () => choose(store.active) },
+      { bind: "left", title: t("Previous dialog option"), group: "Dialog", run: toggle },
+      { bind: "right", title: t("Next dialog option"), group: "Dialog", run: toggle },
+      { bind: "tab", title: t("Next dialog option"), group: "Dialog", run: toggle },
+      { bind: "shift+tab", title: t("Previous dialog option"), group: "Dialog", run: toggle },
       ...(newDesigns() ? [{ bind: "escape", title: "Cancel", group: "Dialog", run: () => choose("cancel") }] : []),
     ],
   }))

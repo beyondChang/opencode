@@ -24,6 +24,8 @@ import {
   usageLevel,
   type ModelUsage,
 } from "../util/usage-limits"
+import { t } from "../i18n"
+
 
 /**
  * The OpenCode Console limits on this location's models. Limits load once; `refresh` reloads them, since spend moves
@@ -100,7 +102,7 @@ export function DialogUsage() {
             ]
               .filter(Boolean)
               .join(" · ")}
-            placeholder="Search models"
+            placeholder={t("Search models")}
             options={rows().map((row) => ({
               title: row.model.name,
               value: key(row.model),
@@ -235,18 +237,18 @@ export function useUsageAlerts(sessionID: () => string) {
     warned.add(key)
     if (level === "reached") {
       toast.show({
-        title: `${model.name} limit reached`,
-        message: `Resets ${formatReset(usage.resetsAt)}`,
+        title: t("{name} limit reached", { name: model.name }),
+        message: t("Resets {time}", { time: formatReset(usage.resetsAt) }),
         variant: "error",
-        action: { label: "Switch model", run: () => keymap.dispatch("model.list") },
+        action: { label: t("Switch model"), run: () => keymap.dispatch("model.list") },
       })
       return
     }
     toast.show({
-      title: `Running low on ${model.name}`,
-      message: `${formatDollars(usage.left)} left · resets ${formatReset(usage.resetsAt)}`,
+      title: t("Running low on {name}", { name: model.name }),
+      message: t("{amount} left · resets {time}", { amount: formatDollars(usage.left), time: formatReset(usage.resetsAt) }),
       variant: "warning",
-      action: { label: "View usage", run: () => keymap.dispatch("usage.show") },
+      action: { label: t("View usage"), run: () => keymap.dispatch("usage.show") },
     })
   })
 }
@@ -266,17 +268,17 @@ export function useLimitNotice(message: () => SessionMessageAssistant) {
       value.model.id
     if (error.type === "provider.go-limit")
       return {
-        title: `OpenCode Go ${[goLimitName(error), "usage limit reached"].filter(Boolean).join(" ")}`,
-        body: `${resets}Switch to a free model with`,
+        title: `OpenCode Go ${[goLimitName(error), t("usage limit reached")].filter(Boolean).join(" ")}`,
+        body: `${resets}${t("Switch to a free model with")}`,
         key: shortcut() ?? "/models",
-        link: { label: "Or turn on Extra Usage on your Go page to keep going now:", href: goLimitLink(error) },
+        link: { label: t("Or turn on Extra Usage on your Go page to keep going now:"), href: goLimitLink(error) },
       }
     if (error.type === "provider.model-budget-limit")
-      return { title: `${name} usage limit reached`, body: `${resets}Switch model with`, key: shortcut() ?? "/models" }
+      return { title: t("{name} usage limit reached", { name }), body: `${resets}${t("Switch model with")}`, key: shortcut() ?? "/models" }
     if (error.type === "provider.budget-limit")
       return {
-        title: "Usage limit reached",
-        body: `${resets}Paid models are paused. Switch to a free model with`,
+        title: t("Usage limit reached"),
+        body: `${resets}${t("Paid models are paused. Switch to a free model with")}`,
         key: shortcut() ?? "/models",
       }
     if (error.status === 402 && limits.served(value.model.providerID))

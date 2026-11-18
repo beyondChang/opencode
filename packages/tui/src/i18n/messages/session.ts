@@ -279,7 +279,8 @@ export const session = {
   "Previous answer": "上一个回答",
   "Next answer": "下一个回答",
   "Select answer": "选择回答",
-  "Toggle answer": "切换回答",  "Could not open the browser. Copy the URL and continue manually.":
+  "Toggle answer": "切换回答",
+  "Could not open the browser. Copy the URL and continue manually.":
     "无法打开浏览器。请复制 URL 后手动继续。",
   "Copied URL to clipboard": "URL 已复制到剪贴板",
   "Invalid answer": "回答无效",
@@ -370,4 +371,16 @@ export const session = {
   "Diff shortcuts": "Diff 快捷键",
   "esc close": "esc 关闭",
   help: "帮助",
+
+  // Composer commands and feedback not covered by the command registry.
+  "This prompt cannot be queued": "此提示无法排队",
+  "Editor context cannot be queued": "编辑器上下文无法排队",
+  "Model unavailable": "Model 不可用",
+  "Directory is required": "请指定目录",
+  "Failed to change directory": "切换目录失败",
+  "Connect an integration to send prompts": "连接服务商后才能发送提示",
+  "Remove editor context": "移除编辑器上下文",
+  "Failed to open editor": "打开编辑器失败",
+  "Stash pop": "取出暂存",
+  "Stash list": "暂存列表",
 } as const
