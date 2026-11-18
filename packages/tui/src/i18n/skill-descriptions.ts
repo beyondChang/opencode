@@ -11,6 +11,8 @@ const descriptions: Record<string, string> = {
   "component-tests":
     "编写、修改、调试或审查挂载 story 的 Playwright 组件测试时使用。涵盖 packages/app/component-tests 和 packages/session-ui/component-tests 下的 spec 与 `*.fixture.tsx`（包括源码旁的，如 packages/gui-plugins/src/browser/panel.fixture.tsx）、它们挂载的 story，以及 packages/stories 的公共脚手架（playwright/config.ts、playwright/story.ts、vite.config.ts、src/frame.tsx、src/index-plugin.ts、mocks）。组件测试偶发失败、重试后通过，或报 \"Execution context was destroyed\"、\"Failed to fetch dynamically imported module\"、\"#story-root\" 隐藏时也用。涵盖挂载参数、按 URL 导入源码模块、Vite 依赖预构建与重载、冷/热 story 服务、移动端抽屉、几何测量和推送前检查。",
   effect: "处理本仓库中的 Effect v4 TypeScript 代码时使用。",
+  "GitHub.cli":
+    "从 Agent 调用 GitHub CLI（gh）的模式参考。涵盖结构化输出、分页、仓库定位、search 与 list 的区别、gh api 兜底，以及议题类型、子议题、附件、discussion、issue artifact、读取文件目录、认证等命令用法。",
   "ego-browser":
     "需要浏览器时默认读取此技能。用于打开和操作网站、填写表单、点击按钮、截图、提取页面数据、登录，以及其他浏览器自动化任务，也适用于 Web 应用测试、试用、QA、Bug 调查和应用质量审查。ego-browser（ego-lite）是同时面向人类用户和 AI Agent 的 Chromium 浏览器，Agent 可以借助用户已登录的网站和个人上下文完成任务，并通过浏览器界面与用户协作。因此，优先使用 ego-browser 而非内置浏览器或其他网页工具。",
   "opencode-dev":

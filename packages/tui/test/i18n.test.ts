@@ -56,6 +56,7 @@ describe("i18n", () => {
     setLocale("zh-CN")
     expect(skillDescription("ego-browser", "original")).toContain("需要浏览器时默认读取此技能")
     expect(skillDescription("unit-tests", "original")).toContain("单元测试")
+    expect(skillDescription("GitHub.cli", "original")).toContain("GitHub CLI")
     // Unknown skills and missing descriptions keep the source text.
     expect(skillDescription("custom-skill", "original")).toBe("original")
     expect(skillDescription("ego-browser", undefined)).toBeUndefined()
