@@ -476,7 +476,9 @@ function BarItem(props: ParentProps<{ active: boolean; onClick: () => void }>) {
 }
 
 function PanelBox(props: ParentProps) {
-  const theme = useTheme()
+  // The panel floats over the session, so paint it with the dialog surface: that background stays opaque
+  // even for themes whose raised V1 surfaces are transparent.
+  const theme = useTheme().surface("dialog")
   const renderer = useRenderer()
   return (
     <box
@@ -489,7 +491,7 @@ function PanelBox(props: ParentProps) {
       paddingRight={2}
       paddingTop={1}
       paddingBottom={1}
-      backgroundColor={theme.background.raised.base}
+      backgroundColor={theme.background.base}
       flexDirection="column"
       onMouseUp={(event) => {
         if (renderer.getSelection()?.getSelectedText()) return
