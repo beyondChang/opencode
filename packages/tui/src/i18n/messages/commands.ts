@@ -29,7 +29,7 @@ export const commands = {
   "View usage": "查看用量",
   "MCP servers": "MCP 服务",
   "Open MCP servers": "打开 MCP 服务",
-  "Connect an integration": "连接集成",
+  "Connect an integration": "连接模型供应商",
   "Show release highlights": "查看更新亮点",
   "Update OpenCode": "更新 OpenCode",
   "Switch theme": "切换主题",

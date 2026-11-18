@@ -98,7 +98,7 @@ export const keybinds = {
   "Previous favorite model": "上一个收藏的 Model",
   "List MCP servers": "列出 MCP 服务",
   "View usage limits": "查看用量限额",
-  "Connect integration": "连接集成",
+  "Connect integration": "连接模型供应商",
   "List agents": "列出 Agent",
   "Next agent": "下一个 Agent",
   "Previous agent": "上一个 Agent",
