@@ -53,7 +53,7 @@ export default Plugin.define({
             {
               id: "session.aside",
               title: t("Ask a side question"),
-              description: "One-shot answer from the session's context without adding to the conversation",
+              description: t("One-shot answer from the session's context without adding to the conversation"),
               group: t("Session"),
               palette: true,
               slash: { name: "btw", arguments: true },

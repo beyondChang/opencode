@@ -62,4 +62,24 @@ export const commands = {
   "MCP server failed: {name}": "MCP 服务启动失败：{name}",
   "Run /mcps to view details.": "运行 /mcps 查看详情。",
   "The current model does not support any variants.": "当前 Model 不支持任何变体。",
+
+  // Slash command descriptions from markdown commands and built-in tools.
+  "Bump AI sdk dependencies minor / patch versions only": "仅升级 AI SDK 依赖的次版本 / 修订版本",
+  "git commit and push": "git 提交并推送",
+  "find issue(s) on github": "在 github 上查找 issue",
+  "Extract non-obvious learnings from session to AGENTS.md files to build codebase understanding":
+    "从会话中提取不易发现的经验到 AGENTS.md，帮助理解代码库",
+  "Remove AI code slop": "移除 AI 生成的劣质代码",
+  "spellcheck all markdown file changes": "对所有修改的 markdown 文件做拼写检查",
+  "translate English to other languages": "把英文翻译成其他语言",
+  "create an automation, or list, pause, resume and delete this project's automations":
+    "创建自动化任务，或列出、暂停、恢复、删除本项目的自动化任务",
+
+  // Autocomplete empty / loading states.
+  "No matching commands": "没有匹配的命令",
+  "Searching…": "正在搜索…",
+  "Could not search directories. Keep typing to try again.": "无法搜索目录，请继续输入后重试。",
+  "No matching directories": "没有匹配的目录",
+  "Could not search files. Keep typing to try again.": "无法搜索文件，请继续输入后重试。",
+  "No matching files, agents, or references": "没有匹配的文件、Agent 或引用",
 } as const
