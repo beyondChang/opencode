@@ -4,9 +4,10 @@ import { testRender } from "@opentui/solid"
 import { Logo } from "../../src/component/logo"
 import { ConfigProvider } from "../../src/config"
 import { ThemeProvider } from "../../src/context/theme"
+import { wordmark } from "../../src/logo"
 import { createTuiResolvedConfig } from "../fixture/tui-runtime"
 
-test("home logo shows the Chinese wordmark instead of the block letters", async () => {
+const render = async (width: number, height: number) => {
   const app = await testRender(
     () => (
       <ConfigProvider config={createTuiResolvedConfig()}>
@@ -15,16 +16,24 @@ test("home logo shows the Chinese wordmark instead of the block letters", async 
         </ThemeProvider>
       </ConfigProvider>
     ),
-    { width: 80, height: 30 },
+    { width, height },
   )
-
   try {
     await app.renderOnce()
-    const frame = app.captureCharFrame()
-    expect(frame).toContain("探 索")
-    expect(frame).toContain("未 至 之 境")
-    expect(frame).not.toContain("█▀▀█")
+    return app.captureCharFrame()
   } finally {
     app.renderer.destroy()
   }
+}
+
+test("home logo draws the enlarged braille wordmark on a wide terminal", async () => {
+  const frame = await render(120, 40)
+  for (const line of wordmark.art) expect(frame).toContain(line)
+  expect(frame).not.toContain("█▀▀█")
+})
+
+test("home logo falls back to the compact wordmark on a narrow terminal", async () => {
+  const frame = await render(60, 30)
+  expect(frame).toContain("探 索 未 至 之 境")
+  expect(frame).not.toContain(wordmark.art[0])
 })
