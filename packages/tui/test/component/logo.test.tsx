@@ -33,7 +33,7 @@ test("home logo draws the enlarged braille wordmark on a wide terminal", async (
 })
 
 test("home logo falls back to the compact wordmark on a narrow terminal", async () => {
-  const frame = await render(60, 30)
+  const frame = await render(44, 30)
   expect(frame).toContain("探 索 未 至 之 境")
   expect(frame).not.toContain(wordmark.art[0])
 })

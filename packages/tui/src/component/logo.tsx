@@ -10,8 +10,8 @@ const artWidth = wordmark.art[0]?.length ?? 0
 export function Logo() {
   const theme = useTheme()
   const dimensions = useTerminalDimensions()
-  // The banner needs its full width plus the widest surrounding padding, and six rows above the composer.
-  const banner = () => dimensions().width >= artWidth + 8 && dimensions().height >= 14
+  // The banner needs its full width plus the widest surrounding padding, and three rows above the composer.
+  const banner = () => dimensions().width >= artWidth + 8 && dimensions().height >= 12
 
   return (
     <box>
