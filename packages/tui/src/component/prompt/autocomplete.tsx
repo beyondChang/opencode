@@ -97,6 +97,9 @@ export function Autocomplete(props: {
   const keymap = Keymap.use()
   const keymapCommands = Keymap.useCommands()
   const theme = useTheme()
+  // The popup floats over session text or the home logo, so paint it with the dialog surface:
+  // that background stays opaque even for themes whose raised V1 surfaces are transparent.
+  const surface = theme.surface("dialog")
   const dimensions = useTerminalDimensions()
   const frecency = useFrecency()
   const config = useConfig().data
@@ -870,7 +873,7 @@ export function Autocomplete(props: {
   })
   const emptyError = createMemo(() => store.visible === "reference" && !files.loading && visibleFiles().failed)
   // The scrollbox paints this under the classic design; new designs paint it per row.
-  const rowBackground = () => (newDesigns() ? theme.background.raised.high : undefined)
+  const rowBackground = () => (newDesigns() ? surface.background.raised.high : undefined)
   const labels = {
     skill: "skill",
     agent: "agent",
@@ -885,7 +888,7 @@ export function Autocomplete(props: {
       left={position().x}
       width={position().width}
       zIndex={100}
-      backgroundColor={theme.background.raised.high}
+      backgroundColor={surface.background.base}
       {...SplitBorder}
       // Under new designs each row draws its own left rail so the selected row can show the selection bar.
       border={newDesigns() ? ["right"] : SplitBorder.border}
@@ -898,7 +901,7 @@ export function Autocomplete(props: {
           scroll.verticalScrollBar.on("change", syncSelectionWindow)
         }}
         // Under new designs rows paint the background themselves so the rail cell stays transparent like the border.
-        backgroundColor={newDesigns() ? undefined : theme.background.raised.high}
+        backgroundColor={newDesigns() ? undefined : surface.background.base}
         height={height()}
         scrollbarOptions={{ visible: false }}
         scrollAcceleration={scrollAcceleration()}
@@ -915,7 +918,7 @@ export function Autocomplete(props: {
               >
                 {/* Under new designs the 1-row popup keeps the message on one line, so it never scrolls past the rail. */}
                 <text
-                  fg={emptyError() ? theme.text.feedback.error.base : theme.text.muted}
+                  fg={emptyError() ? surface.text.feedback.error.base : surface.text.muted}
                   wrapMode={newDesigns() ? "none" : undefined}
                 >
                   {newDesigns() ? Locale.truncate(emptyMessage(), Math.max(1, position().width - 4)) : emptyMessage()}
@@ -943,9 +946,9 @@ export function Autocomplete(props: {
                 enabled={newDesigns()}
                 color={
                   confirmingAction()
-                    ? theme.text.feedback.error.base
+                    ? surface.text.feedback.error.base
                     : index === store.selected
-                      ? theme.text.formfield.focused
+                      ? surface.text.formfield.focused
                       : undefined
                 }
               >
@@ -955,9 +958,9 @@ export function Autocomplete(props: {
                   flexGrow={newDesigns() ? 1 : undefined}
                   backgroundColor={
                     confirmingAction()
-                      ? theme.background.action.destructive.focused
+                      ? surface.background.action.destructive.focused
                       : index === store.selected
-                        ? theme.background.action.primary.focused
+                        ? surface.background.action.primary.focused
                         : rowBackground()
                   }
                   flexDirection="row"
@@ -968,10 +971,10 @@ export function Autocomplete(props: {
                   <text
                     fg={
                       confirmingAction()
-                        ? theme.text.action.destructive.focused
+                        ? surface.text.action.destructive.focused
                         : index === store.selected
-                          ? theme.text.action.primary.focused
-                          : theme.text.base
+                          ? surface.text.action.primary.focused
+                          : surface.text.base
                     }
                     flexShrink={0}
                     wrapMode="none"
@@ -983,7 +986,7 @@ export function Autocomplete(props: {
                   </text>
                   <Show when={!confirmingAction() && option().description}>
                     <text
-                      fg={index === store.selected ? theme.text.action.primary.focused : theme.text.muted}
+                      fg={index === store.selected ? surface.text.action.primary.focused : surface.text.muted}
                       wrapMode="none"
                       flexShrink={1}
                       minWidth={0}
@@ -995,7 +998,7 @@ export function Autocomplete(props: {
                     <box flexGrow={1} minWidth={2} />
                     <text
                       flexShrink={0}
-                      fg={index === store.selected ? theme.text.action.primary.focused : theme.text.muted}
+                      fg={index === store.selected ? surface.text.action.primary.focused : surface.text.muted}
                     >
                       {label()}
                     </text>
