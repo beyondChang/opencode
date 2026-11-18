@@ -30,3 +30,11 @@ test("truncates text in the middle without overflowing small widths", () => {
   expect(Locale.truncateMiddle("abcd", 10)).toBe("abcd")
   expect(Locale.truncateMiddle("a", 1)).toBe("a")
 })
+
+test("truncates CJK text by display width rather than code units", () => {
+  expect(Locale.truncate("中文测试文本", 5)).toBe("中文…")
+  expect(Locale.truncateLeft("中文测试文本", 5)).toBe("…文本")
+  expect(Locale.truncateMiddle("中文测试文本", 6)).toBe("中…本")
+  expect(Locale.truncate("ab中文cd", 5)).toBe("ab中…")
+  expect(Locale.truncateLeft("ab中文cd", 5)).toBe("…文cd")
+})

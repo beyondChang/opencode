@@ -7,6 +7,7 @@ import { useTheme } from "../../context/theme"
 import { tint } from "../../theme/color"
 import { createEffect, createMemo, createSignal, For, Match, Show, Switch, type JSX } from "solid-js"
 import { buildFileTree, flattenFileTree, type FileTreeItem, type FileTreeRow } from "./diff-viewer-file-tree-utils"
+import { t } from "../../i18n"
 
 const FILE_TREE_STATUS_WIDTH = 1
 
@@ -121,7 +122,7 @@ export function DiffViewerFileTree(props: DiffViewerFileTreeProps) {
               <text />
             </Match>
             <Match when={props.files.length === 0}>
-              <text fg={theme.text.muted}>No files</text>
+              <text fg={theme.text.muted}>{t("No files")}</text>
             </Match>
             <Match when={props.files.length > 0}>
               <box flexShrink={0} gap={list() ? 1 : 0}>

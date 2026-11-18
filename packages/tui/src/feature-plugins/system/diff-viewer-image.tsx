@@ -5,6 +5,7 @@ import { createResource, createSignal, Match, onCleanup, Show, Switch } from "so
 import { DialogImagePreview } from "../../component/dialog-image-preview"
 import { useTheme } from "../../context/theme"
 import { useDialog } from "../../ui/dialog"
+import { t } from "../../i18n"
 
 export function isDiffImageFile(file: string) {
   return /\.(png|jpe?g|webp|gif)$/i.test(file)
@@ -30,14 +31,14 @@ export function DiffViewerImage(props: {
 
   return (
     <box width="100%" flexShrink={0} gap={1} paddingLeft={1} paddingRight={1} paddingBottom={1}>
-      <text fg={theme.text.muted}>{props.label ?? "Working tree preview"}</text>
+      <text fg={theme.text.muted}>{props.label ?? t("Working tree preview")}</text>
       <box height={height() + 2} flexShrink={0} gap={1}>
         <Switch>
           <Match when={image.error}>
-            <text fg={theme.text.feedback.error.base}>Could not load image</text>
+            <text fg={theme.text.feedback.error.base}>{t("Could not load image")}</text>
           </Match>
           <Match when={image.loading}>
-            <text fg={theme.text.muted}>Loading image…</text>
+            <text fg={theme.text.muted}>{t("Loading image…")}</text>
           </Match>
           <Match when={!image.error && image()} keyed>
             {(bytes) => {
@@ -61,7 +62,7 @@ export function DiffViewerImage(props: {
               return (
                 <Show
                   when={!failed()}
-                  fallback={<text fg={theme.text.feedback.error.base}>Could not decode image</text>}
+                  fallback={<text fg={theme.text.feedback.error.base}>{t("Could not decode image")}</text>}
                 >
                   <box width="100%" height={height()} onMouseUp={open}>
                     <image

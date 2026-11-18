@@ -18,6 +18,7 @@ import { SplitBorder } from "../../ui/border"
 import { useDialog } from "../../ui/dialog"
 import { useToast } from "../../ui/toast"
 import { Keymap } from "../../context/keymap"
+import { t } from "../../i18n"
 import { useInteractivity } from "../../context/interactivity"
 import { useCursorStyle } from "../../config"
 import { errorMessage } from "../../util/error"
@@ -179,10 +180,10 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       const minimum = typeof current.minimum === "number" ? current.minimum : undefined
       const maximum = typeof current.maximum === "number" ? current.maximum : undefined
       if (minimum !== undefined && maximum !== undefined) return `${minimum}-${maximum}`
-      if (minimum !== undefined) return `at least ${minimum}`
-      if (maximum !== undefined) return `at most ${maximum}`
+      if (minimum !== undefined) return t("at least {minimum}", { minimum })
+      if (maximum !== undefined) return t("at most {maximum}", { maximum })
     }
-    return "Type your answer"
+    return t("Type your answer")
   })
   const other = createMemo(() => custom() && store.selected === rows().length)
   const input = createMemo(() => store.custom[answerField()?.key ?? ""] ?? "")
@@ -195,19 +196,19 @@ export function FormPrompt(props: { form: FormWithLocation }) {
   })
   const customChecked = createMemo(() => customPicked() || (multi() && other() && store.editing))
   const actionLabel = createMemo(() => {
-    if (confirm()) return "submit"
+    if (confirm()) return t("submit")
     const external = externalField()
     if (external) {
-      if (store.answers[external.key] === true) return "continue"
-      return store.externalReady[external.key] ? "I finished" : "open link"
+      if (store.answers[external.key] === true) return t("continue")
+      return store.externalReady[external.key] ? t("I finished") : t("open link")
     }
     if (multi()) {
-      if (other() && store.editing) return "done"
-      if (other() && !input()) return "edit"
-      return "toggle"
+      if (other() && store.editing) return t("done")
+      if (other() && !input()) return t("edit")
+      return t("toggle")
     }
-    if (single()) return "submit"
-    return "confirm"
+    if (single()) return t("submit")
+    return t("confirm")
   })
 
   onCleanup(() => {
@@ -482,7 +483,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
     setStore("error", "")
     void openUrl(current.url)
       .then(() => setStore("externalReady", { ...store.externalReady, [current.key]: true }))
-      .catch(() => setStore("error", "Could not open the browser. Copy the URL and continue manually."))
+      .catch(() => setStore("error", t("Could not open the browser. Copy the URL and continue manually.")))
   }
 
   function copyExternal() {
@@ -492,7 +493,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       .write(current.url)
       .then(() => {
         setStore("externalReady", { ...store.externalReady, [current.key]: true })
-        toast.show({ message: "Copied URL to clipboard", variant: "info" })
+        toast.show({ message: t("Copied URL to clipboard"), variant: "info" })
       })
       .catch(toast.error)
   }
@@ -522,7 +523,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       .filter(isFormAnswerField)
       .find((field) => formValidateValue(field, store.answers[field.key]))
     if (invalid) {
-      setStore("error", formValidateValue(invalid, store.answers[invalid.key]) ?? "Invalid answer")
+      setStore("error", formValidateValue(invalid, store.answers[invalid.key]) ?? t("Invalid answer"))
       return
     }
     reply(
@@ -543,8 +544,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
     commands: [
       {
         id: "prompt.paste",
-        title: "Paste from clipboard",
-        group: "Form",
+        title: t("Paste from clipboard"),
+        group: t("Form"),
         run: (_input, event) => {
           event?.preventDefault()
           event?.stopPropagation()
@@ -561,8 +562,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
     commands: [
       {
         id: "prompt.clear",
-        title: "Clear answer edit",
-        group: "Form",
+        title: t("Clear answer edit"),
+        group: t("Form"),
         run() {
           const text = textarea?.plainText ?? ""
           if (!text) {
@@ -578,8 +579,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       },
       {
         bind: "escape",
-        title: textual() ? "Dismiss form" : "Close answer edit",
-        group: "Form",
+        title: textual() ? t("Dismiss form") : t("Close answer edit"),
+        group: t("Form"),
         run: () => {
           if (textual()) {
             cancel()
@@ -590,8 +591,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       },
       {
         bind: "tab",
-        title: "Next field",
-        group: "Form",
+        title: t("Next field"),
+        group: t("Form"),
         run: () => {
           const text = textarea?.plainText?.trim() ?? ""
           submitInput(text)
@@ -599,8 +600,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       },
       {
         bind: "shift+tab",
-        title: "Previous field",
-        group: "Form",
+        title: t("Previous field"),
+        group: t("Form"),
         run: () => {
           const text = textarea?.plainText?.trim() ?? ""
           submitInput(text, -1)
@@ -608,8 +609,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       },
       {
         bind: "up",
-        title: "Leave answer edit",
-        group: "Form",
+        title: t("Leave answer edit"),
+        group: t("Form"),
         run: () => {
           if (textual() || !textarea || textarea.isDestroyed || store.selected === 0) return false
           if (textarea.scrollY + textarea.visualCursor.visualRow > 0) return false
@@ -619,8 +620,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       },
       {
         bind: "return",
-        title: "Submit answer edit",
-        group: "Form",
+        title: t("Submit answer edit"),
+        group: t("Form"),
         run: () => {
           const text = textarea?.plainText?.trim() ?? ""
           const current = answerField()
@@ -652,34 +653,34 @@ export function FormPrompt(props: { form: FormWithLocation }) {
       commands: [
         {
           id: "app.exit",
-          title: "Dismiss form",
-          group: "Form",
+          title: t("Dismiss form"),
+          group: t("Form"),
           run: cancel,
         },
         {
           bind: "left",
-          title: "Previous field",
-          group: "Form",
+          title: t("Previous field"),
+          group: t("Form"),
           run: () => selectTab((store.tab - 1 + tabs()) % tabs()),
         },
         {
           bind: "h",
-          title: "Previous field",
-          group: "Form",
+          title: t("Previous field"),
+          group: t("Form"),
           run: () => selectTab((store.tab - 1 + tabs()) % tabs()),
         },
         { bind: "right", title: "Next field", group: "Form", run: () => selectTab((store.tab + 1) % tabs()) },
         { bind: "l", title: "Next field", group: "Form", run: () => selectTab((store.tab + 1) % tabs()) },
         {
           bind: "tab",
-          title: "Next field",
-          group: "Form",
+          title: t("Next field"),
+          group: t("Form"),
           run: () => selectTab((store.tab + 1) % tabs()),
         },
         {
           bind: "shift+tab",
-          title: "Previous field",
-          group: "Form",
+          title: t("Previous field"),
+          group: t("Form"),
           run: () => selectTab((store.tab - 1 + tabs()) % tabs()),
         },
         ...(external
@@ -688,40 +689,40 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                 bind: "return",
                 title:
                   store.answers[external.key] === true
-                    ? "Continue"
+                    ? t("Continue")
                     : store.externalReady[external.key]
-                      ? "Confirm completion"
-                      : "Open link",
-                group: "Form",
+                      ? t("Confirm completion")
+                      : t("Open link"),
+                group: t("Form"),
                 run: acknowledgeExternal,
               },
-              { bind: "c", title: "Copy link", group: "Form", run: copyExternal },
-              { bind: "escape", title: "Dismiss form", group: "Form", run: cancel },
+              { bind: "c", title: t("Copy link"), group: t("Form"), run: copyExternal },
+              { bind: "escape", title: t("Dismiss form"), group: t("Form"), run: cancel },
             ]
           : confirm()
             ? [
                 {
                   bind: "return",
-                  title: "Submit form",
-                  group: "Form",
+                  title: t("Submit form"),
+                  group: t("Form"),
                   run: submit,
                 },
                 {
                   bind: "escape",
-                  title: "Dismiss form",
-                  group: "Form",
+                  title: t("Dismiss form"),
+                  group: t("Form"),
                   run: cancel,
                 },
-                { bind: "up", title: "Scroll review", group: "Form", run: () => review?.scrollBy(-1) },
-                { bind: "k", title: "Scroll review", group: "Form", run: () => review?.scrollBy(-1) },
-                { bind: "down", title: "Scroll review", group: "Form", run: () => review?.scrollBy(1) },
-                { bind: "j", title: "Scroll review", group: "Form", run: () => review?.scrollBy(1) },
+                { bind: "up", title: t("Scroll review"), group: t("Form"), run: () => review?.scrollBy(-1) },
+                { bind: "k", title: t("Scroll review"), group: t("Form"), run: () => review?.scrollBy(-1) },
+                { bind: "down", title: t("Scroll review"), group: t("Form"), run: () => review?.scrollBy(1) },
+                { bind: "j", title: t("Scroll review"), group: t("Form"), run: () => review?.scrollBy(1) },
               ]
             : [
                 ...Array.from({ length: max }, (_, index) => ({
                   bind: String(index + 1),
-                  title: `Select answer ${index + 1}`,
-                  group: "Form",
+                  title: t("Select answer {index}", { index: index + 1 }),
+                  group: t("Form"),
                   run: () => {
                     setStore("selected", index)
                     selectOption()
@@ -729,36 +730,36 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                 })),
                 {
                   bind: "up",
-                  title: "Previous answer",
-                  group: "Form",
+                  title: t("Previous answer"),
+                  group: t("Form"),
                   run: () => setStore("selected", (store.selected - 1 + total) % total),
                 },
                 {
                   bind: "k",
-                  title: "Previous answer",
-                  group: "Form",
+                  title: t("Previous answer"),
+                  group: t("Form"),
                   run: () => setStore("selected", (store.selected - 1 + total) % total),
                 },
                 {
                   bind: "down",
-                  title: "Next answer",
-                  group: "Form",
+                  title: t("Next answer"),
+                  group: t("Form"),
                   run: () => setStore("selected", (store.selected + 1) % total),
                 },
                 {
                   bind: "j",
-                  title: "Next answer",
-                  group: "Form",
+                  title: t("Next answer"),
+                  group: t("Form"),
                   run: () => setStore("selected", (store.selected + 1) % total),
                 },
-                { bind: "return", title: "Select answer", group: "Form", run: () => selectOption() },
+                { bind: "return", title: t("Select answer"), group: t("Form"), run: () => selectOption() },
                 ...(multi()
-                  ? [{ bind: "space", title: "Toggle answer", group: "Form", run: () => selectOption() }]
+                  ? [{ bind: "space", title: t("Toggle answer"), group: t("Form"), run: () => selectOption() }]
                   : []),
                 {
                   bind: "escape",
-                  title: "Dismiss form",
-                  group: "Form",
+                  title: t("Dismiss form"),
+                  group: t("Form"),
                   run: cancel,
                 },
               ]),
@@ -870,10 +871,10 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                 fg={store.answers[external().key] === true ? theme.text.feedback.success.base : theme.text.muted}
               >
                 {store.answers[external().key] === true
-                  ? "✓ Acknowledged"
+                  ? t("✓ Acknowledged")
                   : store.externalReady[external().key]
-                    ? "Complete the external action, then press enter to confirm."
-                    : "Open or copy the URL, complete the external action, then confirm."}
+                    ? t("Complete the external action, then press enter to confirm.")
+                    : t("Open or copy the URL, complete the external action, then confirm.")}
               </text>
             </box>
           )}
@@ -1017,7 +1018,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                           fallback={
                             <>
                               <text fg={other() ? theme.text.formfield.focused : theme.text.formfield.base}>
-                                {input() || "Type your own answer"}
+                                {input() || t("Type your own answer")}
                               </text>
                               <Show when={!multi() && customPicked()}>
                                 <text fg={theme.text.formfield.selected}>✓</text>
@@ -1039,7 +1040,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                               })
                             }}
                             initialValue={input()}
-                            placeholder="Type your own answer"
+                            placeholder={t("Type your own answer")}
                             placeholderColor={theme.text.muted}
                             minHeight={1}
                             maxHeight={6}
@@ -1089,7 +1090,7 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                                 : theme.text.feedback.error.base,
                             }}
                           >
-                            {acknowledged() ? "Acknowledged" : "(acknowledgement required)"}
+                            {acknowledged() ? t("Acknowledged") : t("(acknowledgement required)")}
                           </span>
                         </text>
                       </box>
@@ -1113,7 +1114,8 @@ export function FormPrompt(props: { form: FormWithLocation }) {
                                   : theme.text.muted,
                           }}
                         >
-                          {invalid() ?? (answered() ? value() : missing() ? "(required)" : "(not answered)")}
+                          {invalid() ??
+                            (answered() ? value() : missing() ? t("(required)") : t("(not answered)"))}
                         </span>
                       </text>
                     </box>
@@ -1141,12 +1143,12 @@ export function FormPrompt(props: { form: FormWithLocation }) {
           </Show>
           <Show when={!confirm() && !textual() && !externalField() && !store.editing}>
             <text fg={theme.text.base}>
-              {"↑↓"} <span style={{ fg: theme.text.muted }}>select</span>
+              {"↑↓"} <span style={{ fg: theme.text.muted }}>{t("select")}</span>
             </text>
           </Show>
           <Show when={confirm() && reviewContentHeight() > reviewMaxHeight()}>
             <text fg={theme.text.base}>
-              {"↑↓"} <span style={{ fg: theme.text.muted }}>scroll</span>
+              {"↑↓"} <span style={{ fg: theme.text.muted }}>{t("scroll")}</span>
             </text>
           </Show>
           <text
@@ -1161,11 +1163,11 @@ export function FormPrompt(props: { form: FormWithLocation }) {
           </text>
           <Show when={externalField()}>
             <text fg={theme.text.base} onMouseUp={copyExternal}>
-              c <span style={{ fg: theme.text.muted }}>copy</span>
+              c <span style={{ fg: theme.text.muted }}>{t("copy")}</span>
             </text>
           </Show>
           <text fg={theme.text.base} onMouseUp={cancel}>
-            esc <span style={{ fg: theme.text.muted }}>{store.editing && !textual() ? "close" : "dismiss"}</span>
+            esc <span style={{ fg: theme.text.muted }}>{store.editing && !textual() ? t("close") : t("dismiss")}</span>
           </text>
         </box>
         <Show when={store.error}>

@@ -1,5 +1,8 @@
 import { NativeError, NativeStatus, OptimizedBuffer } from "@opentui/core"
 
+// Keep rendered interface text deterministic in tests regardless of the machine locale.
+process.env.OPENCODE_LOCALE = "en"
+
 // Workaround: OpenTUI's test renderer can read a frame while the native writer is still flushing
 // output, which throws OutputBusy until the event loop runs. Frame reads poll, so fall back to the
 // last frame read from the buffer. Remove once captureCharFrame waits for output idle upstream.

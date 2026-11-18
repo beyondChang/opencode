@@ -10,6 +10,7 @@ import { DialogFork } from "./dialog-fork"
 import { usePromptRestore } from "../../prompt/restore"
 import { useNewDesigns } from "../../config"
 import { appendToSessionPrompt } from "../../component/prompt/draft-stash"
+import { t } from "../../i18n"
 
 export function DialogMessage(props: { messageID: string; sessionID: string }) {
   const data = useData()
@@ -23,19 +24,19 @@ export function DialogMessage(props: { messageID: string; sessionID: string }) {
 
   return (
     <DialogSelect
-      title="Message Actions"
+      title={t("Message Actions")}
       renderFilter={!newDesigns()}
       options={[
         {
-          title: "Jump to",
+          title: t("Jump to"),
           value: "message.jump",
-          description: "view message in session",
+          description: t("view message in session"),
           onSelect: (dialog) => dialog.clear(),
         },
         {
-          title: "Revert",
+          title: t("Revert"),
           value: "session.revert",
-          description: "undo messages and file changes",
+          description: t("undo messages and file changes"),
           onSelect: (dialog) => {
             const value = message()
             const { sessionID, messageID } = props
@@ -49,9 +50,9 @@ export function DialogMessage(props: { messageID: string; sessionID: string }) {
           },
         },
         {
-          title: "Copy",
+          title: t("Copy"),
           value: "message.copy",
-          description: "message text to clipboard",
+          description: t("message text to clipboard"),
           onSelect: async (dialog) => {
             const value = message()
             if (!value) return
@@ -75,9 +76,9 @@ export function DialogMessage(props: { messageID: string; sessionID: string }) {
           },
         },
         {
-          title: "Fork",
+          title: t("Fork"),
           value: "session.fork",
-          description: "create a new session",
+          description: t("create a new session"),
           onSelect: (dialog) => {
             const value = message()
             if (!value || value.type !== "user") return

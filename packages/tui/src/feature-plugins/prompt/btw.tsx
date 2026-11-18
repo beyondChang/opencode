@@ -12,6 +12,7 @@ import { DIALOG_INSET, DialogBleed, DialogFooter, DialogHeader, DialogLayout } f
 import { useSessionLinks } from "../../ui/session-link"
 import { useToast } from "../../ui/toast"
 import { getScrollAcceleration } from "../../util/scroll"
+import { t } from "../../i18n"
 
 // session.generate exposes the session's tools but runs no tool loop, so a
 // tool call would surface as an empty answer.
@@ -51,19 +52,19 @@ export default Plugin.define({
           commands: [
             {
               id: "session.aside",
-              title: "Ask a side question",
+              title: t("Ask a side question"),
               description: "One-shot answer from the session's context without adding to the conversation",
-              group: "Session",
+              group: t("Session"),
               palette: true,
               slash: { name: "btw", arguments: true },
               async run(input) {
                 const route = context.ui.router.current()
                 if (route.type !== "session") {
-                  toast.show({ message: "Open a session first", variant: "warning" })
+                  toast.show({ message: t("Open a session first"), variant: "warning" })
                   return
                 }
                 const question =
-                  input?.trim() || (await context.ui.dialog.prompt({ title: "/btw", placeholder: "Ask anything" }))
+                  input?.trim() || (await context.ui.dialog.prompt({ title: "/btw", placeholder: t("Ask anything") }))
                 if (!question) return
                 setPending((count) => count + 1)
                 await context.client.session

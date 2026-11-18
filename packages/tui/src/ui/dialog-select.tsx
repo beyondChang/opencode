@@ -22,6 +22,7 @@ import { Locale } from "../util/locale"
 import { getScrollAcceleration } from "../util/scroll"
 import { useConfig, useCursorStyle, useNewDesigns } from "../config"
 import { moveSelection, reconcileSelection } from "./select-controller"
+import { t } from "../i18n"
 
 export interface DialogSelectProps<T> {
   title: string
@@ -679,7 +680,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
           r.focus()
         }, 1)
       }}
-      placeholder={(searchInTitle() ? props.titlePlaceholder : undefined) ?? props.placeholder ?? "Search"}
+      placeholder={(searchInTitle() ? props.titlePlaceholder : undefined) ?? props.placeholder ?? t("Search")}
       placeholderColor={theme.text.muted}
     />
   )
@@ -743,14 +744,14 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
               fallback={
                 props.emptyView ?? (
                   <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
-                    <text fg={theme.text.muted}>No items available</text>
+                    <text fg={theme.text.muted}>{t("No items available")}</text>
                   </box>
                 )
               }
             >
               {props.noMatchView ?? (
                 <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
-                  <text fg={theme.text.muted}>No results found</text>
+                  <text fg={theme.text.muted}>{t("No results found")}</text>
                 </box>
               )}
             </Show>

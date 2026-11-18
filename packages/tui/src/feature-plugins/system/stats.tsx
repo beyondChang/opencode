@@ -8,6 +8,7 @@ import { Logo } from "../../component/logo"
 import { useTheme } from "../../context/theme"
 import { tint } from "../../theme/color"
 import { statsMetrics, statsNumber } from "./stats-data"
+import { t } from "../../i18n"
 
 const digits: Record<string, string[]> = {
   "0": ["111", "101", "101", "101", "111"],
@@ -90,7 +91,7 @@ export function StatsPoster(props: { stats: SessionStatsInfo }) {
             </For>
           </box>
         </Show>
-        <text fg={theme.text.muted}>TOKENS</text>
+        <text fg={theme.text.muted}>{t("TOKENS")}</text>
       </box>
       <box alignItems="center">
         <text fg={theme.text.muted}>
@@ -114,7 +115,7 @@ export function StatsPoster(props: { stats: SessionStatsInfo }) {
           )}
         </For>
         <Show when={calendar().clipped}>
-          <text fg={theme.text.muted}>Your last {calendar().weeks.length} weeks</text>
+          <text fg={theme.text.muted}>{t("Your last {count} weeks", { count: calendar().weeks.length })}</text>
         </Show>
       </box>
       <box width="100%" flexDirection="row" justifyContent="space-around">
@@ -123,9 +124,9 @@ export function StatsPoster(props: { stats: SessionStatsInfo }) {
             <box alignItems="center">
               <text fg={theme.text.base} attributes={TextAttributes.BOLD}>
                 {statsNumber(metric.value)}
-                {metric.label === "best streak" ? " days" : ""}
+                {metric.label === "best streak" ? t(" days") : ""}
               </text>
-              <text fg={theme.text.muted}>{metric.label}</text>
+              <text fg={theme.text.muted}>{t(metric.label)}</text>
             </box>
           )}
         </For>
@@ -149,7 +150,7 @@ function StatsPage(props: { context: Plugin.Context; onClose: () => void }) {
   const theme = useTheme()
 
   props.context.keymap.layer(() => ({
-    commands: [{ bind: "escape", title: "back", run: props.onClose }],
+    commands: [{ bind: "escape", title: t("back"), run: props.onClose }],
   }))
 
   return (
@@ -167,10 +168,10 @@ function StatsPage(props: { context: Plugin.Context; onClose: () => void }) {
         <Show
           when={!result.error}
           fallback={
-            <text fg={theme.text.feedback.error.base}>Could not load stats. Reopen /stats to try again.</text>
+            <text fg={theme.text.feedback.error.base}>{t("Could not load stats. Reopen /stats to try again.")}</text>
           }
         >
-          <Show when={result()} fallback={<text fg={theme.text.muted}>Gathering your stats…</text>}>
+          <Show when={result()} fallback={<text fg={theme.text.muted}>{t("Gathering your stats…")}</text>}>
             {(value) => <StatsPoster stats={value()} />}
           </Show>
         </Show>
@@ -195,8 +196,8 @@ export default Plugin.define({
           commands: [
             {
               id: "stats.open",
-              title: "Usage statistics",
-              group: "System",
+              title: t("Usage statistics"),
+              group: t("System"),
               slash: { name: "stats" },
               palette: true,
               run() {

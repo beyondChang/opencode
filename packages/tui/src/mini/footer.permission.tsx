@@ -33,6 +33,7 @@ import { toolFiletype } from "./tool"
 import { transparent, type RunBlockTheme, type RunFooterTheme } from "./theme"
 import type { MiniPermissionRequest, PermissionReply } from "./types"
 import { PatchDiff } from "../component/patch-diff"
+import { t } from "../i18n"
 
 function buttons(
   list: PermissionOption[],
@@ -111,7 +112,7 @@ export function RejectField(props: {
       minHeight={1}
       maxHeight={3}
       wrapMode="word"
-      placeholder="Tell OpenCode what to do differently"
+      placeholder={t("Tell OpenCode what to do differently")}
       placeholderColor={props.theme.muted}
       textColor={props.theme.formfieldText}
       focusedTextColor={props.theme.formfieldFocusedText}
@@ -171,19 +172,22 @@ export function RunPermissionBody(props: {
   const controlsWidth = () => opts().reduce((total, option) => total + stringWidth(permissionLabel(option)) + 3, -1)
   const hint = () =>
     compact() && width() < 56
-      ? "pgup/pgdn scroll"
-      : `${props.mono ? "left/right" : "⇆"} select  enter confirm  esc ${stage() === "always" ? "cancel" : "reject"}`
+      ? t("pgup/pgdn scroll")
+      : t("{keys} select  enter confirm  esc {exit}", {
+          keys: props.mono ? t("left/right") : "⇆",
+          exit: stage() === "always" ? t("cancel") : t("reject"),
+        })
   const inlineControls = () => controlsWidth() + stringWidth(hint()) + 1 <= width() - (compact() ? 0 : 5)
   const title = createMemo(() => {
     if (stage() === "always") {
-      return "Always allow"
+      return t("Always allow")
     }
 
     if (stage() === "reject") {
-      return width() < 24 ? "Reject" : "Reject permission"
+      return width() < 24 ? t("Reject") : t("Reject permission")
     }
 
-    return width() < 24 ? "Permission" : "Permission required"
+    return width() < 24 ? t("Permission") : t("Permission required")
   })
 
   createEffect(() => {
@@ -323,7 +327,7 @@ export function RunPermissionBody(props: {
           {title()}
         </text>
         <Show when={!compact() && stage() === "reject"}>
-          <text fg={props.theme.muted}>Tell OpenCode what to do differently</text>
+          <text fg={props.theme.muted}>{t("Tell OpenCode what to do differently")}</text>
         </Show>
       </box>
 
@@ -362,16 +366,16 @@ export function RunPermissionBody(props: {
                 when={!busy()}
                 fallback={
                   <text fg={props.theme.running} height={1} wrapMode="none" truncate flexShrink={0}>
-                    {compact() ? "Waiting…" : "Waiting for permission event…"}
+                    {compact() ? t("Waiting…") : t("Waiting for permission event…")}
                   </text>
                 }
               >
                 <box flexDirection="row" flexWrap="wrap" columnGap={compact() ? 1 : 2} flexShrink={0}>
                   <text fg={props.theme.text} height={1} wrapMode="none" flexShrink={0}>
-                    enter <span style={{ fg: props.theme.muted }}>{compact() ? "reject" : "confirm"}</span>
+                    enter <span style={{ fg: props.theme.muted }}>{compact() ? t("reject") : t("confirm")}</span>
                   </text>
                   <text fg={props.theme.text} height={1} wrapMode="none" flexShrink={0}>
-                    esc <span style={{ fg: props.theme.muted }}>{compact() ? "back" : "cancel"}</span>
+                    esc <span style={{ fg: props.theme.muted }}>{compact() ? t("back") : t("cancel")}</span>
                   </text>
                 </box>
               </Show>
@@ -486,7 +490,7 @@ export function RunPermissionBody(props: {
                   </Show>
                   <Show when={!info().diff && !info().patch && info().lines.length === 0}>
                     <text width="100%" fg={props.theme.muted} flexShrink={0}>
-                      No diff provided
+                      {t("No diff provided")}
                     </text>
                   </Show>
                 </box>
@@ -535,7 +539,7 @@ export function RunPermissionBody(props: {
             when={!busy()}
             fallback={
               <text fg={props.theme.running} height={1} wrapMode="none" truncate flexShrink={0}>
-                {compact() ? "Waiting…" : "Waiting for permission event…"}
+                {compact() ? t("Waiting…") : t("Waiting for permission event…")}
               </text>
             }
           >
@@ -544,14 +548,14 @@ export function RunPermissionBody(props: {
                 when={compact() && width() < 56}
                 fallback={
                   <>
-                    {props.mono ? "left/right" : "⇆"}
-                    <span style={{ fg: props.theme.muted }}>{" select  "}</span>
-                    enter<span style={{ fg: props.theme.muted }}>{" confirm  "}</span>
-                    esc<span style={{ fg: props.theme.muted }}> {stage() === "always" ? "cancel" : "reject"}</span>
+                    {props.mono ? t("left/right") : "⇆"}
+                    <span style={{ fg: props.theme.muted }}>{t(" select  ")}</span>
+                    enter<span style={{ fg: props.theme.muted }}>{t(" confirm  ")}</span>
+                    esc<span style={{ fg: props.theme.muted }}> {stage() === "always" ? t("cancel") : t("reject")}</span>
                   </>
                 }
               >
-                pgup/pgdn<span style={{ fg: props.theme.muted }}> scroll</span>
+                pgup/pgdn<span style={{ fg: props.theme.muted }}> {t("scroll")}</span>
               </Show>
             </text>
           </Show>

@@ -3,6 +3,7 @@ import { RGBA, type Renderable } from "@opentui/core"
 import { useRenderer, type JSX } from "@opentui/solid"
 import type { SessionMessageAssistantTool, SessionMessageInfo } from "@opencode/client"
 import { createSyntaxStyleMemo, useTheme, useThemes } from "../../context/theme"
+import { t } from "../../i18n"
 import { reasoningSummary } from "../../context/thinking"
 import { SplitBorder } from "../../ui/border"
 import { Locale } from "../../util/locale"
@@ -120,11 +121,8 @@ function GroupContent(props: GroupProps) {
       result[name] = (result[name] ?? 0) + 1
       return result
     }, {})
-    const names = Object.entries(counts).map(
-      ([name, count]) =>
-        `${count} ${count === 1 ? name : name === "search" || name === "fetch" ? `${name}es` : `${name}s`}`,
-    )
-    return `${completed() ? "Explored" : "Exploring"}: ${names.join(", ")}`
+    const names = Object.entries(counts).map(([name, count]) => `${count} ${name}`)
+    return t("{state}: {names}", { state: completed() ? t("Explored") : t("Exploring"), names: names.join(", ") })
   })
   const toggle = () => disclosure.toggle()
   const children = (mode: "normal" | "thought" | "tool") => (
@@ -176,15 +174,22 @@ function GroupContent(props: GroupProps) {
                       )
               }
               complete={props.completed}
-              pending={latest() ? `Thinking: ${latest()}` : "Thinking"}
+              pending={latest() ? t("Thinking: {title}", { title: latest() ?? "" }) : t("Thinking")}
               spinner={!props.completed}
               onMouseOver={() => setHover(true)}
               onMouseOut={() => setHover(false)}
               onMouseUp={toggle}
             >
-              {props.completed ? "Thought" : latest() ? `Thinking: ${latest()}` : "Thinking"}
+              {props.completed
+                ? t("Thought")
+                : latest()
+                  ? t("Thinking: {title}", { title: latest() ?? "" })
+                  : t("Thinking")}
               <Show when={props.completed && !expanded() && latest()}>: {latest()}</Show>
-              <Show when={props.completed && thoughts().length > 1}> · {thoughts().length} steps</Show>
+              <Show when={props.completed && thoughts().length > 1}>
+                {" "}
+                · {thoughts().length} {t("steps")}
+              </Show>
               <Show when={props.completed && duration()}> · {Locale.duration(duration())}</Show>
             </InlineToolRow>
             <Show when={expanded()}>
@@ -255,7 +260,10 @@ function InstructionsGroup(props: GroupProps) {
         onMouseOut={() => setHover(false)}
         onMouseUp={() => disclosure.toggle()}
       >
-        Instructions: {files()} {files() === 1 ? "file" : "files"}
+        {t("Instructions: {count} {files}", {
+          count: files(),
+          files: files() === 1 ? t("file") : t("files"),
+        })}
       </InlineToolRow>
       <Show when={disclosure.expanded()}>
         <Children {...props} nodes={props.node.children} mode="normal" />

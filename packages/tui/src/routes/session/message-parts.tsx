@@ -7,6 +7,7 @@ import type {
   SessionMessageAssistantText,
 } from "@opencode/client"
 import { Spinner } from "../../component/spinner"
+import { t } from "../../i18n"
 import { createSyntaxStyleMemo, useTheme, useThemes } from "../../context/theme"
 import { reasoningSummary } from "../../context/thinking"
 import { usePlugin } from "../../plugin/context"
@@ -144,7 +145,9 @@ function ReasoningHeader(props: {
     <Switch>
       <Match when={!props.done}>
         <box flexDirection="row">
-          <Spinner color={fg()}>{props.title ? "Thinking: " + props.title : "Thinking"}</Spinner>
+          <Spinner color={fg()}>
+            {props.title ? t("Thinking: {title}", { title: props.title }) : t("Thinking")}
+          </Spinner>
         </box>
       </Match>
       <Match when={true}>
@@ -152,7 +155,7 @@ function ReasoningHeader(props: {
           <Show when={props.toggleable}>
             <span>{props.open ? "- " : "+ "}</span>
           </Show>
-          <span>Thought</span>
+          <span>{t("Thought")}</span>
           <Show when={props.title || props.duration}>
             <span>: </span>
           </Show>

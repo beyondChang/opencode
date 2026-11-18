@@ -4,6 +4,7 @@ import type { KeyEvent, Renderable } from "@opentui/core"
 import type { Binding } from "@opentui/keymap"
 import type { BindingConfig, BindingDefaults } from "@opentui/keymap/extras"
 import { Schema } from "effect"
+import { t } from "../i18n"
 
 const KeyStroke = Schema.Struct({
   name: Schema.String,
@@ -357,6 +358,7 @@ export function unknownKeys(input: object) {
 export function bindingDefaults(): BindingDefaults<Renderable, KeyEvent> {
   return ({ command, binding }) => {
     if (binding.desc !== undefined) return
-    return { desc: Descriptions[command as KeybindName] }
+    const description = Descriptions[command as KeybindName]
+    return { desc: description === undefined ? undefined : t(description) }
   }
 }

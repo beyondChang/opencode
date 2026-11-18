@@ -67,6 +67,9 @@ export const Cursor = Schema.Struct({
 }).annotate({ description: "Terminal cursor settings" })
 
 export const Info = Schema.Struct({
+  locale: Schema.optional(Schema.Literals(["auto", "en", "zh-CN"])).annotate({
+    description: "Interface language; 'auto' follows the system locale",
+  }),
   theme: Schema.optional(
     Schema.Struct({
       name: Schema.optional(Schema.String).annotate({ description: "Theme name" }),

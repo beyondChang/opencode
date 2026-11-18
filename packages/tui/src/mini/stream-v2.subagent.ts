@@ -22,6 +22,7 @@ import type {
   SessionMessageUser,
 } from "@opencode/client/promise"
 import { Locale } from "../util/locale"
+import { t } from "../i18n"
 import { createFragmentReconciler, fragmentRef, type FragmentReconciler } from "./stream-v2.fragment"
 import { toolImageCommits, userImageCommits } from "./stream-v2.image"
 import type {
@@ -61,7 +62,7 @@ export function toolCommit(
   const partial = status === "error" && phase === "progress" && value !== undefined
   const text =
     status === "running" || partial
-      ? (value ?? (part.name === "subagent" ? "running subagent" : `running ${part.name}`))
+      ? (value ?? (part.name === "subagent" ? t("running subagent") : t("running {name}", { name: part.name })))
       : status === "completed"
         ? (value ?? output)
         : status === "error"

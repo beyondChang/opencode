@@ -1,5 +1,6 @@
 import { Plugin } from "@opencode/plugin/tui"
 import type { AttentionSoundName } from "@opencode/plugin/tui/context"
+import { t } from "../../i18n"
 
 function notify(
   context: Plugin.Context,
@@ -88,7 +89,7 @@ export default Plugin.define({
           notify(context, sessionID, event.data.error.message, "error")
           context.ui.toast.show({
             sessionID,
-            title: "Session failed",
+            title: t("Session failed"),
             message: event.data.error.message,
             variant: "error",
           })

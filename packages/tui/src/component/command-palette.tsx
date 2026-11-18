@@ -3,6 +3,7 @@ import { DialogSelect, type DialogSelectRef } from "../ui/dialog-select"
 import { type DialogContext } from "../ui/dialog"
 import { COMMAND_PALETTE_COMMAND, Keymap, type KeymapCommand } from "../context/keymap"
 import { DialogConfig, settingID, settings } from "./dialog-config"
+import { t } from "../i18n"
 
 function isSuggestedPaletteCommand(command: KeymapCommand) {
   const suggested = command.suggested
@@ -38,7 +39,7 @@ export function CommandPaletteDialog() {
     title: setting.title,
     category: setting.category,
     searchText: setting.keywords?.join(" "),
-    searchFooter: `Settings · ${setting.category}`,
+    searchFooter: t("Settings · {category}", { category: setting.category }),
     value: `setting:${settingID(setting)}`,
     onSelect: (dialog: DialogContext) => {
       dialog.replace(() => <DialogConfig current={settingID(setting)} />)
@@ -54,7 +55,7 @@ export function CommandPaletteDialog() {
         .map((option) => ({
           ...option,
           value: `suggested:${option.value}`,
-          category: "Suggested",
+          category: t("Suggested"),
         })),
       ...options(),
     ]
@@ -63,9 +64,9 @@ export function CommandPaletteDialog() {
   return (
     <DialogSelect
       ref={(value) => (ref = value)}
-      title="Commands"
+      title={t("Commands")}
       searchInTitle
-      titlePlaceholder="Search commands"
+      titlePlaceholder={t("Search commands")}
       options={list()}
       flat={true}
       filterThreshold={0.7}

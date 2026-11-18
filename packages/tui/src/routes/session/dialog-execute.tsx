@@ -17,6 +17,7 @@ import {
   useDialog,
 } from "../../ui/dialog"
 import { useToast } from "../../ui/toast"
+import { t } from "../../i18n"
 import { Locale } from "../../util/locale"
 import { getScrollAcceleration } from "../../util/scroll"
 import { formatExecuteOutput } from "@opencode/util/execute-output"
@@ -65,13 +66,13 @@ export function DialogExecute(props: { part: SessionMessageAssistantTool }) {
   })
   const status = createMemo(() => {
     const state = props.part.state
-    if (state.status === "streaming") return "Receiving code…"
-    if (state.status === "running") return "Running"
+    if (state.status === "streaming") return t("Receiving code…")
+    if (state.status === "running") return t("Running")
     const duration = props.part.time.completed
       ? ` · ${Locale.duration(props.part.time.completed - (props.part.time.ran ?? props.part.time.created))}`
       : ""
-    if (failed()) return `Failed${duration}`
-    return `Completed${duration}`
+    if (failed()) return `${t("Failed")}${duration}`
+    return `${t("Completed")}${duration}`
   })
 
   const copy = (kind: "code" | "output") => {
@@ -86,24 +87,24 @@ export function DialogExecute(props: { part: SessionMessageAssistantTool }) {
   Keymap.createLayer(() => ({
     mode: "modal",
     commands: [
-      { bind: "up", title: "Scroll up", group: "Execute", run: () => scroll?.scrollBy(-1) },
-      { bind: "down", title: "Scroll down", group: "Execute", run: () => scroll?.scrollBy(1) },
-      { bind: "pageup", title: "Previous page", group: "Execute", run: () => scroll?.scrollBy(-maxHeight()) },
-      { bind: "pagedown", title: "Next page", group: "Execute", run: () => scroll?.scrollBy(maxHeight()) },
-      { bind: "home", title: "Scroll to code", group: "Execute", run: () => scroll?.scrollTo(0) },
-      { bind: "end", title: "Scroll to output", group: "Execute", run: () => scroll?.scrollTo(Infinity) },
-      { bind: "c", title: "Copy code", group: "Execute", run: () => copy("code") },
-      { bind: "o", title: "Copy output", group: "Execute", run: () => copy("output") },
+      { bind: "up", title: t("Scroll up"), group: t("Execute"), run: () => scroll?.scrollBy(-1) },
+      { bind: "down", title: t("Scroll down"), group: t("Execute"), run: () => scroll?.scrollBy(1) },
+      { bind: "pageup", title: t("Previous page"), group: t("Execute"), run: () => scroll?.scrollBy(-maxHeight()) },
+      { bind: "pagedown", title: t("Next page"), group: t("Execute"), run: () => scroll?.scrollBy(maxHeight()) },
+      { bind: "home", title: t("Scroll to code"), group: t("Execute"), run: () => scroll?.scrollTo(0) },
+      { bind: "end", title: t("Scroll to output"), group: t("Execute"), run: () => scroll?.scrollTo(Infinity) },
+      { bind: "c", title: t("Copy code"), group: t("Execute"), run: () => copy("code") },
+      { bind: "o", title: t("Copy output"), group: t("Execute"), run: () => copy("output") },
     ],
   }))
 
   const copyActions = () => [
     copied() === "code"
-      ? { title: "✓ copied", color: theme.text.feedback.success.base, onTrigger: () => copy("code") }
-      : { title: "copy code", key: "c", onTrigger: () => copy("code") },
+      ? { title: t("✓ copied"), color: theme.text.feedback.success.base, onTrigger: () => copy("code") }
+      : { title: t("copy code"), key: "c", onTrigger: () => copy("code") },
     copied() === "output"
-      ? { title: "✓ copied", color: theme.text.feedback.success.base, onTrigger: () => copy("output") }
-      : { title: "copy output", key: "o", onTrigger: () => copy("output") },
+      ? { title: t("✓ copied"), color: theme.text.feedback.success.base, onTrigger: () => copy("output") }
+      : { title: t("copy output"), key: "o", onTrigger: () => copy("output") },
   ]
 
   return (
@@ -113,7 +114,7 @@ export function DialogExecute(props: { part: SessionMessageAssistantTool }) {
           gap={2}
           titleView={
             <text fg={theme.text.base} attributes={TextAttributes.BOLD} flexGrow={1}>
-              execute
+              {t("execute")}
             </text>
           }
         >
@@ -126,9 +127,9 @@ export function DialogExecute(props: { part: SessionMessageAssistantTool }) {
         <DialogFooter
           actions={{
             secondary: [
-              { title: "scroll", key: "↑/↓" },
+              { title: t("scroll"), key: "↑/↓" },
               ...copyActions(),
-              { title: "back", key: "esc", onTrigger: () => dialog.clear() },
+              { title: t("back"), key: "esc", onTrigger: () => dialog.clear() },
             ],
           }}
         />
@@ -147,15 +148,15 @@ export function DialogExecute(props: { part: SessionMessageAssistantTool }) {
           <box gap={1} paddingLeft={DIALOG_INSET} paddingRight={DIALOG_INSET} paddingTop={1} paddingBottom={1}>
             <box>
               <text fg={contentTheme.text.muted} attributes={TextAttributes.BOLD}>
-                Code
+                {t("Code")}
               </text>
-              <Show when={code()} fallback={<text fg={contentTheme.text.muted}>Waiting for code…</text>}>
+              <Show when={code()} fallback={<text fg={contentTheme.text.muted}>{t("Waiting for code…")}</text>}>
                 {(value) => <GutteredCode content={value()} filetype="typescript" digits={digits()} />}
               </Show>
             </box>
             <box>
               <text fg={contentTheme.text.muted} attributes={TextAttributes.BOLD}>
-                Output
+                {t("Output")}
               </text>
               <Show
                 when={highlighted()}
@@ -170,7 +171,8 @@ export function DialogExecute(props: { part: SessionMessageAssistantTool }) {
                     }
                     wrapMode="word"
                   >
-                    {text() ?? (props.part.state.status === "completed" ? "No output" : "Waiting for output…")}
+                    {text() ??
+                      (props.part.state.status === "completed" ? t("No output") : t("Waiting for output…"))}
                   </text>
                 }
               >

@@ -6,6 +6,7 @@ import { transparent, type RunFooterTheme } from "./theme"
 import { Locale } from "../util/locale"
 import { stringWidth } from "../util/string-width"
 import { moveSelection, moveSelectionOffset, reconcileSelection, revealSelectionOffset } from "../ui/select-controller"
+import { t } from "../i18n"
 
 export const FOOTER_MENU_ROWS = 8
 export const FOOTER_COMPACT_WIDTH = 40
@@ -193,7 +194,7 @@ export function RunFooterMenu(props: {
             backgroundColor={props.background ? props.theme().shade : transparent}
           >
             <text fg={props.theme().muted} wrapMode="none" truncate>
-              {props.empty ?? "No matching items"}
+              {props.empty ?? t("No matching items")}
             </text>
           </box>
         </box>

@@ -36,6 +36,7 @@ import { DialogSelect } from "../ui/dialog-select"
 import { Link } from "../ui/link"
 import { useToast } from "../ui/toast"
 import { errorMessage } from "../util/error"
+import { t } from "../i18n"
 import {
   formInitialValues,
   formLabel,
@@ -135,7 +136,7 @@ export function DialogIntegration(
       return {
         title: integration.name,
         value: integration.id,
-        description: methods.length === 0 ? "Environment only" : undefined,
+        description: methods.length === 0 ? t("Environment only") : undefined,
         footer: status ? "Sign in required →" : connectionSummary(integration) || undefined,
         footerColor: status ? theme.text.feedback.warning.base : undefined,
         category,
@@ -154,16 +155,16 @@ export function DialogIntegration(
 
   return (
     <DialogSelect
-      title="Connect an integration"
+      title={t("Connect an integration")}
       options={options()}
       emptyView={
         <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
-          <text fg={theme.text.muted}>No integrations available</text>
+          <text fg={theme.text.muted}>{t("No integrations available")}</text>
         </box>
       }
       noMatchView={
         <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
-          <text fg={theme.text.muted}>No integrations found</text>
+          <text fg={theme.text.muted}>{t("No integrations found")}</text>
         </box>
       }
     />
@@ -204,7 +205,7 @@ function manageConnections(
           ...(methods.length
             ? [
                 {
-                  title: "Add account",
+                  title: t("Add account"),
                   value: "add",
                   onSelect: () => selectMethod(current() ?? integration, methods, location, dialog, onConnected),
                 },
@@ -237,14 +238,14 @@ function manageConnections(
         actions={[
           {
             command: "dialog.integration.rename",
-            title: "rename",
+            title: t("rename"),
             hidden: selected() === "add",
             disabled: (option) => !option || option.value === "add",
             onTrigger: (option) => {
               dialog.replace(() => (
                 <DialogPrompt
-                  title="Rename account"
-                  placeholder="Account name"
+                  title={t("Rename account")}
+                  placeholder={t("Account name")}
                   value={
                     credentialConnections(current() ?? integration).find((item) => item.id === option.value)?.label
                   }
@@ -262,7 +263,7 @@ function manageConnections(
           },
           {
             command: "dialog.integration.delete",
-            title: newDesigns() ? "remove account" : "delete",
+            title: newDesigns() ? t("remove account") : t("delete"),
             hidden: selected() === "add",
             disabled: (option) => !option || option.value === "add",
             onTrigger: (option) => {
@@ -300,10 +301,10 @@ function selectMethod(
     const newDesigns = useNewDesigns()
     return (
       <DialogSelect
-        title={`Connect ${integration.name}`}
+        title={t("Connect {name}", { name: integration.name })}
         renderFilter={!newDesigns()}
         options={methods.map((method) => ({
-          title: method.type === "key" ? (method.label ?? "API key") : method.label,
+          title: method.type === "key" ? (method.label ?? t("API key")) : method.label,
           value: method.type === "key" ? "key" : method.id,
           onSelect: () => openMethod(integration, method, location, dialog, onConnected),
         }))}
@@ -382,7 +383,7 @@ function ExternalStarting(props: {
         dialog.clear()
       })
   })
-  return <OAuthView title={props.method.label} message="Connecting…" />
+  return <OAuthView title={props.method.label} message={t("Connecting…")} />
 }
 
 async function beginKey(
@@ -456,7 +457,7 @@ function CommandStarting(props: {
     if (!handedOff) closed = true
   })
 
-  return <CommandView title={props.method.label} output="" message="Starting command…" />
+  return <CommandView title={props.method.label} output="" message={t("Starting command…")} />
 }
 
 function CommandPending(props: {
@@ -517,7 +518,7 @@ function CommandPending(props: {
     })
   })
 
-  return <CommandView title={props.title} output={output()} message="Waiting for command to finish…" />
+  return <CommandView title={props.title} output={output()} message={t("Waiting for command to finish…")} />
 }
 
 function CommandView(props: { title: string; output: string; message: string }) {
@@ -526,7 +527,7 @@ function CommandView(props: { title: string; output: string; message: string }) 
   const overlayTheme = useTheme()
   onMount(() => dialog.setSize("large"))
   return (
-    <DialogLayout header={<DialogHeader title={props.title} closeLabel="esc close" />}>
+    <DialogLayout header={<DialogHeader title={props.title} closeLabel={t("esc close")} />}>
       <box gap={1}>
         <DialogBleed>
           <box
@@ -561,8 +562,8 @@ function KeyMethod(props: {
 
   return (
     <DialogPrompt
-      title={props.method.label ?? `Connect ${props.integration.name}`}
-      placeholder="API key"
+      title={props.method.label ?? t("Connect {name}", { name: props.integration.name })}
+      placeholder={t("API key")}
       onConfirm={(key) => {
         if (!key) return
         void client.api.integration.connect
@@ -650,7 +651,7 @@ function OAuthStarting(props: {
       })
   })
 
-  return <OAuthView title={props.method.label} message="Starting authorization…" />
+  return <OAuthView title={props.method.label} message={t("Starting authorization…")} />
 }
 
 function OAuthAuto(props: {
@@ -706,8 +707,8 @@ function OAuthAuto(props: {
     // The paste prompt owns typing and Enter.
     enabled: !props.attempt.paste,
     commands: [
-      { bind: newDesigns() ? "return" : "o", title: "Open authorization URL", group: "Dialog", run: open },
-      { bind: "c", title: "Copy authorization details", group: "Dialog", run: copy },
+      { bind: newDesigns() ? "return" : "o", title: t("Open authorization URL"), group: "Dialog", run: open },
+      { bind: "c", title: t("Copy authorization details"), group: "Dialog", run: copy },
     ],
   }))
 
@@ -766,11 +767,11 @@ function OAuthAuto(props: {
     >
       <DialogPrompt
         title={props.title}
-        placeholder="Redirect URL"
+        placeholder={t("Redirect URL")}
         onConfirm={paste}
         actions={[
           {
-            title: "copy link",
+            title: t("copy link"),
             command: "dialog.integration.copy",
             commandTitle: "Copy authorization link",
             onTrigger: copy,
@@ -819,7 +820,7 @@ function OAuthCode(props: {
   return (
     <DialogPrompt
       title={props.title}
-      placeholder="Authorization code"
+      placeholder={t("Authorization code")}
       onConfirm={(code) => {
         if (!code) return
         void client.api.integration.oauth
@@ -864,13 +865,13 @@ function OAuthView(props: {
             ...(props.onCopy
               ? [
                   {
-                    title: props.instructions?.match(OAUTH_CODE) ? "copy code" : "copy link",
+                    title: props.instructions?.match(OAUTH_CODE) ? t("copy code") : t("copy link"),
                     key: "c",
                     onTrigger: props.onCopy,
                   },
                 ]
               : []),
-            ...(props.onOpen ? [{ title: "open link", key: "enter", onTrigger: props.onOpen }] : []),
+            ...(props.onOpen ? [{ title: t("open link"), key: "enter", onTrigger: props.onOpen }] : []),
           ],
         },
       }}
@@ -878,8 +879,8 @@ function OAuthView(props: {
         <DialogFooter
           actions={{
             secondary: [
-              ...(props.onOpen ? [{ title: "open", key: "o" }] : []),
-              ...(props.onCopy ? [{ title: "copy", key: "c" }] : []),
+              ...(props.onOpen ? [{ title: t("open"), key: "o" }] : []),
+              ...(props.onCopy ? [{ title: t("copy"), key: "c" }] : []),
             ],
           }}
         />
@@ -952,12 +953,12 @@ async function selectAnswer(
     field.type === "boolean"
       ? field.default === false
         ? [
-            { title: "No", value: false as FormValue },
-            { title: "Yes", value: true as FormValue },
+            { title: t("No"), value: false as FormValue },
+            { title: t("Yes"), value: true as FormValue },
           ]
         : [
-            { title: "Yes", value: true as FormValue },
-            { title: "No", value: false as FormValue },
+            { title: t("Yes"), value: true as FormValue },
+            { title: t("No"), value: false as FormValue },
           ]
       : (field.options ?? []).map((option) => ({
           title: option.label,
@@ -969,7 +970,7 @@ async function selectAnswer(
       () => (
         <DialogSelect<FormValue | undefined>
           title={formLabel(field) || title}
-          options={[...options, ...(!field.required ? [{ title: "Skip", value: undefined }] : [])]}
+          options={[...options, ...(!field.required ? [{ title: t("Skip"), value: undefined }] : [])]}
           current={field.type === "string" ? field.default : undefined}
           onSelect={(option) => resolve(option.value)}
         />
@@ -1018,17 +1019,17 @@ function StringChoiceField(props: {
     commands: [
       {
         id: "dialog.select.prev",
-        title: "Previous answer",
+        title: t("Previous answer"),
         group: "Form",
         run: () => setStore("selected", (store.selected + count - 1) % count),
       },
       {
         id: "dialog.select.next",
-        title: "Next answer",
+        title: t("Next answer"),
         group: "Form",
         run: () => setStore("selected", (store.selected + 1) % count),
       },
-      { id: "dialog.select.submit", title: "Select answer", group: "Form", run: () => select(store.selected) },
+      { id: "dialog.select.submit", title: t("Select answer"), group: "Form", run: () => select(store.selected) },
     ],
   }))
   Keymap.createLayer(() => ({
@@ -1039,11 +1040,11 @@ function StringChoiceField(props: {
     commands: [
       {
         id: "dialog.prompt.submit",
-        title: "Submit answer",
+        title: t("Submit answer"),
         group: "Form",
         run: () => submit(textarea()?.plainText.trim() || undefined),
       },
-      { bind: "escape", title: "Back to answers", group: "Form", run: back },
+      { bind: "escape", title: t("Back to answers"), group: "Form", run: back },
     ],
   }))
   return (
@@ -1053,13 +1054,13 @@ function StringChoiceField(props: {
         actions: {
           secondary: store.editing
             ? [
-                { title: "submit", key: "enter", onTrigger: () => submit(textarea()?.plainText.trim() || undefined) },
-                { title: "back", key: "esc", onTrigger: back },
+                { title: t("submit"), key: "enter", onTrigger: () => submit(textarea()?.plainText.trim() || undefined) },
+                { title: t("back"), key: "esc", onTrigger: back },
               ]
             : [
-                { title: "select", key: "↑/↓" },
-                { title: "confirm", key: "enter", onTrigger: () => select(store.selected) },
-                { title: "cancel", key: "esc", onTrigger: () => dialog.clear() },
+                { title: t("select"), key: "↑/↓" },
+                { title: t("confirm"), key: "enter", onTrigger: () => select(store.selected) },
+                { title: t("cancel"), key: "esc", onTrigger: () => dialog.clear() },
               ],
         },
       }}
@@ -1099,14 +1100,14 @@ function StringChoiceField(props: {
             <text fg={fg(rows.length)}>{rows.length + 1}.</text>
             <Show
               when={store.editing}
-              fallback={<text fg={fg(rows.length)}>{store.text || "Type your own answer"}</text>}
+              fallback={<text fg={fg(rows.length)}>{store.text || t("Type your own answer")}</text>}
             >
               <textarea
                 height={1}
                 flexGrow={1}
                 wrapMode="none"
                 initialValue={store.text}
-                placeholder={props.field.placeholder ?? "Type your own answer"}
+                placeholder={props.field.placeholder ?? t("Type your own answer")}
                 placeholderColor={theme.text.muted}
                 textColor={theme.text.formfield.focused}
                 focusedTextColor={theme.text.formfield.focused}
@@ -1203,9 +1204,9 @@ async function multiselectAnswer(
                 disabled:
                   !selected.includes(option.value) && field.maxItems !== undefined && selected.length >= field.maxItems,
               })),
-              ...(field.custom ? [{ title: "Type your own answer", value: CUSTOM as typeof CUSTOM }] : []),
+              ...(field.custom ? [{ title: t("Type your own answer"), value: CUSTOM as typeof CUSTOM }] : []),
               {
-                title: "Continue",
+                title: t("Continue"),
                 value: SUBMIT as typeof SUBMIT,
                 description: invalid,
                 disabled: invalid !== undefined,
@@ -1239,7 +1240,7 @@ function customAnswer(
       () => (
         <DialogPrompt
           title={formLabel(field) || title}
-          placeholder="Type your own answer"
+          placeholder={t("Type your own answer")}
           onConfirm={(value) => {
             if (value) resolve(value)
           }}
@@ -1263,8 +1264,8 @@ async function externalAnswer(
           <DialogSelect<true | typeof OPEN>
             title={formLabel(field) || title}
             options={[
-              { title: opened ? "Open link again" : "Open link", value: OPEN as typeof OPEN, description: field.url },
-              { title: "I finished", value: true as const, description: field.description, disabled: !opened },
+              { title: opened ? t("Open link again") : t("Open link"), value: OPEN as typeof OPEN, description: field.url },
+              { title: t("I finished"), value: true as const, description: field.description, disabled: !opened },
             ]}
             onSelect={(option) => resolve(option.value)}
           />
@@ -1276,7 +1277,7 @@ async function externalAnswer(
     if (choice === true) return true
     const result = await new Promise<boolean | typeof CANCELLED>((resolve) => {
       dialog.replace(
-        () => <OAuthView title={formLabel(field) || title} message="Opening link…" />,
+        () => <OAuthView title={formLabel(field) || title} message={t("Opening link…")} />,
         () => resolve(CANCELLED),
       )
       void openUrl(field.url).then(

@@ -1,6 +1,7 @@
 import { Plugin } from "@opencode/plugin/tui"
 import { createMemo, For, Match, Show, Switch } from "solid-js"
 import { DialogMcp } from "../../component/dialog-mcp"
+import { t } from "../../i18n"
 
 export function SidebarMcp(props: { context: Plugin.Context; sessionID: string }) {
   const [view, updateView] = props.context.storage.store("view", { initial: { open: true } })
@@ -41,7 +42,7 @@ export function SidebarMcp(props: { context: Plugin.Context; sessionID: string }
             <Show when={!view.open}>
               <span style={{ fg: theme.text.muted }}>
                 {" "}
-                ({on()} active{bad() > 0 ? `, ${bad()} error${bad() > 1 ? "s" : ""}` : ""})
+                {t("({active} active{errors})", { active: on(), errors: bad() > 0 ? t(", {count} errors", { count: bad() }) : "" })}
               </span>
             </Show>
           </text>
@@ -76,11 +77,11 @@ export function SidebarMcp(props: { context: Plugin.Context; sessionID: string }
                   flexShrink={0}
                 >
                   <Switch fallback={item.status.status}>
-                    <Match when={item.status.status === "connected"}>Connected</Match>
-                    <Match when={item.status.status === "pending"}>Connecting</Match>
-                    <Match when={item.status.status === "failed"}>Error</Match>
-                    <Match when={item.status.status === "disabled"}>Disabled</Match>
-                    <Match when={item.status.status === "needs_auth"}>Sign in</Match>
+                    <Match when={item.status.status === "connected"}>{t("Connected")}</Match>
+                    <Match when={item.status.status === "pending"}>{t("Connecting")}</Match>
+                    <Match when={item.status.status === "failed"}>{t("Error")}</Match>
+                    <Match when={item.status.status === "disabled"}>{t("Disabled")}</Match>
+                    <Match when={item.status.status === "needs_auth"}>{t("Sign in")}</Match>
                   </Switch>
                 </text>
               </box>

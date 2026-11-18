@@ -5,6 +5,7 @@ import { DialogHeader, DialogLayout, type DialogContext } from "./dialog"
 import { DialogSelect, DialogSelectChoice } from "./dialog-select"
 import { createStore } from "solid-js/store"
 import { createMemo, createSignal, For, Show } from "solid-js"
+import { t } from "../i18n"
 
 export type ExportFormat = "markdown" | "json"
 export type ExportLocation = "project" | "temp"
@@ -62,17 +63,17 @@ function DialogExportOptionsList(props: DialogExportOptionsProps) {
     setStore(row, !store[row])
   }
 
-  const include = (value: boolean) => (value ? "include" : "exclude")
+  const include = (value: boolean) => (value ? t("include") : t("exclude"))
   const options = createMemo(() => [
     {
-      title: "Format",
+      title: t("Format"),
       value: "format" as Row,
       onSelect: () => change("format"),
       footerOverhang: 2,
       footer: <DialogSelectChoice value={store.format} active={selected() === "format"} />,
     },
     {
-      title: "Location",
+      title: t("Location"),
       value: "location" as Row,
       onSelect: () => change("location"),
       footerOverhang: 2,
@@ -81,28 +82,28 @@ function DialogExportOptionsList(props: DialogExportOptionsProps) {
     ...(store.format === "markdown"
       ? [
           {
-            title: "Thinking",
+            title: t("Thinking"),
             value: "thinking" as Row,
             onSelect: () => change("thinking"),
-            category: "Options",
+            category: t("Options"),
             footerOverhang: 2,
             footer: <DialogSelectChoice value={include(store.thinking)} active={selected() === "thinking"} />,
           },
           {
-            title: "Tools",
+            title: t("Tools"),
             value: "tools" as Row,
             onSelect: () => change("tools"),
-            category: "Options",
+            category: t("Options"),
             footerOverhang: 2,
             footer: <DialogSelectChoice value={include(store.tools)} active={selected() === "tools"} />,
           },
         ]
       : [
           {
-            title: "Sanitize",
+            title: t("Sanitize"),
             value: "sanitize" as Row,
             onSelect: () => change("sanitize"),
-            category: "Options",
+            category: t("Options"),
             footerOverhang: 2,
             footer: <DialogSelectChoice value={store.sanitize ? "on" : "off"} active={selected() === "sanitize"} />,
           },
@@ -111,7 +112,7 @@ function DialogExportOptionsList(props: DialogExportOptionsProps) {
 
   return (
     <DialogSelect
-      title="Export session"
+      title={t("Export session")}
       renderFilter={false}
       footerGap={2}
       options={options()}
@@ -119,19 +120,19 @@ function DialogExportOptionsList(props: DialogExportOptionsProps) {
       actions={[
         {
           command: "dialog.export.copy",
-          title: "copy",
+          title: t("copy"),
           bind: "c",
           selection: "none",
           group: "primary",
           onTrigger: () => confirm("copy"),
         },
       ]}
-      footerHints={[{ title: "save to file", label: "enter", group: "primary" }]}
+      footerHints={[{ title: t("save to file"), label: "enter", group: "primary" }]}
       bindings={[
-        { bind: "left", title: "Previous value", group: "Dialog", run: () => change(selected()) },
-        { bind: "right", title: "Next value", group: "Dialog", run: () => change(selected()) },
-        { bind: "space", title: "Change export option", group: "Dialog", run: () => change(selected()) },
-        { bind: "return", title: "Save to file", group: "Dialog", run: () => confirm("export") },
+        { bind: "left", title: t("Previous value"), group: t("Dialog"), run: () => change(selected()) },
+        { bind: "right", title: t("Next value"), group: t("Dialog"), run: () => change(selected()) },
+        { bind: "space", title: t("Change export option"), group: t("Dialog"), run: () => change(selected()) },
+        { bind: "return", title: t("Save to file"), group: t("Dialog"), run: () => confirm("export") },
       ]}
     />
   )
@@ -182,11 +183,11 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
   Keymap.createLayer(() => ({
     mode: "modal",
     commands: [
-      { bind: "tab", title: "Next export option", group: "Dialog", run: () => move(1) },
-      { bind: "shift+tab", title: "Previous export option", group: "Dialog", run: () => move(-1) },
+      { bind: "tab", title: t("Next export option"), group: t("Dialog"), run: () => move(1) },
+      { bind: "shift+tab", title: t("Previous export option"), group: t("Dialog"), run: () => move(-1) },
       {
         bind: "return",
-        title: "Select export option",
+        title: t("Select export option"),
         group: "Dialog",
         run: activate,
       },
@@ -200,7 +201,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
 
   return (
     <DialogLayout
-      header={<DialogHeader title="Export session" />}
+      header={<DialogHeader title={t("Export session")} />}
       legacyFooter={
         <box flexDirection="row" justifyContent="flex-end" gap={1}>
           <box
@@ -212,7 +213,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
             onMouseUp={() => confirm("copy")}
           >
             <text fg={store.active === "copy" ? theme.text.action.primary.focused : theme.text.action.primary.base}>
-              Copy
+              {t("Copy")}
             </text>
           </box>
           <box
@@ -224,7 +225,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
             onMouseUp={() => confirm("export")}
           >
             <text fg={store.active === "export" ? theme.text.action.primary.focused : theme.text.action.primary.base}>
-              Export
+              {t("Export")}
             </text>
           </box>
         </box>
@@ -232,7 +233,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
     >
       <box gap={1}>
         <box flexDirection="row" gap={1}>
-          <text fg={theme.text.base}>Export as:</text>
+          <text fg={theme.text.base}>{t("Export as:")}</text>
           <box flexDirection="row" gap={1}>
             <For each={["markdown", "json"] as const}>
               {(format) => (
@@ -262,7 +263,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
             }}
           >
             <text fg={markColor(store.active === "thinking", store.thinking)}>{store.thinking ? "[x]" : "[ ]"}</text>
-            <text fg={labelColor(store.active === "thinking")}>Include thinking</text>
+            <text fg={labelColor(store.active === "thinking")}>{t("Include thinking")}</text>
           </box>
           <box
             flexDirection="row"
@@ -273,7 +274,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
             }}
           >
             <text fg={markColor(store.active === "tools", store.tools)}>{store.tools ? "[x]" : "[ ]"}</text>
-            <text fg={labelColor(store.active === "tools")}>Include tools</text>
+            <text fg={labelColor(store.active === "tools")}>{t("Include tools")}</text>
           </box>
         </Show>
         <Show when={store.format === "json"}>
@@ -286,7 +287,7 @@ function LegacyDialogExportOptions(props: DialogExportOptionsProps) {
             }}
           >
             <text fg={markColor(store.active === "sanitize", store.sanitize)}>{store.sanitize ? "[x]" : "[ ]"}</text>
-            <text fg={labelColor(store.active === "sanitize")}>Sanitize sensitive data</text>
+            <text fg={labelColor(store.active === "sanitize")}>{t("Sanitize sensitive data")}</text>
           </box>
         </Show>
       </box>

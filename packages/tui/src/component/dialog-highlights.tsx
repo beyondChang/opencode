@@ -7,6 +7,7 @@ import type { TuiHighlight } from "../context/runtime"
 import { useTheme } from "../context/theme"
 import { DIALOG_INSET, DialogBleed, DialogFooter, DialogHeader, DialogLayout, useDialog } from "../ui/dialog"
 import { getScrollAcceleration } from "../util/scroll"
+import { t } from "../i18n"
 
 export function DialogHighlights(props: { version: string; items: ReadonlyArray<TuiHighlight> }) {
   const dialog = useDialog()
@@ -22,19 +23,19 @@ export function DialogHighlights(props: { version: string; items: ReadonlyArray<
   Keymap.createLayer(() => ({
     mode: "modal",
     commands: [
-      { bind: "return", title: "Close highlights", group: "Dialog", run: () => dialog.clear() },
-      ...["up", "k"].map((bind) => ({ bind, title: "Scroll up", group: "Dialog", run: () => scroll?.scrollBy(-1) })),
-      ...["down", "j"].map((bind) => ({ bind, title: "Scroll down", group: "Dialog", run: () => scroll?.scrollBy(1) })),
-      { bind: "pageup", title: "Previous page", group: "Dialog", run: () => scroll?.scrollBy(-maxHeight()) },
-      { bind: "pagedown", title: "Next page", group: "Dialog", run: () => scroll?.scrollBy(maxHeight()) },
-      { bind: "home", title: "Scroll to top", group: "Dialog", run: () => scroll?.scrollTo(0) },
-      { bind: "end", title: "Scroll to bottom", group: "Dialog", run: () => scroll?.scrollTo(Infinity) },
+      { bind: "return", title: t("Close highlights"), group: "Dialog", run: () => dialog.clear() },
+      ...["up", "k"].map((bind) => ({ bind, title: t("Scroll up"), group: "Dialog", run: () => scroll?.scrollBy(-1) })),
+      ...["down", "j"].map((bind) => ({ bind, title: t("Scroll down"), group: "Dialog", run: () => scroll?.scrollBy(1) })),
+      { bind: "pageup", title: t("Previous page"), group: "Dialog", run: () => scroll?.scrollBy(-maxHeight()) },
+      { bind: "pagedown", title: t("Next page"), group: "Dialog", run: () => scroll?.scrollBy(maxHeight()) },
+      { bind: "home", title: t("Scroll to top"), group: "Dialog", run: () => scroll?.scrollTo(0) },
+      { bind: "end", title: t("Scroll to bottom"), group: "Dialog", run: () => scroll?.scrollTo(Infinity) },
     ],
   }))
 
   return (
     <DialogLayout
-      header={<DialogHeader title={`What's new in ${props.version}`} />}
+      header={<DialogHeader title={t("What's new in {version}", { version: props.version })} />}
       footer={{ actions: { primary: [{ title: "ok", key: "enter", onTrigger: () => dialog.clear() }] } }}
       legacyFooter={
         <box flexDirection="row" justifyContent="space-between" alignItems="center">

@@ -40,6 +40,7 @@ import { stringWidth } from "../util/string-width"
 import { formatContextUsage } from "../util/session"
 import { errorMessage } from "../util/error"
 import { createSingleFlight } from "../util/single-flight"
+import { t, getLocale } from "../i18n"
 
 import type {
   FooterPromptRoute,
@@ -328,7 +329,10 @@ export function RunFooterView(props: RunFooterViewProps) {
       )
       if (!error) return true
       props.onStatus(
-        `failed to ${failureLabel ?? (action === "cancel" ? "delete" : action)} pending prompt: ${errorMessage(error)}`,
+        t("failed to {action} pending prompt: {error}", {
+          action: t(failureLabel ?? (action === "cancel" ? "delete" : action)),
+          error: errorMessage(error),
+        }),
       )
       return false
     })
@@ -395,26 +399,29 @@ export function RunFooterView(props: RunFooterViewProps) {
   const stateStatus = createMemo(() => props.state().status.trim())
   const notice = createMemo(() => props.state().notice.trim())
   const statusText = createMemo(() => {
+    const stop = t("stop")
+    const exit = t("exit")
     if (exiting() || (busy() && armed())) {
       const key = exiting() ? clearShortcut() : interruptLabel()
-      const action = exiting() ? "exit" : "stop"
-      if (!key) return exiting() ? "Exit pending" : "Stop pending"
+      const action = exiting() ? exit : stop
+      if (!key) return exiting() ? t("Exit pending") : t("Stop pending")
+      const interrupt = exiting() ? exit : t("interrupt")
       const phrases = [
-        `Press ${key} again to ${exiting() ? "exit" : "interrupt"}`,
-        `${key} again to ${exiting() ? "exit" : "interrupt"}`,
-        `${key} again: ${action}`,
-        `${key} ${action}`,
+        t("Press {key} again to {action}", { key, action: interrupt }),
+        t("{key} again to {action}", { key, action: interrupt }),
+        t("{key} again: {action}", { key, action }),
+        t("{key} {action}", { key, action }),
       ]
       return phrases.find((text) => stringWidth(text) <= statusWidth()) ?? phrases[phrases.length - 1]!
     }
 
     if (notice()) return notice()
-    if (!footerDetails()) return shell() ? "Shell" : ""
+    if (!footerDetails()) return shell() ? t("Shell") : ""
     if (busy()) {
-      if (stateStatus() === "reconnecting") return "reconnecting"
-      return interruptLabel() ? `${interruptLabel()} stop` : "Running"
+      if (stateStatus() === "reconnecting") return t("reconnecting")
+      return interruptLabel() ? `${interruptLabel()} ${stop}` : t("Running")
     }
-    return stateStatus() || (shell() ? "Shell" : "")
+    return stateStatus() || (shell() ? t("Shell") : "")
   })
   const agentStatus = createMemo(() => {
     if (!footerDetails() || !prompt() || shell()) return undefined
@@ -451,14 +458,16 @@ export function RunFooterView(props: RunFooterViewProps) {
 
     const items: Array<{ id: "queued" | "subagents"; key: string; label: string; expanded?: string }> = []
     if (queuedPrompts().length > 0 && queuedShortcut()) {
-      items.push({ id: "queued", key: queuedShortcut(), label: `${queuedPrompts().length} pending` })
+      items.push({ id: "queued", key: queuedShortcut(), label: t("{count} pending", { count: queuedPrompts().length }) })
     }
     if (activeTabs().length > 0 && subagentShortcut()) {
+      const count = activeTabs().length
+      const noun = getLocale() === "en" ? (count === 1 ? "subagent" : "subagents") : "subagents"
       items.push({
         id: "subagents",
         key: subagentShortcut(),
-        label: `${activeTabs().length} sub`,
-        expanded: `${activeTabs().length} subagent${activeTabs().length === 1 ? "" : "s"}`,
+        label: t("{count} sub", { count }),
+        expanded: t("{count} {noun}", { count, noun }),
       })
     }
     return items
@@ -466,7 +475,7 @@ export function RunFooterView(props: RunFooterViewProps) {
   const commandHint = createMemo(() => {
     if (!prompt() || takeover() || shell()) return
     if (command()) {
-      return { key: command(), label: "menu" }
+      return { key: command(), label: t("menu") }
     }
   })
   const statuslineLayout = createMemo(() => {
@@ -476,9 +485,9 @@ export function RunFooterView(props: RunFooterViewProps) {
       mono: props.mono,
       status: {
         text: statusText(),
-        expanded: footerDetails() && busy() && interruptLabel() ? `${interruptLabel()} interrupt` : undefined,
+        expanded: footerDetails() && busy() && interruptLabel() ? t("{label} interrupt", { label: interruptLabel() }) : undefined,
       },
-      escape: shell() && !takeover() ? { key: "esc", label: "normal" } : undefined,
+      escape: shell() && !takeover() ? { key: "esc", label: t("normal") } : undefined,
       work: contextHintCandidates(),
       model: info ? { name: info.model, variant: info.variant } : undefined,
       agent: agentStatus(),
@@ -543,8 +552,8 @@ export function RunFooterView(props: RunFooterViewProps) {
     commands: [
       {
         id: "app.clear",
-        title: "Clear screen",
-        group: "System",
+        title: t("Clear screen"),
+        group: t("System"),
         run: clearScreen,
       },
     ],
@@ -555,14 +564,14 @@ export function RunFooterView(props: RunFooterViewProps) {
     commands: [
       {
         id: "command.palette.show",
-        title: "Open command palette",
-        group: "Prompt",
+        title: t("Open command palette"),
+        group: t("Prompt"),
         run: openCommand,
       },
       {
         id: "variant.cycle",
-        title: "Cycle model variant",
-        group: "Model",
+        title: t("Cycle model variant"),
+        group: t("Model"),
         run: props.onCycle,
       },
     ],
@@ -573,8 +582,8 @@ export function RunFooterView(props: RunFooterViewProps) {
     commands: [
       {
         id: "session.child.first",
-        title: "View subagents",
-        group: "Session",
+        title: t("View subagents"),
+        group: t("Session"),
         run: openSubagentMenu,
       },
     ],
@@ -585,8 +594,8 @@ export function RunFooterView(props: RunFooterViewProps) {
     commands: [
       {
         id: "session.queued_prompts",
-        title: "View pending prompts",
-        group: "Prompt",
+        title: t("View pending prompts"),
+        group: t("Prompt"),
         run: openQueuedMenu,
       },
     ],
@@ -602,8 +611,8 @@ export function RunFooterView(props: RunFooterViewProps) {
     commands: [
       {
         id: "composer.subagent.interrupt",
-        title: "Interrupt subagent",
-        group: "Session",
+        title: t("Interrupt subagent"),
+        group: t("Session"),
         run: () => {
           const current = selectedTab()
           if (current?.status !== "running") {
@@ -781,7 +790,7 @@ export function RunFooterView(props: RunFooterViewProps) {
                             onUndo={async (item) => {
                               const current = composer.current()
                               if (current.mode === "shell" && current.text) {
-                                props.onStatus("leave shell mode before undoing a queued prompt")
+                                props.onStatus(t("Leave shell mode before undoing a queued prompt"))
                                 return
                               }
                               if (!(await queuedPromptAction("cancel", item.messageID, "undo"))) return

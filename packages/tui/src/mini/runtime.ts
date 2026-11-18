@@ -13,6 +13,7 @@ import type { LocationRef } from "@opencode/client/promise"
 import type { Config } from "../config"
 import { newSessionLocation } from "../config/new-session-location"
 import { errorMessage } from "../util/error"
+import { setLocale } from "../i18n"
 import { loadRunAgents, loadRunCommands, loadRunReferences } from "./catalog.shared"
 import {
   resolveMiniSettings,
@@ -197,6 +198,7 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
   const configState: { current: MiniSettings } = { current: resolveMiniSettings() }
   const tuiConfigTask = resolveRunTuiConfig(input.tuiConfig, input.host.platform).then((tuiConfig) => {
     configState.current = resolveMiniSettings(tuiConfig)
+    setLocale(tuiConfig.locale)
     return tuiConfig
   })
   const ctx = await input.boot()

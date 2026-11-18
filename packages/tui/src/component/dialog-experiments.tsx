@@ -4,6 +4,7 @@ import { DIALOG_LIST_INSET } from "../ui/dialog"
 import { DialogSelect } from "../ui/dialog-select"
 import { useTheme } from "../context/theme"
 import { useToast } from "../ui/toast"
+import { t } from "../i18n"
 
 type Experiment = {
   id: string
@@ -17,13 +18,13 @@ type Experiment = {
 export const experiments: Experiment[] = [
   {
     id: "new-designs",
-    title: "New designs",
-    description: "Preview the new TUI designs",
+    title: t("New designs"),
+    description: t("Preview the new TUI designs"),
   },
   {
     id: "client-mcp",
-    title: "TUI tools",
-    description: "Let the agent open terminals in this TUI (requires server support)",
+    title: t("TUI tools"),
+    description: t("Let the agent open terminals in this TUI (requires server support)"),
   },
 ]
 
@@ -63,14 +64,14 @@ export function DialogExperiments() {
 
   return (
     <DialogSelect
-      title="Experiments"
+      title={t("Experiments")}
       options={options()}
       renderFilter={experiments.length > 0}
       onMove={(option) => setSelected(option.value)}
       onSelect={(option) => void change(option.value)}
       emptyView={
         <box paddingLeft={DIALOG_LIST_INSET} paddingRight={DIALOG_LIST_INSET}>
-          <text fg={theme.text.muted}>No experiments available</text>
+          <text fg={theme.text.muted}>{t("No experiments available")}</text>
         </box>
       }
       footerHints={experiments.length > 0 && !newDesigns() ? [{ title: "change", label: "←/→" }] : []}
@@ -79,13 +80,13 @@ export function DialogExperiments() {
           ? [
               {
                 bind: "left",
-                title: "Previous value",
+                title: t("Previous value"),
                 group: "Experiments",
                 run: () => void change(),
               },
               {
                 bind: "right",
-                title: "Next value",
+                title: t("Next value"),
                 group: "Experiments",
                 run: () => void change(),
               },

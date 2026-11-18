@@ -8,6 +8,7 @@ import { SubagentsTab } from "./subagents-tab"
 import { ShellTab } from "./shell-tab"
 import { TerminalsTab } from "./terminals-tab"
 import { ComposerContext, type ComposerTab } from "./context"
+import { t } from "../../../i18n"
 
 export type ComposerProps = {
   sessionID: string
@@ -74,10 +75,10 @@ export function Composer(props: ComposerProps) {
     enabled: () => props.open,
     priority: 1,
     commands: [
-      { bind: "left", title: "Previous tab", group: "Composer", run: () => switchTab(-1) },
-      { bind: "right", title: "Next tab", group: "Composer", run: () => switchTab(1) },
-      { bind: "escape", title: "Close composer", group: "Composer", run: close },
-      { bind: "ctrl+c", title: "Close composer", group: "Composer", run: close },
+      { bind: "left", title: t("Previous tab"), group: t("Composer"), run: () => switchTab(-1) },
+      { bind: "right", title: t("Next tab"), group: t("Composer"), run: () => switchTab(1) },
+      { bind: "escape", title: t("Close composer"), group: t("Composer"), run: close },
+      { bind: "ctrl+c", title: t("Close composer"), group: t("Composer"), run: close },
     ],
   }))
 
@@ -144,7 +145,7 @@ export function Composer(props: ComposerProps) {
               <Show when={tabList().length > 1}>
                 <text>
                   <span style={{ fg: theme.text.base }}>
-                    <b>tabs</b>{" "}
+                    <b>{t("tabs")}</b>{" "}
                   </span>
                   <span style={{ fg: theme.text.muted }}>←/→</span>
                 </text>

@@ -13,6 +13,7 @@ import { Keymap } from "../../../context/keymap"
 import { useComposerTab } from "./context"
 import { withTimestampedFallback } from "@opencode/util/session-title-fallback"
 import { sessionFamily } from "../../../util/session"
+import { t } from "../../../i18n"
 
 interface SubagentEntry {
   sessionID: string
@@ -52,7 +53,7 @@ export function SubagentsTab(props: { sessionID: string }) {
             ? Locale.titlecase(session.agent)
             : agentMatch
               ? Locale.titlecase(agentMatch[1])
-              : "Subagent",
+              : t("Subagent"),
           title: agentMatch ? title.replace(agentMatch[0], "").trim() || title : title,
           status: data.session.status(session.id),
           current: session.id === route.sessionID,
@@ -118,15 +119,15 @@ export function SubagentsTab(props: { sessionID: string }) {
   onMount(() => {
     const cleanup = composer.register({
       id: "subagents",
-      label: "Subagents",
+      label: t("Subagents"),
       hints: () => {
         const entry = selectedEntry()
         return [
           ...(entry?.status === "running"
-            ? [{ label: "interrupt", shortcut: shortcuts.get("composer.subagent.interrupt") ?? "" }]
+            ? [{ label: t("interrupt"), shortcut: shortcuts.get("composer.subagent.interrupt") ?? "" }]
             : []),
           {
-            label: `show ${filter.active ? "inactive" : "active"}`,
+            label: t("show {visibility}", { visibility: filter.active ? t("inactive") : t("active") }),
             shortcut: shortcuts.get("composer.subagent.toggle-activity") ?? "",
           },
         ]
@@ -142,8 +143,8 @@ export function SubagentsTab(props: { sessionID: string }) {
     commands: [
       {
         id: "composer.subagent.up",
-        title: "Previous subagent",
-        group: "Composer",
+        title: t("Previous subagent"),
+        group: t("Composer"),
         run() {
           if (store.selected === 0) {
             composer.close()
@@ -154,8 +155,8 @@ export function SubagentsTab(props: { sessionID: string }) {
       },
       {
         id: "composer.subagent.down",
-        title: "Next subagent",
-        group: "Composer",
+        title: t("Next subagent"),
+        group: t("Composer"),
         run() {
           const list = entries()
           if (list.length === 0) return
@@ -164,8 +165,8 @@ export function SubagentsTab(props: { sessionID: string }) {
       },
       {
         id: "composer.subagent.select",
-        title: "Navigate to subagent",
-        group: "Composer",
+        title: t("Navigate to subagent"),
+        group: t("Composer"),
         run() {
           const entry = entries()[store.selected]
           if (entry) navigate({ type: "session", sessionID: entry.sessionID })
@@ -173,8 +174,8 @@ export function SubagentsTab(props: { sessionID: string }) {
       },
       {
         id: "composer.subagent.toggle-activity",
-        title: "Toggle active subagents",
-        group: "Composer",
+        title: t("Toggle active subagents"),
+        group: t("Composer"),
         bind: "ctrl+a",
         run() {
           updateFilter((draft) => (draft.active = !draft.active))
@@ -184,8 +185,8 @@ export function SubagentsTab(props: { sessionID: string }) {
       },
       {
         id: "composer.subagent.interrupt",
-        title: "Interrupt subagent",
-        group: "Composer",
+        title: t("Interrupt subagent"),
+        group: t("Composer"),
         run() {
           const entry = selectedEntry()
           if (!entry || entry.status !== "running") return
@@ -200,13 +201,18 @@ export function SubagentsTab(props: { sessionID: string }) {
       <scrollbox scrollbarOptions={{ visible: false }} maxHeight={5} ref={(r: ScrollBoxRenderable) => (scroll = r)}>
         <Show
           when={entries().length > 0}
-          fallback={<text fg={theme.text.muted}> No {filter.active ? "active" : "inactive"} subagents</text>}
+          fallback={
+            <text fg={theme.text.muted}>
+              {" "}
+              {t("No {visibility} subagents", { visibility: filter.active ? t("active") : t("inactive") })}
+            </text>
+          }
         >
           <For each={entries()}>
             {(entry, index) => {
               const active = createMemo(() => index() === store.selected)
               const status = createMemo(() => {
-                if (entry.status === "running") return "Running"
+                if (entry.status === "running") return t("Running")
                 return ""
               })
               return (

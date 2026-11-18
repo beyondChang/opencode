@@ -5,6 +5,7 @@ import { FilePath } from "../../ui/file-path"
 import { useWorkingDirectoryActions } from "../../ui/working-directory-actions"
 import { usePromptMove } from "../../component/prompt/move"
 import { hasConnectedProvider } from "../../util/connected-provider"
+import { t } from "../../i18n"
 
 export function SidebarOnboarding(props: { context: Plugin.Context; sessionID: string }) {
   const dimensions = useTerminalDimensions()
@@ -40,7 +41,7 @@ export function SidebarOnboarding(props: { context: Plugin.Context; sessionID: s
         <box flexGrow={1} gap={1}>
           <box flexDirection="row" justifyContent="space-between">
             <text fg={props.context.theme.text.base}>
-              <b>Getting started</b>
+              <b>{t("Getting started")}</b>
             </text>
             <text
               id="sidebar.footer.getting-started.dismiss"
@@ -54,9 +55,9 @@ export function SidebarOnboarding(props: { context: Plugin.Context; sessionID: s
               ✕
             </text>
           </box>
-          <text fg={props.context.theme.text.muted}>OpenCode includes free models so you can start immediately.</text>
+          <text fg={props.context.theme.text.muted}>{t("OpenCode includes free models so you can start immediately.")}</text>
           <text fg={props.context.theme.text.muted}>
-            Connect from 75+ providers to use other models, including Claude, GPT, Gemini etc
+            {t("Connect from 75+ providers to use other models, including Claude, GPT, Gemini etc")}
           </text>
           <box
             id="sidebar.footer.getting-started.connect"
@@ -65,7 +66,7 @@ export function SidebarOnboarding(props: { context: Plugin.Context; sessionID: s
             justifyContent="space-between"
             onMouseUp={() => props.context.keymap.dispatch("provider.connect")}
           >
-            <text fg={props.context.theme.text.base}>Connect provider</text>
+            <text fg={props.context.theme.text.base}>{t("Connect provider")}</text>
             <text fg={props.context.theme.text.muted}>/connect</text>
           </box>
         </box>

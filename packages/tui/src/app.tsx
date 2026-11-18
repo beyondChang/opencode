@@ -72,6 +72,7 @@ import { DialogDebug } from "./component/dialog-debug"
 import { DialogPair } from "./component/dialog-pair"
 import { DialogHighlights } from "./component/dialog-highlights"
 import { claim } from "./util/highlights"
+import { setLocale, t } from "./i18n"
 import { DialogThemeList } from "./component/dialog-theme-list"
 import { DialogHelp } from "./ui/dialog-help"
 import { DialogAgent } from "./component/dialog-agent"
@@ -216,6 +217,7 @@ export const run = Effect.fn("Tui.run")(function* (input: TuiInput) {
   const config = Config.resolve(yield* Effect.tryPromise(() => input.config.get()), {
     terminalSuspend: process.platform !== "win32",
   })
+  setLocale(config.locale)
   const headers = Service.headers(input.server.endpoint)
   const options = {
     baseUrl: input.server.endpoint.url,
@@ -568,16 +570,16 @@ function App() {
       if (status.status === "needs_auth")
         toast.show({
           variant: "warning",
-          title: "MCP server needs authentication",
-          message: `Connect "${server.name}" to use its tools.`,
-          action: { label: "Open MCP servers", run: () => keymap.dispatch("mcp.list") },
+          title: t("MCP server needs authentication"),
+          message: t('Connect "{name}" to use its tools.', { name: server.name }),
+          action: { label: t("Open MCP servers"), run: () => keymap.dispatch("mcp.list") },
         })
       else
         toast.show({
           variant: "error",
-          title: `MCP server failed: ${server.name}`,
-          message: "Run /mcps to view details.",
-          action: { label: "Open MCP servers", run: () => keymap.dispatch("mcp.list") },
+          title: t("MCP server failed: {name}", { name: server.name }),
+          message: t("Run /mcps to view details."),
+          action: { label: t("Open MCP servers"), run: () => keymap.dispatch("mcp.list") },
         })
     }
   })
@@ -603,7 +605,7 @@ function App() {
 
     await clipboard
       .write(text)
-      .then(() => toast.show({ message: "Copied to clipboard", variant: "info" }))
+      .then(() => toast.show({ message: t("Copied to clipboard"), variant: "info" }))
       .catch(toast.error)
 
     renderer.clearSelection()
@@ -753,8 +755,8 @@ function App() {
     [
       {
         name: COMMAND_PALETTE_COMMAND,
-        title: "Show command palette",
-        category: "System",
+        title: t("Show command palette"),
+        category: t("System"),
         palette: undefined,
         run: () => {
           dialog.replace(() => <CommandPaletteDialog />)
@@ -762,8 +764,8 @@ function App() {
       },
       {
         name: "session.list",
-        title: "Switch session",
-        category: "Session",
+        title: t("Switch session"),
+        category: t("Session"),
         suggested: data.session.list().length > 0,
         slash: { name: "sessions", aliases: ["resume", "continue"] },
         run: () => {
@@ -772,9 +774,9 @@ function App() {
       },
       {
         name: "session.new",
-        title: "New session",
+        title: t("New session"),
         suggested: route.data.type === "session",
-        category: "Session",
+        category: t("Session"),
         slash: { name: "new" },
         run: () => {
           const model = local.model.current()
@@ -799,8 +801,8 @@ function App() {
       },
       {
         name: "session.clear",
-        title: "Clear session",
-        category: "Session",
+        title: t("Clear session"),
+        category: t("Session"),
         slash: { name: "clear" },
         run: () => {
           const model = local.model.current()
@@ -826,8 +828,8 @@ function App() {
       },
       {
         name: "open.menu",
-        title: "Open session or project",
-        category: "Session",
+        title: t("Open session or project"),
+        category: t("Session"),
         slash: { name: "open", aliases: ["projects", "project"] },
         run: () => {
           if (dialog.key === DialogOpenKey) return
@@ -839,71 +841,71 @@ function App() {
       },
       ...Array.from({ length: 9 }, (_, i) => ({
         name: `session.quick_switch.${i + 1}`,
-        title: `Switch to session in quick slot ${i + 1}`,
-        category: "Session",
+        title: t("Switch to session in quick slot {slot}", { slot: i + 1 }),
+        category: t("Session"),
         palette: undefined,
         enabled: () => !sessionTabs.enabled(),
         run: () => local.session.quickSwitch(i + 1),
       })),
       {
         name: "session.tab.next",
-        title: "Next tab",
-        category: "Session",
+        title: t("Next tab"),
+        category: t("Session"),
         palette: undefined,
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.cycle(1),
       },
       {
         name: "session.tab.previous",
-        title: "Previous tab",
-        category: "Session",
+        title: t("Previous tab"),
+        category: t("Session"),
         palette: undefined,
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.cycle(-1),
       },
       {
         name: "session.tab.next_unread",
-        title: "Next unread tab",
-        category: "Session",
+        title: t("Next unread tab"),
+        category: t("Session"),
         palette: undefined,
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.cycleUnread(1),
       },
       {
         name: "session.tab.previous_unread",
-        title: "Previous unread tab",
-        category: "Session",
+        title: t("Previous unread tab"),
+        category: t("Session"),
         palette: undefined,
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.cycleUnread(-1),
       },
       {
         name: "session.tab.close",
-        title: "Close tab",
-        category: "Session",
+        title: t("Close tab"),
+        category: t("Session"),
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.close(),
       },
       {
         name: "session.tab.reopen",
-        title: "Reopen closed tab",
-        category: "Session",
+        title: t("Reopen closed tab"),
+        category: t("Session"),
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.reopen(),
       },
       ...Array.from({ length: 10 }, (_, i) => ({
         name: `session.tab.select.${i + 1}`,
-        title: `Switch to tab ${i + 1}`,
-        category: "Session",
+        title: t("Switch to tab {index}", { index: i + 1 }),
+        category: t("Session"),
         palette: undefined,
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.selectIndex(i),
       })),
       {
         name: "model.list",
-        title: "Switch model",
+        title: t("Switch model"),
         suggested: true,
-        category: "Agent",
+        category: t("Agent"),
         slash: { name: "models" },
         run: () => {
           dialog.replace(() => <DialogModel />)
@@ -911,8 +913,8 @@ function App() {
       },
       {
         name: "model.cycle_recent",
-        title: "Model cycle",
-        category: "Agent",
+        title: t("Model cycle"),
+        category: t("Agent"),
         palette: undefined,
         run: () => {
           local.model.cycle(1)
@@ -920,8 +922,8 @@ function App() {
       },
       {
         name: "model.cycle_recent_reverse",
-        title: "Model cycle reverse",
-        category: "Agent",
+        title: t("Model cycle reverse"),
+        category: t("Agent"),
         palette: undefined,
         run: () => {
           local.model.cycle(-1)
@@ -929,8 +931,8 @@ function App() {
       },
       {
         name: "model.cycle_favorite",
-        title: "Favorite cycle",
-        category: "Agent",
+        title: t("Favorite cycle"),
+        category: t("Agent"),
         palette: undefined,
         run: () => {
           local.model.cycleFavorite(1)
@@ -938,8 +940,8 @@ function App() {
       },
       {
         name: "model.cycle_favorite_reverse",
-        title: "Favorite cycle reverse",
-        category: "Agent",
+        title: t("Favorite cycle reverse"),
+        category: t("Agent"),
         palette: undefined,
         run: () => {
           local.model.cycleFavorite(-1)
@@ -947,8 +949,8 @@ function App() {
       },
       {
         name: "agent.list",
-        title: "Switch agent",
-        category: "Agent",
+        title: t("Switch agent"),
+        category: t("Agent"),
         slash: { name: "agents" },
         run: () => {
           dialog.replace(() => <DialogAgent />)
@@ -956,8 +958,8 @@ function App() {
       },
       {
         name: "usage.show",
-        title: "View usage",
-        category: "Agent",
+        title: t("View usage"),
+        category: t("Agent"),
         slash: { name: "usage" },
         run: () => {
           dialog.replace(() => <DialogUsage />)
@@ -965,8 +967,8 @@ function App() {
       },
       {
         name: "mcp.list",
-        title: "MCP servers",
-        category: "Agent",
+        title: t("MCP servers"),
+        category: t("Agent"),
         slash: { name: "mcps" },
         run: () => {
           dialog.replace(() => <DialogMcp />)
@@ -974,8 +976,8 @@ function App() {
       },
       {
         name: "agent.cycle",
-        title: "Agent cycle",
-        category: "Agent",
+        title: t("Agent cycle"),
+        category: t("Agent"),
         palette: undefined,
         run: () => {
           local.agent.move(1)
@@ -983,23 +985,23 @@ function App() {
       },
       {
         name: "variant.cycle",
-        title: "Variant cycle",
-        category: "Agent",
+        title: t("Variant cycle"),
+        category: t("Agent"),
         run: () => {
           local.model.variant.cycle()
         },
       },
       {
         name: "variant.list",
-        title: "Switch model variant",
-        category: "Agent",
+        title: t("Switch model variant"),
+        category: t("Agent"),
         palette: local.model.variant.list().length === 0 ? undefined : (true as const),
         slash: { name: "variants", aliases: ["thinking", "effort"] },
         run: () => {
           if (local.model.variant.list().length === 0) {
             return toast.show({
-              title: "No variants available",
-              message: "The current model does not support any variants.",
+              title: t("No variants available"),
+              message: t("The current model does not support any variants."),
               variant: "info",
             })
           }
@@ -1008,8 +1010,8 @@ function App() {
       },
       {
         name: "agent.cycle.reverse",
-        title: "Agent cycle reverse",
-        category: "Agent",
+        title: t("Agent cycle reverse"),
+        category: t("Agent"),
         palette: undefined,
         run: () => {
           local.agent.move(-1)
@@ -1017,7 +1019,7 @@ function App() {
       },
       {
         name: "provider.connect",
-        title: "Connect an integration",
+        title: t("Connect an integration"),
         suggested: !connected(),
         slash: { name: "connect" },
         run: () => {
@@ -1027,112 +1029,112 @@ function App() {
             />
           ))
         },
-        category: "Integration",
+        category: t("Integration"),
       },
       ...(app.highlights?.length
         ? [
             {
               name: "opencode.highlights",
-              title: "Show release highlights",
+              title: t("Show release highlights"),
               slash: { name: "highlights" },
               run: () => dialog.replace(() => <DialogHighlights version={app.version} items={app.highlights ?? []} />),
-              category: "System",
+              category: t("System"),
             },
           ]
         : []),
       {
         name: "opencode.settings",
-        title: "Open settings",
+        title: t("Open settings"),
         suggested: true,
         slash: { name: "settings" },
         run: () => {
           dialog.replace(() => <DialogConfig />)
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "opencode.status",
-        title: "View status",
+        title: t("View status"),
         slash: { name: "status" },
         run: () => {
           dialog.replace(() => <DialogStatus />)
         },
-        category: "System",
+        category: t("System"),
       },
       ...(updater.open
         ? [
             {
               name: "opencode.update",
-              title: "Update OpenCode",
+              title: t("Update OpenCode"),
               slash: { name: "update" },
               run: () => updater.open?.("manual"),
-              category: "System",
+              category: t("System"),
             },
           ]
         : []),
       {
         name: "server.pair",
-        title: "Pair device",
+        title: t("Pair device"),
         slash: { name: "pair", aliases: ["web"] },
         run: () => {
           dialog.replace(() => <DialogPair />)
         },
-        category: "System",
+        category: t("System"),
       },
       ...(client.restart
         ? [
             {
               name: "service.restart",
-              title: "Restart service",
+              title: t("Restart service"),
               slash: { name: "restart" },
               run: async () => {
                 const restart = client.restart
                 if (!restart) return
                 dialog.clear()
-                toast.show({ variant: "info", message: "Restarting service…", duration: 30000 })
+                toast.show({ variant: "info", message: t("Restarting service…"), duration: 30000 })
                 // restart resolves once the replacement service is healthy; the
                 // event stream reattaches through the reconnect loop.
                 await restart()
-                  .then(() => toast.show({ variant: "success", message: "Service restarted" }))
+                  .then(() => toast.show({ variant: "success", message: t("Service restarted") }))
                   .catch(toast.error)
               },
-              category: "System",
+              category: t("System"),
             },
           ]
         : []),
       {
         name: "location.reload",
-        title: "Reload configuration",
+        title: t("Reload configuration"),
         slash: { name: "reload" },
         run: async () => {
           dialog.clear()
-          toast.show({ variant: "info", message: "Reloading configuration…", duration: 30000 })
+          toast.show({ variant: "info", message: t("Reloading configuration…"), duration: 30000 })
           await client.api.location
             .reload()
             .then(() => {
-              toast.show({ variant: "success", message: "Configuration reloaded" })
+              toast.show({ variant: "success", message: t("Configuration reloaded") })
             })
             .catch(toast.error)
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "opencode.debug",
-        title: "View debug info",
+        title: t("View debug info"),
         slash: { name: "debug" },
         run: () => {
           dialog.replace(() => <DialogDebug />)
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "theme.switch",
-        title: "Switch theme",
+        title: t("Switch theme"),
         slash: { name: "themes" },
         run: () => {
           dialog.replace(() => <DialogThemeList />)
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "theme.switch_mode",
@@ -1143,7 +1145,7 @@ function App() {
           setMode(mode() === "dark" ? "light" : "dark")
           dialog.clear()
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "theme.mode.lock",
@@ -1154,37 +1156,37 @@ function App() {
           else lock()
           dialog.clear()
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "help.show",
-        title: "Help",
+        title: t("Help"),
         slash: { name: "help" },
         run: () => {
           dialog.replace(() => <DialogHelp />)
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "docs.open",
-        title: "Open docs",
+        title: t("Open docs"),
         run: () => {
           openUrl("https://opencode.ai/docs").catch(() => {})
           dialog.clear()
         },
-        category: "System",
+        category: t("System"),
       },
       {
         name: "app.exit",
-        title: "Exit the app",
+        title: t("Exit the app"),
         slash: { name: "exit", aliases: ["quit", "q"] },
         run: () => exit(),
-        category: "System",
+        category: t("System"),
       },
       {
         name: "app.debug",
-        title: "Toggle debug panel",
-        category: "System",
+        title: t("Toggle debug panel"),
+        category: t("System"),
         palette: undefined,
         run: () => {
           renderer.toggleDebugOverlay()
@@ -1193,8 +1195,8 @@ function App() {
       },
       {
         name: "app.console",
-        title: "Toggle console",
-        category: "System",
+        title: t("Toggle console"),
+        category: t("System"),
         run: () => {
           renderer.console.toggle()
           dialog.clear()
@@ -1202,8 +1204,8 @@ function App() {
       },
       {
         name: "terminal.suspend",
-        title: "Suspend terminal",
-        category: "System",
+        title: t("Suspend terminal"),
+        category: t("System"),
         palette: undefined,
         enabled: process.platform !== "win32",
         run: async () => {
@@ -1215,7 +1217,7 @@ function App() {
       {
         name: "terminal.title.toggle",
         title: terminalTitleEnabled() ? "Disable terminal title" : "Enable terminal title",
-        category: "System",
+        category: t("System"),
         palette: undefined,
         run: () => {
           const next = !terminalTitleEnabled()
@@ -1231,7 +1233,7 @@ function App() {
       {
         name: "app.toggle.animations",
         title: (config.data.animations ?? true) ? "Disable animations" : "Enable animations",
-        category: "System",
+        category: t("System"),
         palette: undefined,
         run: () => {
           void config
@@ -1245,7 +1247,7 @@ function App() {
       {
         name: "app.toggle.file_context",
         title: (config.data.prompt?.editor ?? true) ? "Disable file context" : "Enable file context",
-        category: "System",
+        category: t("System"),
         palette: undefined,
         run: () => {
           void config
@@ -1259,7 +1261,7 @@ function App() {
       {
         name: "app.toggle.diffwrap",
         title: (config.data.diffs?.wrap ?? "word") === "word" ? "Disable diff wrapping" : "Enable diff wrapping",
-        category: "System",
+        category: t("System"),
         palette: undefined,
         run: () => {
           void config
@@ -1276,7 +1278,7 @@ function App() {
       {
         name: "app.toggle.paste_summary",
         title: pasteSummaryEnabled() ? "Disable paste summary" : "Enable paste summary",
-        category: "System",
+        category: t("System"),
         palette: undefined,
         run: () => {
           void config
@@ -1288,10 +1290,11 @@ function App() {
         },
       },
     ].map(
-      ({ name, category, ...command }) =>
+      ({ name, category, title, ...command }) =>
         ({
           id: name,
-          group: category,
+          group: category === undefined ? undefined : t(category),
+          title: typeof title === "string" ? t(title) : title,
           bind: false,
           palette: true as const,
           ...command,

@@ -8,6 +8,7 @@ import { Keymap } from "../../../context/keymap"
 import { useComposerTab } from "./context"
 import { useDialog } from "../../../ui/dialog"
 import { DialogShellOutput } from "../../../component/dialog-shell-output"
+import { t } from "../../../i18n"
 
 export function ShellTab(props: { sessionID: string }) {
   const data = useData()
@@ -49,12 +50,12 @@ export function ShellTab(props: { sessionID: string }) {
   onMount(() => {
     const cleanup = composer.register({
       id: "shell",
-      label: "Shell",
+      label: t("Shell"),
       hints: () =>
         selectedEntry()
           ? [
-              { label: "output", shortcut: shortcuts.get("composer.shell.select") ?? "" },
-              { label: "kill", shortcut: shortcuts.get("composer.shell.kill") ?? "" },
+              { label: t("output"), shortcut: shortcuts.get("composer.shell.select") ?? "" },
+              { label: t("kill"), shortcut: shortcuts.get("composer.shell.kill") ?? "" },
             ]
           : [],
     })
@@ -68,8 +69,8 @@ export function ShellTab(props: { sessionID: string }) {
     commands: [
       {
         id: "composer.shell.up",
-        title: "Previous shell",
-        group: "Composer",
+        title: t("Previous shell"),
+        group: t("Composer"),
         run() {
           if (store.selected === 0) {
             composer.close()
@@ -80,8 +81,8 @@ export function ShellTab(props: { sessionID: string }) {
       },
       {
         id: "composer.shell.down",
-        title: "Next shell",
-        group: "Composer",
+        title: t("Next shell"),
+        group: t("Composer"),
         run() {
           const list = entries()
           if (list.length === 0) return
@@ -90,14 +91,14 @@ export function ShellTab(props: { sessionID: string }) {
       },
       {
         id: "composer.shell.select",
-        title: "View shell output",
-        group: "Composer",
+        title: t("View shell output"),
+        group: t("Composer"),
         run: open,
       },
       {
         id: "composer.shell.kill",
-        title: "Kill shell command",
-        group: "Composer",
+        title: t("Kill shell command"),
+        group: t("Composer"),
         run() {
           const entry = selectedEntry()
           if (!entry) return
@@ -113,7 +114,7 @@ export function ShellTab(props: { sessionID: string }) {
   return (
     <Show when={composer.active("shell")}>
       <scrollbox scrollbarOptions={{ visible: false }} maxHeight={5} ref={(r: ScrollBoxRenderable) => (scroll = r)}>
-        <Show when={entries().length > 0} fallback={<text fg={theme.text.muted}> No shell commands</text>}>
+        <Show when={entries().length > 0} fallback={<text fg={theme.text.muted}> {t("No shell commands")}</text>}>
           <For each={entries()}>
             {(shell, index) => {
               const active = createMemo(() => index() === store.selected)

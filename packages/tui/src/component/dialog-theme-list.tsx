@@ -2,6 +2,7 @@ import { DialogSelect, type DialogSelectRef } from "../ui/dialog-select"
 import { useThemes } from "../context/theme"
 import { useDialog } from "../ui/dialog"
 import { onCleanup } from "solid-js"
+import { t } from "../i18n"
 
 /** `onClose` returns to the caller, e.g. Settings, instead of closing every dialog. */
 export function DialogThemeList(props: { onClose?: () => void }) {
@@ -23,7 +24,7 @@ export function DialogThemeList(props: { onClose?: () => void }) {
 
   return (
     <DialogSelect
-      title="Themes"
+      title={t("Themes")}
       searchInTitle
       titlePlaceholder="Search themes"
       options={options}

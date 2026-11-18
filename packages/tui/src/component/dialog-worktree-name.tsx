@@ -2,13 +2,14 @@ import { Slug } from "@opencode/core/util/slug"
 import { useNewDesigns } from "../config"
 import { type DialogContext } from "../ui/dialog"
 import { DialogPrompt } from "../ui/dialog-prompt"
+import { t } from "../i18n"
 
 export function DialogWorktreeName(props: { onConfirm: (name: string) => void }) {
   const newDesigns = useNewDesigns()
   return (
     <DialogPrompt
-      title="Name worktree"
-      placeholder="Worktree name"
+      title={t("Name worktree")}
+      placeholder={t("Worktree name")}
       onConfirm={(value) => props.onConfirm(slugify(value) || Slug.create())}
       actions={[
         {

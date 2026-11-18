@@ -13,6 +13,7 @@ import { DIALOG_INSET, DialogFooter, DialogHeader, DialogLayout, dialogWidth, us
 import { FilePath } from "../ui/file-path"
 import { useToast } from "../ui/toast"
 import { errorDetails } from "../util/error-details"
+import { t } from "../i18n"
 
 export function DialogErrorDetails(props: {
   title: string
@@ -55,9 +56,9 @@ export function DialogErrorDetails(props: {
   Keymap.createLayer(() => ({
     mode: "modal",
     commands: [
-      { bind: "escape", title: "Back", group: "Dialog", run: props.onBack },
-      { bind: "c", title: "Copy details", group: "Dialog", run: copy },
-      { bind: "i", title: "Investigate error", group: "Dialog", run: investigate },
+      { bind: "escape", title: t("Back"), group: "Dialog", run: props.onBack },
+      { bind: "c", title: t("Copy details"), group: "Dialog", run: copy },
+      { bind: "i", title: t("Investigate error"), group: "Dialog", run: investigate },
     ],
   }))
 

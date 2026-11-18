@@ -4,6 +4,7 @@ import { DialogSelect, type DialogSelectOption } from "../../ui/dialog-select"
 import { Locale } from "../../util/locale"
 import { DialogMessage } from "./dialog-message"
 import { useDialog } from "../../ui/dialog"
+import { t } from "../../i18n"
 
 export function DialogTimeline(props: { sessionID: string; onMove: (messageID: string) => void }) {
   const data = useData()
@@ -34,9 +35,9 @@ export function DialogTimeline(props: { sessionID: string; onMove: (messageID: s
   return (
     <DialogSelect
       onMove={(option) => props.onMove(option.value)}
-      title="Timeline"
+      title={t("Timeline")}
       searchInTitle
-      titlePlaceholder="Search timeline"
+      titlePlaceholder={t("Search timeline")}
       options={options()}
     />
   )

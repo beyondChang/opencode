@@ -8,6 +8,7 @@ import { usePlugin } from "../../plugin/context"
 import { DialogSelect, type DialogSelectOption } from "../../ui/dialog-select"
 import { useDialog } from "../../ui/dialog"
 import { errorMessage } from "../../util/error"
+import { t } from "../../i18n"
 
 const id = "opencode.plugins"
 
@@ -185,15 +186,15 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
         when={detail()}
         fallback={
           <DialogSelect
-            title="Plugins"
+            title={t("Plugins")}
             options={options()}
             locked={locked()}
             preserveSelection={true}
             bindings={[
               {
                 bind: "ctrl+a",
-                title: "Toggle internal plugins",
-                group: "Plugins",
+                title: t("Toggle internal plugins"),
+                group: t("Plugins"),
                 run: () => {
                   setShowInternal((value) => !value)
                 },
@@ -201,9 +202,9 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
             ]}
             footerHints={[
               ...(pluginError(focusedEntry()) && !focusedTui()
-                ? [{ title: "view error", label: "enter", group: "primary" as const }]
+                ? [{ title: t("view error"), label: "enter", group: "primary" as const }]
                 : []),
-              { title: `${showInternal() ? "hide" : "show"} internal`, label: "ctrl+a" },
+              { title: t("{action} internal", { action: showInternal() ? t("hide") : t("show") }), label: "ctrl+a" },
             ]}
             onMove={(option) => setFocused(option.value)}
             onSelect={(option) => {
@@ -218,7 +219,7 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
             }}
             actions={[
               {
-                title: checking() ? "checking for updates" : "check for updates",
+                title: checking() ? t("checking for updates") : t("check for updates"),
                 command: "dialog.plugins.check",
                 selection: "none",
                 hidden: !entries().some(
@@ -228,7 +229,7 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
                 onTrigger: check,
               },
               {
-                title: "view error",
+                title: t("view error"),
                 command: "dialog.plugins.error",
                 hidden: !pluginError(focusedTui()),
                 onTrigger: (option) => {
@@ -244,7 +245,7 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
                 onTrigger: (option) => toggle(entries().find((entry) => entry.key === option.value)),
               },
               {
-                title: "update",
+                title: t("update"),
                 command: "dialog.plugins.update",
                 side: "right",
                 hidden: !updatable(focusedEntry()),
@@ -256,9 +257,9 @@ export function PluginsDialog(props: { context: Plugin.Context; plugins: ReturnT
       >
         {(entry) => (
           <DialogErrorDetails
-            title={`${entry().runtime === "tui" ? "TUI" : "Server"} plugin error`}
+            title={t("{runtime} plugin error", { runtime: entry().runtime === "tui" ? t("TUI") : t("Server") })}
             source={pluginSource(entry(), props.context)}
-            error={pluginError(entry()) ?? "Unknown plugin error"}
+            error={pluginError(entry()) ?? t("Unknown plugin error")}
             diagnosticRef={pluginErrorRef(entry())}
             context={`Plugin: ${label(entry(), props.context)}\nStatus: failed\nRuntime: ${entry().runtime}\nSource: ${pluginSource(entry(), props.context)}`}
             onBack={() => {
@@ -310,7 +311,7 @@ function footer(entry: Entry) {
     ...(entry.runtime === "server" && entry.plugin.source.type === "package" && entry.plugin.source.version
       ? [displayVersion(entry.plugin.source.version)]
       : []),
-    ...(outdated(entry) ? ["update available"] : []),
+    ...(outdated(entry) ? [t("update available")] : []),
   ]
   return details.length ? details.join(", ") : undefined
 }
@@ -335,8 +336,8 @@ function Commands(props: { context: Plugin.Context }) {
     commands: [
       {
         id: "plugins.list",
-        title: "Plugins",
-        group: "System",
+        title: t("Plugins"),
+        group: t("System"),
         slash: { name: "plugins" },
         palette: true,
         run() {

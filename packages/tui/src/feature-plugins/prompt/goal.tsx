@@ -4,6 +4,7 @@ import { createEffect, createMemo, createSignal, on, onCleanup, Show, type Acces
 import { Keymap } from "../../context/keymap"
 import { useTheme } from "../../context/theme"
 import { DialogFooter, DialogHeader, DialogLayout, type DialogFooterAction } from "../../ui/dialog"
+import { t } from "../../i18n"
 
 /**
  * The goal `/goal` set on a Session, from the goal plugin's RPC: fetched when the Session changes or the server
@@ -93,7 +94,7 @@ export function GoalStatus(props: {
 /** Opens the goal dialog for a Session, or explains how to start one. */
 function showGoal(context: Plugin.Context, sessionID: string, goal: Accessor<Goal.State | undefined>) {
   if (!goal()) {
-    context.ui.toast.show({ message: "No goal is set. Start one with /goal <objective>.", variant: "info" })
+    context.ui.toast.show({ message: t("No goal is set. Start one with /goal <objective>."), variant: "info" })
     return
   }
   context.ui.dialog.show(() => <GoalDialog context={context} sessionID={sessionID} goal={goal} />)
@@ -110,7 +111,7 @@ function GoalDialog(props: {
     if (text === "clear") props.context.ui.dialog.clear()
     void props.context.client.session.command({ sessionID: props.sessionID, name: "goal", text }).catch((error) =>
       props.context.ui.toast.show({
-        title: "Failed to update the goal",
+        title: t("Failed to update the goal"),
         message: error instanceof Error ? error.message : String(error),
         variant: "error",
       }),
@@ -120,9 +121,9 @@ function GoalDialog(props: {
     const current = goal()
     if (!current) return []
     return [
-      ...(current.status === "active" ? [{ title: "pause", key: "p", onTrigger: () => run("pause") }] : []),
-      ...(current.status === "paused" ? [{ title: "resume", key: "r", onTrigger: () => run("resume") }] : []),
-      { title: "clear", key: "x", onTrigger: () => run("clear") },
+      ...(current.status === "active" ? [{ title: t("pause"), key: "p", onTrigger: () => run("pause") }] : []),
+      ...(current.status === "paused" ? [{ title: t("resume"), key: "r", onTrigger: () => run("resume") }] : []),
+      { title: t("clear"), key: "x", onTrigger: () => run("clear") },
     ]
   })
 
@@ -131,19 +132,19 @@ function GoalDialog(props: {
     commands: [
       {
         bind: "p",
-        title: "Pause goal",
+        title: t("Pause goal"),
         group: "Dialog",
         enabled: goal()?.status === "active",
         run: () => run("pause"),
       },
       {
         bind: "r",
-        title: "Resume goal",
+        title: t("Resume goal"),
         group: "Dialog",
         enabled: goal()?.status === "paused",
         run: () => run("resume"),
       },
-      { bind: "x", title: "Clear goal", group: "Dialog", enabled: goal() !== undefined, run: () => run("clear") },
+      { bind: "x", title: t("Clear goal"), group: t("Dialog"), enabled: goal() !== undefined, run: () => run("clear") },
     ],
   }))
 
@@ -151,7 +152,7 @@ function GoalDialog(props: {
     <Show when={goal()}>
       {(current) => (
         <DialogLayout
-          header={<DialogHeader title="Goal" />}
+          header={<DialogHeader title={t("Goal")} />}
           footer={{ actions: { primary: actions() } }}
           legacyFooter={<DialogFooter actions={{ primary: actions() }} />}
         >
@@ -159,7 +160,7 @@ function GoalDialog(props: {
             <text fg={theme.text.base}>{current().objective}</text>
             <box>
               <text fg={goalColor(theme, current())} wrapMode="none">
-                ◎ {current().status === "active" ? "Active" : current().status === "paused" ? "Paused" : "Met"}
+                ◎ {current().status === "active" ? t("Active") : current().status === "paused" ? t("Paused") : t("Met")}
               </text>
               <Show when={current().reason}>{(reason) => <text fg={theme.text.muted}>{reason()}</text>}</Show>
             </box>

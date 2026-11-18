@@ -6,6 +6,7 @@ import { useLocation } from "../context/location"
 import { modelPreferenceKey } from "../model-preference"
 import { DialogSelect } from "../ui/dialog-select"
 import { FavoriteMarker, ModelDetail, isFreeModel, prioritizeFavorites } from "./model-options"
+import { t } from "../i18n"
 
 /** Model picker for users without a connected provider, under the "new-designs" experiment. */
 export function DialogFreeModels(props: {
@@ -52,19 +53,19 @@ export function DialogFreeModels(props: {
 
   return (
     <DialogSelect
-      title="Free models"
-      description="Connect a provider for access to more models"
+      title={t("Free models")}
+      description={t("Connect a provider for access to more models")}
       options={options()}
       actions={[
         {
           command: "model.dialog.provider",
-          title: "connect provider",
+          title: t("connect provider"),
           selection: "none",
           onTrigger: props.onConnect,
         },
         {
           command: "model.dialog.favorite",
-          title: (option) => (isFavorite(option?.value) ? "unfavorite" : "favorite"),
+          title: (option) => (isFavorite(option?.value) ? t("unfavorite") : t("favorite")),
           onTrigger: (option) => local.model.toggleFavorite(option.value),
         },
       ]}

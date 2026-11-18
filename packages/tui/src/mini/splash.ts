@@ -18,9 +18,9 @@ import { stringWidth } from "../util/string-width"
 import { go } from "../logo"
 import { monoTruncate } from "./mono"
 import type { RunSplashTheme } from "./theme"
+import { t } from "../i18n"
 
 const SPLASH_TITLE_LIMIT = 50
-const SPLASH_TITLE_FALLBACK = "Untitled session"
 
 type SplashInput = {
   title: string | undefined
@@ -69,7 +69,7 @@ function cells(line: string): Cell[] {
 
 function title(text: string | undefined, mono = false): string {
   if (!text) {
-    return SPLASH_TITLE_FALLBACK
+    return t("Untitled session")
   }
 
   let value = ""
@@ -89,7 +89,7 @@ function title(text: string | undefined, mono = false): string {
   }
 
   if (!value) {
-    return SPLASH_TITLE_FALLBACK
+    return t("Untitled session")
   }
 
   return mono ? monoTruncate(value, SPLASH_TITLE_LIMIT, true) : Locale.truncate(value, SPLASH_TITLE_LIMIT)
@@ -179,8 +179,8 @@ function buildExit(input: SplashWriterInput, ctx: ScrollbackRenderContext): Scro
   const mark = input.mono ? ["[O]"] : go.right.slice(1)
   const top = 1
   const body_left = (mark[0]?.length ?? 0) + 2
-  const session = "Session  "
-  const label = "Continue "
+  const session = t("Session  ")
+  const label = t("Continue ")
   const command = `opencode mini -s ${meta.session_id}`
   const wide = body_left + stringWidth(label + command) <= width
   const commandHeight = wide ? 1 : Math.ceil(stringWidth(command) / width)

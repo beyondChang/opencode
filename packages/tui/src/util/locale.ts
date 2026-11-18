@@ -29,8 +29,10 @@ export function number(num: number): string {
 export { duration } from "@opencode/util/duration"
 
 export function truncate(str: string, len: number): string {
-  if (str.length <= len) return str
-  return str.slice(0, len - 1) + "…"
+  if (len <= 0) return ""
+  if (stringWidth(str) <= len) return str
+  if (len === 1) return "…"
+  return takeWidth(str, len - 1) + "…"
 }
 
 const graphemeSegmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" })
@@ -62,20 +64,34 @@ export function truncateWidth(str: string, width: number): string {
 }
 
 export function truncateLeft(str: string, len: number): string {
-  if (str.length <= len) return str
-  return "…" + str.slice(-(len - 1))
+  if (len <= 0) return ""
+  if (stringWidth(str) <= len) return str
+  if (len === 1) return "…"
+  return "…" + takeWidthRight(str, len - 1)
+}
+
+function takeWidthRight(str: string, width: number): string {
+  const result: string[] = []
+  let used = 0
+  for (const segment of graphemes(str).reverse()) {
+    const next = stringWidth(segment)
+    if (used + next > width) break
+    result.push(segment)
+    used += next
+  }
+  return result.reverse().join("")
 }
 
 export function truncateMiddle(str: string, maxLength: number = 35): string {
   if (maxLength <= 0) return ""
-  if (str.length <= maxLength) return str
+  if (stringWidth(str) <= maxLength) return str
+  if (maxLength === 1) return "…"
 
-  const ellipsis = "…"
-  const keepStart = Math.ceil((maxLength - ellipsis.length) / 2)
-  const keepEnd = Math.floor((maxLength - ellipsis.length) / 2)
-  if (keepEnd <= 0) return str.slice(0, keepStart) + ellipsis
-
-  return str.slice(0, keepStart) + ellipsis + str.slice(-keepEnd)
+  const budget = maxLength - 1
+  const keepStart = Math.ceil(budget / 2)
+  const keepEnd = Math.floor(budget / 2)
+  if (keepEnd <= 0) return takeWidth(str, keepStart) + "…"
+  return takeWidth(str, keepStart) + "…" + takeWidthRight(str, keepEnd)
 }
 
 export * as Locale from "./locale"

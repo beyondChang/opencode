@@ -30,6 +30,7 @@ import { batch, createComponent, createSignal, type Accessor, type Setter } from
 import { createStore, reconcile } from "solid-js/store"
 import { Keymap } from "../context/keymap"
 import { Locale } from "../util/locale"
+import { t } from "../i18n"
 import { RUN_SUBAGENT_PANEL_ROWS, footerPanelLayout } from "./footer.command"
 import { SUBAGENT_INSPECTOR_ROWS } from "./footer.subagent"
 import { TEXTAREA_MIN_ROWS, footerPromptLayout } from "./footer.prompt"
@@ -275,7 +276,7 @@ export class RunFooter implements FooterApi {
       const agent = currentAgent()
       if (agent) return agent.name
       const selected = selectedAgentID()
-      return selected ? Locale.titlecase(selected) : "Default"
+      return selected ? Locale.titlecase(selected) : t("Default")
     }
     const [currentModel, setCurrentModel] = createSignal<RunInput["model"]>(options.model)
     this.currentModel = currentModel
@@ -802,7 +803,7 @@ export class RunFooter implements FooterApi {
     }
 
     if (this.prompts.size === 0) {
-      this.setNotice("input queue unavailable")
+      this.setNotice(t("input queue unavailable"))
       return false
     }
 
@@ -834,12 +835,12 @@ export class RunFooter implements FooterApi {
   private handleCycle = (): void => {
     const result = this.options.onCycleVariant?.()
     if (!result) {
-      this.setNotice("no variants available")
+      this.setNotice(t("no variants available"))
       return
     }
 
     this.applySelectionResult(result)
-    if (result.status === undefined) this.setNotice("variant updated")
+    if (result.status === undefined) this.setNotice(t("variant updated"))
   }
 
   private handleModelSelect = (model: NonNullable<RunInput["model"]>): void => {
@@ -908,7 +909,7 @@ export class RunFooter implements FooterApi {
 
   private handleMiniSettingChange = async (change: MiniSettingChange): Promise<void> => {
     if (!this.options.miniSettings.update) {
-      this.setNotice("settings are unavailable")
+      this.setNotice(t("settings are unavailable"))
       return
     }
 
@@ -917,7 +918,7 @@ export class RunFooter implements FooterApi {
       if (this.isClosed) return
       if (settings.mono === this.miniSettings().mono) {
         this.setMiniSettings(settings)
-        this.setNotice("settings updated")
+        this.setNotice(t("settings updated"))
         return
       }
       const theme = await resolveRunTheme(this.renderer, this.options.tuiConfig.theme, settings.mono)
@@ -935,9 +936,9 @@ export class RunFooter implements FooterApi {
         })
       })
       await this.flushing
-      this.setNotice("settings updated")
+      this.setNotice(t("settings updated"))
     } catch (error) {
-      this.setNotice("failed to save settings")
+      this.setNotice(t("failed to save settings"))
       throw error
     }
   }
@@ -1007,7 +1008,7 @@ export class RunFooter implements FooterApi {
 
     this.clearInterruptTimer()
     this.patch({ interrupt: 0 })
-    this.setNotice("interrupting")
+    this.setNotice(t("interrupting"))
     this.options.onInterrupt?.()
     return true
   }

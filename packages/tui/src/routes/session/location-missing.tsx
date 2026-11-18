@@ -10,6 +10,7 @@ import { useToast } from "../../ui/toast"
 import { errorMessage } from "../../util/error"
 import { DialogWorkspaces, type WorkspaceSelection } from "../../component/dialog-workspaces"
 import { useData } from "../../context/data"
+import { t } from "../../i18n"
 
 export function SessionLocationMissing(props: { directory: string; projectID: string; sessionID: string }) {
   const dialog = useDialog()
@@ -44,12 +45,12 @@ export function SessionLocationMissing(props: { directory: string; projectID: st
               return result.directory
             })
             .catch((error) => {
-              toast.show({ title: "Creating workspace failed", message: errorMessage(error), variant: "error" })
+              toast.show({ title: t("Creating workspace failed"), message: errorMessage(error), variant: "error" })
               return undefined
             })
     if (!directory) return
     await client.api.session.move({ sessionID: props.sessionID, directory }).catch((error) => {
-      toast.show({ title: "Failed to move session", message: errorMessage(error), variant: "error" })
+      toast.show({ title: t("Failed to move session"), message: errorMessage(error), variant: "error" })
     })
   }
 
@@ -64,17 +65,17 @@ export function SessionLocationUnavailable(props: { directory: string; onMove: (
   return (
     <SessionQuestion
       id="session.location-missing"
-      group="Session recovery"
-      choicesLabel="Recovery actions"
+      group={t("Session recovery")}
+      choicesLabel={t("Recovery actions")}
       instance={props.directory}
-      title="Session location unavailable"
+      title={t("Session location unavailable")}
       body={
         <box paddingLeft={1} gap={1}>
           <text fg={theme.text.muted}>{directory()}</text>
-          <text fg={theme.text.base}>Choose another directory to continue this session.</text>
+          <text fg={theme.text.base}>{t("Choose another directory to continue this session.")}</text>
         </box>
       }
-      options={{ move: "Choose directory" }}
+      options={{ move: t("Choose directory") }}
       onSelect={props.onMove}
     />
   )

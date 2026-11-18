@@ -5,6 +5,7 @@ import { useClipboard } from "../context/clipboard"
 import { useDialog } from "./dialog"
 import { DialogSelect } from "./dialog-select"
 import { useToast } from "./toast"
+import { t } from "../i18n"
 
 export function useWorkingDirectoryActions(input: { directory: () => string | undefined; onMove?: () => void }) {
   const clipboard = useClipboard()
@@ -19,24 +20,24 @@ export function useWorkingDirectoryActions(input: { directory: () => string | un
     if (!directory) return
     dialog.replace(() => (
       <DialogSelect
-        title="Working directory"
+        title={t("Working directory")}
         renderFilter={false}
         options={[
           {
-            title: "Copy path",
+            title: t("Copy path"),
             value: "location.copy",
             description: directory,
             onSelect: (dialog) => {
               void clipboard.write(directory).then(() => {
                 dialog.clear()
-                toast.show({ message: "Path copied to clipboard", variant: "info" })
+                toast.show({ message: t("Path copied to clipboard"), variant: "info" })
               }, toast.error)
             },
           },
           {
-            title: "Open folder",
+            title: t("Open folder"),
             value: "location.open",
-            description: "in system file manager",
+            description: t("in system file manager"),
             onSelect: (dialog) => {
               dialog.clear()
               void openPath(directory).catch(toast.error)
@@ -45,9 +46,9 @@ export function useWorkingDirectoryActions(input: { directory: () => string | un
           ...(input.onMove
             ? [
                 {
-                  title: "Workspaces",
+                  title: t("Workspaces"),
                   value: "session.move",
-                  description: "to another working directory",
+                  description: t("to another working directory"),
                   onSelect: () => void input.onMove?.(),
                 },
               ]

@@ -4,6 +4,7 @@ import { useThemes } from "../context/theme"
 import { useDialog, type DialogContext } from "../ui/dialog"
 import { DialogSelect, DialogSelectChoice } from "../ui/dialog-select"
 import { useToast } from "../ui/toast"
+import { t } from "../i18n"
 import { DialogThemeList } from "./dialog-theme-list"
 
 type Setting = {
@@ -414,12 +415,12 @@ export function DialogConfig(props: { current?: string }) {
     const current = value(setting)
     if (setting.format) return setting.format(current)
     const index = setting.values?.indexOf(current)
-    return index === undefined || index < 0 ? String(current) : (setting.labels?.[index] ?? String(current))
+    return t(index === undefined || index < 0 ? String(current) : (setting.labels?.[index] ?? String(current)))
   }
   const options = createMemo(() =>
     settings.map((setting, index) => ({
-      title: setting.title,
-      category: setting.category,
+      title: t(setting.title),
+      category: t(setting.category),
       searchText: setting.keywords?.join(" "),
       footer: newDesigns() ? (
         <DialogSelectChoice value={display(setting)} active={selected() === index} open={setting.open !== undefined} />
@@ -427,7 +428,7 @@ export function DialogConfig(props: { current?: string }) {
         display(setting)
       ),
       footerOverhang: newDesigns() ? 2 : undefined,
-      detail: newDesigns() ? setting.description : undefined,
+      detail: newDesigns() ? t(setting.description) : undefined,
       value: index,
     })),
   )
@@ -456,9 +457,9 @@ export function DialogConfig(props: { current?: string }) {
 
   return (
     <DialogSelect
-      title="Settings"
+      title={t("Settings")}
       searchInTitle
-      titlePlaceholder="Search settings"
+      titlePlaceholder={t("Search settings")}
       options={options()}
       // Under new designs the opening setting is focused without the current-item marker; changing a value keeps the
       // selection where it is.
@@ -472,18 +473,18 @@ export function DialogConfig(props: { current?: string }) {
         if (newDesigns() && open) return open(dialog)
         void change(1, option.value)
       }}
-      footerHints={newDesigns() ? [] : [{ title: "change", label: "←/→" }]}
+      footerHints={newDesigns() ? [] : [{ title: t("change"), label: "←/→" }]}
       bindings={[
         {
           bind: "left",
-          title: "Previous value",
-          group: "Settings",
+          title: t("Previous value"),
+          group: t("Settings"),
           run: () => void change(-1),
         },
         {
           bind: "right",
-          title: "Next value",
-          group: "Settings",
+          title: t("Next value"),
+          group: t("Settings"),
           run: () => void change(1),
         },
       ]}
