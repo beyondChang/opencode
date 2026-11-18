@@ -27,6 +27,18 @@ describe("i18n", () => {
     expect(t("Switch to session in quick slot {slot}", { slot: 3 })).toBe("Switch to session in quick slot 3")
   })
 
+  test("translates composer agent names and reasoning effort", () => {
+    setLocale("zh-CN")
+    expect(t("Build")).toBe("编辑")
+    expect(t("Plan")).toBe("计划")
+    expect(t("low")).toBe("低")
+    expect(t("medium")).toBe("中")
+    expect(t("high")).toBe("高")
+    setLocale("en")
+    expect(t("Build")).toBe("Build")
+    expect(t("high")).toBe("high")
+  })
+
   test("keeps the source text in English", () => {
     setLocale("en")
     expect(getLocale()).toBe("en")

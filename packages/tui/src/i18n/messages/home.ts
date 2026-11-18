@@ -22,7 +22,6 @@ export const home = {
 
   // Prompt footer hints (also visible on home).
   "{command} commands": "{command} 命令",
-  agents: "Agent",
   commands: "命令",
   shell: "Shell",
   "exit shell mode": "退出 shell 模式",
@@ -32,6 +31,9 @@ export const home = {
   "{count} shells": "{count} 个 Shell",
 
   // Composer metadata and startup overlay.
+  // Agent names and reasoning effort shown next to the model in the composer.
+  Build: "编辑",
+  Plan: "计划",
   "(new worktree)": "（新建 worktree）",
   recent: "最近",
   "+{count} more": "还有 {count} 项",

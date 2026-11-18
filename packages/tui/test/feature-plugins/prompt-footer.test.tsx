@@ -159,6 +159,38 @@ test("prompt footer can hide details", async () => {
   }
 })
 
+test("prompt footer keeps only the command palette hint", async () => {
+  const color = RGBA.fromInts(200, 200, 200)
+  const context = {
+    location: { directory: "/workspace" },
+    theme: { text: { base: color, muted: color, action: { primary: { disabled: color } } } },
+    keymap: {
+      shortcuts: (id: string) =>
+        id === "command.palette.show" ? ["ctrl+p"] : id === "agent.cycle" ? ["shift+tab"] : [],
+    },
+    client: { rpc: () => ({ get: () => Promise.resolve(null), events: { on: () => () => {} } }) },
+    data: {
+      on: () => () => {},
+      session: { family: () => [], status: () => "idle", get: () => undefined, cost: () => 0, message: { list: () => [] } },
+      shell: { list: () => [] },
+      location: { model: { list: () => [] } },
+    },
+  } as unknown as Context
+  const app = await testRender(
+    () => <PromptFooter context={context} sessionID="session" mode="normal" showDetails={true} />,
+    { width: 80, height: 1 },
+  )
+
+  try {
+    await app.renderOnce()
+    const frame = app.captureCharFrame()
+    expect(frame).toContain("ctrl+p commands")
+    expect(frame).not.toContain("shift+tab")
+  } finally {
+    app.renderer.destroy()
+  }
+})
+
 test("prompt footer shows the session's goal without its objective and opens it on click", async () => {
   const muted = RGBA.fromInts(100, 100, 100)
   const warning = RGBA.fromInts(200, 200, 0)

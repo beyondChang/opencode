@@ -26,14 +26,14 @@ export function PromptFooter(props: {
     const count = props.context.data.session
       .family(props.sessionID)
       .filter((id) => id !== props.sessionID && props.context.data.session.status(id) === "running").length
-    return count ? t("{count} subagents", { count }) : undefined
+    return count ? t(count === 1 ? "{count} subagent" : "{count} subagents", { count }) : undefined
   })
   const shells = createMemo(() => {
     if (!props.sessionID) return 0
     const count = props.context.data.shell
       .list(props.context.location)
       .filter((shell) => shell.metadata.sessionID === props.sessionID).length
-    return count ? t("{count} shells", { count }) : undefined
+    return count ? t(count === 1 ? "{count} shell" : "{count} shells", { count }) : undefined
   })
   const status = createMemo(() => {
     if (!props.sessionID) return []
@@ -109,17 +109,7 @@ export function PromptFooter(props: {
               </Show>
             </box>
           </Match>
-          <Match when={props.showDetails && layout().shortcuts}>
-            <text
-              fg={interactive() ? props.context.theme.text.base : props.context.theme.text.action.primary.disabled}
-              attributes={interactive() ? 0 : TextAttributes.DIM}
-              flexShrink={0}
-            >
-              {shortcut("agent.cycle")}{" "}
-              <span style={interactive() ? { fg: props.context.theme.text.muted } : {}}>{t("agents")}</span>
-            </text>
-          </Match>
-        </Switch>
+          </Switch>
         <Show when={props.showDetails && layout().shortcuts}>
           <text
             fg={interactive() ? props.context.theme.text.base : props.context.theme.text.action.primary.disabled}

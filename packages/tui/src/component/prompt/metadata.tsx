@@ -2,6 +2,7 @@ import { RGBA, TextAttributes } from "@opentui/core"
 import { useTerminalDimensions } from "@opentui/solid"
 import { createMemo, Show } from "solid-js"
 import { useTheme } from "../../context/theme"
+import { t } from "../../i18n"
 import { Locale } from "../../util/locale"
 import { stringWidth } from "../../util/string-width"
 
@@ -27,11 +28,11 @@ export function PromptMetadataRow(props: {
     return promptMetadataLayout({
       width: Math.max(0, dimensions().width - (dimensions().width < 44 ? 9 : 13)),
       terminalWidth: dimensions().width,
-      agent: props.agent ?? "",
+      agent: props.agent ? t(props.agent) : "",
       auto: props.auto,
       model: props.model,
       provider: props.provider,
-      variant: props.variant,
+      variant: props.variant ? t(props.variant) : undefined,
       limit: props.limit?.text,
     })
   })
