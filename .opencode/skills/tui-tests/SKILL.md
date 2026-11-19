@@ -1,13 +1,13 @@
 ---
 name: tui-tests
-description: Use when writing, fixing, or reviewing tests that render OpenTUI (testRender, createTestRenderer, createAppFixture) in packages/tui or packages/cli. Covers frame waits (waitForFrame, waitFor, waitForVisualIdle, flush), started vs non-started renderers, injected clocks, mock keyboard and mouse input, terminal sizes, cleanup and shared paths, and the 30s budget. Also use when a TUI test fails with "Timed out waiting for frame predicate after N passes", or when a tui test file is slow. For cli subprocess and service tests, use the unit-tests skill.
+description: Use when writing, fixing, or reviewing tests that render OpenTUI (testRender, createTestRenderer, createAppFixture) in packages/tui. Covers frame waits (waitForFrame, waitFor, waitForVisualIdle, flush), started vs non-started renderers, injected clocks, mock keyboard and mouse input, terminal sizes, cleanup and shared paths, and the 30s budget. Also use when a TUI test fails with "Timed out waiting for frame predicate after N passes", or when a tui test file is slow.
 ---
 
 # TUI tests
 
-packages/tui runs about 170 test files in one `bun test` process. CI runs it next to up to two other suites on 4-vCPU runners (`bun turbo test --affected --concurrency=3` in `.github/workflows/check-test.yml`), where it has taken 136-146s on Linux and 147-171s on Windows, most of it idle on frame pacing, production timers and sleeps. Most flakes come from waiting on the wrong signal and then running out of frames on a busy runner.
+packages/tui runs about 170 test files in one `bun test` process. CI runs it next to up to two other suites on 4-vCPU runners (`bun turbo test --affected --concurrency=3`), where it has taken 136-146s on Linux and 147-171s on Windows, most of it idle on frame pacing, production timers and sleeps. Most flakes come from waiting on the wrong signal and then running out of frames on a busy runner.
 
-Read the root `AGENTS.md` Testing section (no `globalThis` mocks, run from the package directory) and its TUI Stories section. To drive the real TUI, use the `opencode-dev` skill. For CLI subprocesses, service deadlines, Effect `TestClock` and turbo test tasks, use the `unit-tests` skill.
+Read the root `AGENTS.md` Testing section (no `globalThis` mocks, run from the package directory) and its TUI Stories section. For Effect `TestClock` and turbo test tasks, use the `unit-tests` skill.
 
 ## Frame budgets are not time
 
@@ -34,7 +34,7 @@ Read the root `AGENTS.md` Testing section (no `globalThis` mocks, run from the p
 - **Time-driven renderables:** pass `clock: new ManualClock()`, call `renderer.pause()`, then advance the clock and `renderOnce()` (`fixture()` in `packages/tui/test/component/retry-provider.test.tsx:8`). `pause()` also stops `requestLive()` (spinners, animations) from starting the frame loop.
 - **Clock order:** inject a clock first (OpenTUI `ManualClock`; Effect `TestClock` for Effect code, see `unit-tests`). Use `jest.useFakeTimers()` only when nothing is injectable: it patches the global timers of a process that runs every tui file, so restore them with `jest.useRealTimers()` in `finally` (`packages/tui/test/util/delayed-presence.test.ts:24-26`).
 - **Whole app:** `createAppFixture` (`packages/tui/test/fixture/app.ts`) gives a started renderer, an in-process `Bun.serve` and `kittyKeyboard: true`. Call `await setup.ready` before the first wait. Passing `config` replaces the default `{ animations: false }`, so include `animations: false` yourself. The first use in a process pays `await import("../../src/app")`: about 1s idle, 12-25s under heavy load. Use it only when the behavior spans routes or data.
-- **Server behavior:** use the existing `createFetch` and `createEventStream` fixture (`packages/tui/test/fixture/tui-client.ts:15`, `:69`) rather than spawning a server. The persistent PTY, for example, is faked as `/api/experimental/persistent-pty/...` routes plus a `Bun.serve` websocket (`packages/tui/test/session-wheel-focus.test.tsx:52`); real PTY behavior is tested in `packages/server/test/persistent-pty.test.ts`. Every fixture server listens on `port: 0` (`fixture/app.ts:32`) and is reached through `server.url`; never hard-code a port. Windows hands out ephemeral ports from 49152 up, so a fixed port in that range can already be taken by another connection.
+- **Server behavior:** use the existing `createFetch` and `createEventStream` fixture (`packages/tui/test/fixture/tui-client.ts:15`, `:69`) rather than spawning a server. The persistent PTY, for example, is faked as `/api/experimental/persistent-pty/...` routes plus a `Bun.serve` websocket (`packages/tui/test/session-wheel-focus.test.tsx:52`). Every fixture server listens on `port: 0` (`fixture/app.ts:32`) and is reached through `server.url`; never hard-code a port. Windows hands out ephemeral ports from 49152 up, so a fixed port in that range can already be taken by another connection.
 
 ## Keyboard and mouse
 
@@ -67,7 +67,7 @@ Read the root `AGENTS.md` Testing section (no `globalThis` mocks, run from the p
 
 ## Timeouts and failures
 
-- The tui and cli test scripts run `bun test --timeout 30000`; Bun's default is 5s. In tui, that budget exists for the cold `src/app` import, not for slow waits.
+- The tui test script runs `bun test --timeout 30000`; Bun's default is 5s. That budget exists for the cold `src/app` import, not for slow waits.
 - A frame-budget failure is not a timeout problem. Raising the test timeout does nothing for it, and raising `maxPasses` only hides the wrong wait.
 - A per-test timeout below 30s, like the 15000 at `session-group-navigation.test.tsx:249`, must still cover the cold import when the file runs alone. New per-test timeouts name their work in a comment (see `unit-tests`, Know the budget).
 - A frame-budget failure that reproduces on every run of one branch is a regression in that change, not a flake. dialog-shell-output failed "after 100 passes" in 21 of 29 tui runs on one PR stack and in 0 of about 102 elsewhere. Do not answer it with a bigger budget.

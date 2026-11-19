@@ -1,12 +1,12 @@
 # Schema Package Guide
 
-`@opencode/schema` owns browser-safe wire and storage contracts shared by protocol, server, core, and generated SDKs. Keep runtime behavior, service layers, side effects, and host-local implementation details in the domain package that owns them.
+`@opencode/schema` owns browser-safe wire and storage contracts shared by protocol, client, core, and generated clients. Keep runtime behavior, service layers, side effects, and host-local implementation details in the domain package that owns them.
 
 ## Package Boundary
 
-- Preserve the dependency direction: `@opencode/schema <- @opencode/protocol <- @opencode/server`.
+- Preserve the dependency direction: `@opencode/schema <- @opencode/protocol <- @opencode/client`.
 - Schema values should be serializable contract definitions, not service implementations or runtime registries.
-- A domain may keep a minimal public wire contract here when SDK generation needs it, but do not move the broader runtime model into Schema just because an event is public. `plugin.updated` is the current example: Schema may own the minimum browser-safe event payload, while plugin runtime behavior stays outside Schema.
+- A domain may keep a minimal public wire contract here when client generation needs it, but do not move the broader runtime model into Schema just because an event is public. `plugin.updated` is the current example: Schema may own the minimum browser-safe event payload, while plugin runtime behavior stays outside Schema.
 - The root barrel exports canonical current domain contracts. Specialized event modules, manifests, infrastructure modules, and V1 contracts use direct entrypoints instead of becoming first-class root exports.
 
 ## Current Versus V1
@@ -16,14 +16,14 @@
 - Do not preserve `V2` as the permanent name for the replacement architecture. Remove `V2` from current namespaces, brands, and identifiers as the contracts are normalized.
 - Retained V1 contracts live under `src/v1/`. New/current code must not depend on that subtree.
 - V1 coexistence is temporary. Keep compatibility entrypoints only where migration requires them, and delete the V1 subtree when the legacy runtime is retired.
-- `@opencode/protocol` and `@opencode/sdk` are current `/api/...` surfaces.
+- `@opencode/protocol` is the current `/api/...` surface.
 
 ## Events
 
 - Classify event definitions by protocol role before adding them to a public manifest: `current`, `shared transitional`, or `V1-only`.
-- Being emitted by V1 is not enough to include an event in Protocol or the SDK.
-- Keep clearly V1-only events, such as `message.updated` and `message.part.*`, out of the current Protocol/SDK event surface unless a current-client requirement is documented.
-- Keep compatibility events available only to the existing App/TUI/CLI compatibility surface while they are still needed.
+- Being emitted by V1 is not enough to include an event in Protocol or the generated client.
+- Keep clearly V1-only events, such as `message.updated` and `message.part.*`, out of the current Protocol/client event surface unless a current-client requirement is documented.
+- Keep compatibility events available only to the existing TUI compatibility surface while they are still needed.
 - Preserve a single canonical event definition. Do not duplicate definitions for generation convenience.
 
 ## Module Shape
