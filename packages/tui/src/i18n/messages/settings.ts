@@ -12,6 +12,9 @@ export const settings = {
   // Setting titles.
   Theme: "主题",
   "Color mode": "颜色模式",
+  "Follow system": "跟随系统",
+  Chinese: "中文",
+  English: "英文",
   Animations: "动画",
   Sidebar: "侧栏",
   Scrollbar: "滚动条",

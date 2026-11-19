@@ -74,6 +74,7 @@ import { DialogHighlights } from "./component/dialog-highlights"
 import { claim } from "./util/highlights"
 import { setLocale, t } from "./i18n"
 import { DialogThemeList } from "./component/dialog-theme-list"
+import { DialogLanguage } from "./component/dialog-language"
 import { DialogHelp } from "./ui/dialog-help"
 import { DialogAgent } from "./component/dialog-agent"
 import { DialogSessionList } from "./component/dialog-session-list"
@@ -1133,6 +1134,15 @@ function App() {
         slash: { name: "themes" },
         run: () => {
           dialog.replace(() => <DialogThemeList />)
+        },
+        category: t("System"),
+      },
+      {
+        name: "language.switch",
+        title: t("Switch language"),
+        slash: { name: "language" },
+        run: () => {
+          dialog.replace(() => <DialogLanguage />)
         },
         category: t("System"),
       },

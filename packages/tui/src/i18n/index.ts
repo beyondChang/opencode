@@ -1,3 +1,4 @@
+import { createSignal } from "solid-js"
 import { messages } from "./messages"
 
 export type Locale = "en" | "zh-CN"
@@ -22,18 +23,23 @@ export function detectLocale(environment: Readonly<Record<string, string | undef
   return "zh-CN"
 }
 
-let locale: Locale = detectLocale()
-process.env.OPENCODE_LOCALE = locale
+// Capture the environment before we write OPENCODE_LOCALE back so "auto" keeps following the
+// real system locale instead of the value we injected on a previous switch.
+const systemEnvironment = { ...process.env }
+
+const [locale, setLocaleValue] = createSignal<Locale>(detectLocale())
+process.env.OPENCODE_LOCALE = locale()
 
 export function setLocale(preference?: LocalePreference) {
-  locale = !preference || preference === "auto" ? detectLocale() : preference
+  const next = !preference || preference === "auto" ? detectLocale(systemEnvironment) : preference
+  setLocaleValue(next)
   // The core model-request layer reads this to inject the Chinese language rule into every LLM call.
   // Server runs in the same process for the default CLI; standalone mode inherits the env already.
-  process.env.OPENCODE_LOCALE = locale
+  process.env.OPENCODE_LOCALE = next
 }
 
 export function getLocale(): Locale {
-  return locale
+  return locale()
 }
 
 /**
@@ -42,7 +48,7 @@ export function getLocale(): Locale {
  * `{name}` placeholders; missing values keep the placeholder visible.
  */
 export function t(source: string, values?: Record<string, string | number | undefined>): string {
-  const message = locale === "zh-CN" ? (messages[source] ?? source) : source
+  const message = locale() === "zh-CN" ? (messages[source] ?? source) : source
   if (!values) return message
   return message.replace(/\{(\w+)\}/g, (match, key: string) => {
     const value = values[key]

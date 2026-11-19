@@ -79,4 +79,14 @@ describe("i18n", () => {
       }
     }
   })
+
+  test("setLocale applies a switch immediately, so reactive copy picks up the new language", () => {
+    setLocale("en")
+    expect(t("Switch language")).toBe("Switch language")
+    setLocale("zh-CN")
+    expect(t("Switch language")).toBe("切换语言")
+    expect(getLocale()).toBe("zh-CN")
+    setLocale("en")
+    expect(t("Switch language")).toBe("Switch language")
+  })
 })

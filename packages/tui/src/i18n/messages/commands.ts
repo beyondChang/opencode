@@ -33,6 +33,7 @@ export const commands = {
   "Show release highlights": "查看更新亮点",
   "Update OpenCode": "更新 OpenCode",
   "Switch theme": "切换主题",
+  "Switch language": "切换语言",
   "Open docs": "打开文档",
   "Exit the app": "退出应用",
   "Switch model variant": "切换模型变体",
