@@ -1,72 +1,41 @@
-<p align="center">
-  <a href="https://opencode.ai">
-    <picture>
-      <source srcset=".github/assets/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
-      <source srcset=".github/assets/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
-      <img src=".github/assets/logo-ornate-light.svg" alt="OpenCode logo">
-    </picture>
-  </a>
-</p>
-<p align="center">开源的 AI Coding Agent。</p>
-<p align="center">
-  <a href="https://opencode.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
-  <a href="https://www.npmjs.com/package/@opencode/cli"><img alt="npm" src="https://img.shields.io/npm/v/@opencode/cli?style=flat-square" /></a>
-  <a href="https://github.com/anomalyco/opencode/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/anomalyco/opencode/release.yml?style=flat-square&branch=dev" /></a>
-</p>
+# OpenCode TUI
 
-[opencode.ai](https://opencode.ai)
+开源的 AI Coding Agent 终端界面。
 
----
+本仓库为 OpenCode 的精简分支，仅保留终端界面（TUI）及其完整依赖链，移除了 CLI、Server、SDK 等其它外围代码。
 
-### 安装
+## 目录结构
+
+`packages/` 下保留的包：
+
+- `tui` — 终端界面主体
+- `client`、`core`、`schema`、`protocol`、`plugin`、`plugin-browser`、`ui`、`util`、`theme` — TUI 运行所依赖的核心库
+- `ai`、`codemode`、`simulation`、`latex`、`merman`、`http-recorder`、`httpapi-codegen` — 上层依赖的辅助包
+
+## 开发
+
+需要 [Bun](https://bun.sh) 1.4 及以上版本。
 
 ```bash
-# 直接安装 (YOLO)
-curl -fsSL https://opencode.ai/v2/install | bash
-
-# 软件包管理器
-npm i -g @opencode/cli@latest      # 也可使用 bun/pnpm/yarn
-brew install anomalyco/tap/opencode-v2 # macOS 和 Linux（推荐，始终保持最新）
-brew install opencode              # macOS 和 Linux（官方 brew formula，更新频率较低）
-sudo pacman -S opencode            # Arch Linux (Stable)
-paru -S opencode-beta              # Arch Linux (Latest from AUR)
-mise use -g opencode               # 任意系统
-nix run github:anomalyco/opencode  # Nix
+bun install          # 安装依赖
+bun run typecheck    # 类型检查（turbo，覆盖全部保留包）
+bun run lint         # oxlint 检查
+bun run check        # lint + typecheck
 ```
 
-> [!TIP]
-> 安装前请先移除 0.1.x 之前的旧版本。
+## 参与贡献
 
-#### 安装目录
+如有兴趣贡献代码，请在提交 PR 前阅读 [贡献指南](./CONTRIBUTING.md)。
 
-安装脚本将 OpenCode 安装到 `$HOME/.opencode/bin`。
-
-### Agents
-
-OpenCode 内置两种 Agent，可用 `Tab` 键快速切换：
-
-- **build** - 默认模式，具备完整权限，适合开发工作
-- **plan** - 只读模式，适合代码分析与探索
-  - 默认拒绝修改文件
-  - 运行 bash 命令前会询问
-  - 便于探索未知代码库或规划改动
-
-另外还包含一个 **general** 子 Agent，用于复杂搜索和多步任务，内部使用，也可在消息中输入 `@general` 调用。
-
-了解更多 [Agents](https://opencode.ai/docs/agents) 相关信息。
-
-### 文档
-
-更多配置说明请查看我们的 [**官方文档**](https://opencode.ai/docs)。
-
-### 参与贡献
-
-如有兴趣贡献代码，请在提交 PR 前阅读 [贡献指南 (Contributing Docs)](./CONTRIBUTING.md)。
-
-### 基于 OpenCode 进行开发
+## 基于 OpenCode 进行开发
 
 如果你在项目名中使用了 “opencode”（如 “opencode-dashboard” 或 “opencode-mobile”），请在 README 里注明该项目不是 OpenCode 团队官方开发，且不存在隶属关系。
 
----
+## 社区
 
-**加入我们的社区** [飞书](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=52ao9352-5623-4fa0-b7dd-3407c392c1af&qr_code=true) | [X.com](https://x.com/opencode)
+- [飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=52ao9352-5623-4fa0-b7dd-3407c392c1af&qr_code=true)
+- [X.com](https://x.com/opencode)
+
+## 许可
+
+[MIT](./LICENSE)
