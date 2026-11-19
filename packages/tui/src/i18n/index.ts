@@ -23,9 +23,13 @@ export function detectLocale(environment: Readonly<Record<string, string | undef
 }
 
 let locale: Locale = detectLocale()
+process.env.OPENCODE_LOCALE = locale
 
 export function setLocale(preference?: LocalePreference) {
   locale = !preference || preference === "auto" ? detectLocale() : preference
+  // The core model-request layer reads this to inject the Chinese language rule into every LLM call.
+  // Server runs in the same process for the default CLI; standalone mode inherits the env already.
+  process.env.OPENCODE_LOCALE = locale
 }
 
 export function getLocale(): Locale {

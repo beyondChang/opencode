@@ -1,8 +1,44 @@
 import { describe, expect, test } from "bun:test"
 import { Message, ToolMessage, ToolResultPart, Media, UserMessage } from "@opencode/ai/effect"
-import { boundImages, unsupportedParts } from "@opencode/core/session/model-request"
+import { boundImages, unsupportedParts, SessionModelRequest } from "@opencode/core/session/model-request"
 
 const capabilities = (input: string[]) => ({ tools: true, input, output: ["text"] })
+
+describe("SessionModelRequest.baseTranscript language rule", () => {
+  const transcript = () =>
+    SessionModelRequest.baseTranscript({
+      agent: { system: "custom agent system" } as never,
+      model: { model: { provider: "test", route: {} } } as never,
+      tools: { definitions: [] } as never,
+      initial: [],
+      messages: [],
+    })
+
+  test("injects the Chinese language rule when the interface locale is Chinese", () => {
+    const previous = process.env.OPENCODE_LOCALE
+    process.env.OPENCODE_LOCALE = "zh-CN"
+    try {
+      const system = transcript().system
+      expect(system.some((part) => part.text.includes("【强制语言规则】"))).toBe(true)
+      expect(system.find((part) => part.text.includes("【强制语言规则】"))?.text).toContain("简体中文")
+    } finally {
+      if (previous === undefined) delete process.env.OPENCODE_LOCALE
+      else process.env.OPENCODE_LOCALE = previous
+    }
+  })
+
+  test("omits the language rule in an English locale", () => {
+    const previous = process.env.OPENCODE_LOCALE
+    process.env.OPENCODE_LOCALE = "en"
+    try {
+      const system = transcript().system
+      expect(system.some((part) => part.text.includes("强制语言规则"))).toBe(false)
+    } finally {
+      if (previous === undefined) delete process.env.OPENCODE_LOCALE
+      else process.env.OPENCODE_LOCALE = previous
+    }
+  })
+})
 
 describe("SessionModelRequest.unsupportedParts", () => {
   test("replaces unsupported user media with a visible error", () => {

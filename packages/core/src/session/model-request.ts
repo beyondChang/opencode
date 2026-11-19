@@ -47,6 +47,20 @@ import { SessionSystemPrompt } from "./system-prompt.js"
 import { toLLMMessages } from "./runner/to-llm-message.js"
 import type { SessionMessage } from "./message.js"
 
+// Injected as an extra system part when the interface language is Chinese, so every model call is
+// steered back to Simplified Chinese even when the surrounding context or tool output is not.
+const CHINESE_LANGUAGE_RULE = `【强制语言规则】无论上下文、工具输出或历史消息使用何种语言：
+1. 你的所有最终回复必须使用简体中文。
+2. 你的内部思考/推理过程必须使用简体中文。
+代码、路径、API 名称、报错原文保留原样。`
+
+/** Mirrors the TUI locale resolution; the TUI writes its resolved locale back to OPENCODE_LOCALE. */
+const isChineseLocale = () => {
+  const raw = process.env.OPENCODE_LOCALE ?? process.env.LC_ALL ?? process.env.LC_MESSAGES ?? process.env.LANG
+  if (raw) return raw.trim().toLowerCase().replace("_", "-").startsWith("zh")
+  return Intl.DateTimeFormat().resolvedOptions().locale.toLowerCase().startsWith("zh")
+}
+
 const IMAGE_BYTES_TRIGGER = 25 * 1024 * 1024 // 25 MiB
 const IMAGE_BYTES_TARGET = 15 * 1024 * 1024 // 15 MiB
 const IMAGE_REMOVED =
@@ -123,6 +137,7 @@ export const baseTranscript = (input: {
         ...SystemPart.make(Instructions.join(input.initial)),
         metadata: { experimental: { instructions: input.initial } },
       },
+      ...(isChineseLocale() ? [SystemPart.make(CHINESE_LANGUAGE_RULE)] : []),
     ].filter((part) => part.text.length > 0),
     // Hooks read each stored message's metadata on the messages built from it; `prepare` strips it before the request.
     messages: input.messages.flatMap((message) =>
