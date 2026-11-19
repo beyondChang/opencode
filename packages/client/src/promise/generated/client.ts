@@ -12,8 +12,6 @@ import type {
   AgentGetOutput,
   PluginListInput,
   PluginListOutput,
-  PluginGuiInput,
-  PluginGuiOutput,
   PluginCheckInput,
   PluginCheckOutput,
   PluginUpdateInput,
@@ -560,18 +558,6 @@ export function make(options: ClientOptions) {
             method: "GET",
             path: `/api/plugin`,
             query: { location: input?.["location"] },
-            successStatus: 200,
-            declaredStatuses: [400, 401, 404],
-            empty: false,
-          },
-          requestOptions,
-        ),
-      gui: (input: PluginGuiInput, requestOptions?: RequestOptions) =>
-        request<PluginGuiOutput>(
-          {
-            method: "GET",
-            path: `/api/plugin/gui`,
-            query: { location: input["location"], id: input["id"] },
             successStatus: 200,
             declaredStatuses: [400, 401, 404],
             empty: false,

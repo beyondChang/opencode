@@ -1,8 +1,6 @@
 export * as Plugin from "./plugin.js"
-export { Event, GuiBundle, ID, Info, Source, State } from "@opencode/schema/plugin"
+export { Event, ID, Info, Source, State } from "@opencode/schema/plugin"
 
-import { readFile } from "node:fs/promises"
-import { fileURLToPath } from "node:url"
 import { Plugin } from "@opencode/schema/plugin"
 import { Node } from "@opencode/util/effect/app-node"
 import { LayerNode } from "@opencode/util/effect/layer-node"
@@ -41,22 +39,12 @@ const layer = Layer.effect(
     let discovered: readonly Failure[] = []
     let inventory: Plugin.Info[] = []
     const snapshot = () => [...Array.from(active.values()).map(slotInfo), ...discovered]
-    // A changed `./gui-experimental` bundle alone restarts nothing; its revision is part of what changes, so the event
-    // tells the app to reload it.
     const publish = State.changes(
-      (items: readonly Plugin.Info[]) => [items, Array.from(active.values(), (entry) => entry.plugin.gui?.revision)],
+      (items: readonly Plugin.Info[]) => items,
       () => bus.publish(Plugin.Event.Updated, {}).pipe(Effect.asVoid),
     )
     const list = Effect.fn("Plugin.list")(function* () {
       return inventory
-    })
-    const gui = Effect.fn("Plugin.gui")(function* (id: Plugin.ID) {
-      const gui = active.get(id)?.plugin.gui
-      if (!gui) return undefined
-      // A plugin that resolved a `./gui-experimental` file but cannot read it now is a server fault, not a missing
-      // bundle.
-      const code = yield* Effect.promise(() => readFile(fileURLToPath(gui.file), "utf8"))
-      return { code, revision: gui.revision, options: gui.options } satisfies Plugin.GuiBundle
     })
     const hostContext = yield* Effect.context<Effect.Services<ReturnType<typeof PluginHost.make>>>()
     const load = Effect.fnUntraced(function* (plugin: Generation) {
@@ -271,7 +259,6 @@ const layer = Layer.effect(
       awaitActivation: ready.await,
       hold,
       list,
-      gui,
     })
   }),
 )

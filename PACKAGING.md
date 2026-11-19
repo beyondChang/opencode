@@ -35,7 +35,7 @@ OPENCODE_VERSION=2.3.2 bun run --cwd packages/cli build --single --skip-install
 - `--single`：只构建当前平台目标（win32-x64）。不加会构建全部 12 个目标（linux/darwin/win32 × arm64/x64），非常慢。
 - `--skip-install`：跳过构建脚本里的联网安装步骤（见下方坑 1）。
 
-## 4. 两个必须绕开的阻塞点
+## 4. 必须绕开的阻塞点
 
 ### 坑 1：联网安装原生依赖会卡死
 
@@ -46,23 +46,6 @@ bun install --os="*" --cpu="*" --libc="*" @opentui/core@... @opencode/pty@...
 ```
 
 当前网络访问不了 npm registry，命令会停在 `registry requests failed, retrying` 反复重试（实测 10 分钟仍未结束）。本地原生依赖已经齐全时，一律加 `--skip-install`。
-
-### 坑 2：Vite 清空 `dist/_assets` 触发批量删除保护
-
-Web UI 构建（`packages/app`）会先清空 `packages/app/dist`，其中 `_assets` 有 5000+ 文件。WorkBuddy 的删除保护会拦截这种批量删除并报：
-
-```
-[safe-delete][SAFE_DELETE_BULK_CONFIRM_REQUIRED] {"count":5513,"threshold":50,...}
-```
-
-解决办法是构建前把旧目录移出 `dist`（移动不触发删除保护，构建后 Vite 会重新生成）：
-
-```bash
-ts=$(date +%Y%m%d%H%M%S)
-mv packages/app/dist/_assets /c/Users/<用户名>/AppData/Local/Temp/opencode-app-dist-assets-$ts
-```
-
-旧资源保留在临时目录，确认新包正常后可自行清理。
 
 ## 5. 产物与校验
 
@@ -135,20 +118,17 @@ node_modules/.bin/oxlint packages/cli/src/commands/handlers/default.ts
 ## 9. 完整流程速查
 
 ```bash
-# 1) 移开旧的 Web UI 资源
-ts=$(date +%Y%m%d%H%M%S)
-mv packages/app/dist/_assets /c/Users/<用户名>/AppData/Local/Temp/opencode-app-dist-assets-$ts
 
-# 2) 打包
+# 1) 打包
 OPENCODE_VERSION=2.3.2 bun run --cwd packages/cli build --single --skip-install
 
-# 3) 校验
+# 2) 校验
 packages/cli/dist/cli-windows-x64/bin/opencode.exe --version
 
-# 4) 备份并部署
+# 3) 备份并部署
 cp /d/soft/opencode/opencode.exe /c/Users/<用户名>/AppData/Local/Temp/opencode.exe.bak-$(date +%Y%m%d%H%M%S)
 cp packages/cli/dist/cli-windows-x64/bin/opencode.exe /d/soft/opencode/opencode.exe
 
-# 5) 校验部署结果
+# 4) 校验部署结果
 /d/soft/opencode/opencode.exe --version
 ```

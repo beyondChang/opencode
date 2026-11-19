@@ -167,8 +167,8 @@ const scan = Effect.fn("ConfigPluginSource.scan")(function* (
       const entrypoints: Host.Entrypoints = directory
         ? yield* Effect.sync(() => Host.resolve({ directory: operation.target }))
         : { server: pathToFileURL(operation.target).href }
-      // A directory without a server part still lists for its GUI part. A TUI-only directory stays the TUI's own.
-      const entrypoint = entrypoints.server ?? entrypoints.gui
+      // A directory without a server part is not the server's to list. A TUI-only directory stays the TUI's own.
+      const entrypoint = entrypoints.server
       if (!entrypoint) return []
       if (directory) {
         const root = yield* fs.resolve(operation.target)

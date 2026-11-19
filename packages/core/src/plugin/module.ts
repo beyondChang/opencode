@@ -2,14 +2,13 @@ export * as PluginModule from "./module.js"
 
 import type { Plugin } from "@opencode/plugin/effect/plugin"
 import { Host } from "@opencode/plugin/host"
-import { GuiBundle, type Source } from "@opencode/schema/plugin"
+import { type Source } from "@opencode/schema/plugin"
 import { createPluginSources } from "@opencode/plugin/source"
-import { Hash } from "@opencode/util/hash"
 import { Npm } from "@opencode/util/npm"
 import { Deferred, Effect, FiberSet, PubSub, Schema, Stream } from "effect"
 import path from "path"
-import { readFile, stat } from "node:fs/promises"
-import { fileURLToPath, pathToFileURL } from "url"
+import { stat } from "node:fs/promises"
+import { pathToFileURL } from "url"
 import type { ConfigPluginSource } from "../config/plugin/source.js"
 import type { Generation } from "../plugin.js"
 import { PluginPromise } from "./promise.js"
@@ -76,8 +75,6 @@ function watchTarget(file: string): Promise<Watcher.WatchInput> {
   )
 }
 
-const GuiOptions = GuiBundle.fields.options
-
 const Module = Schema.Struct({
   default: Schema.Union([
     Schema.Struct({
@@ -119,12 +116,10 @@ const load = Effect.fn("PluginModule.load")(function* (
       : yield* Effect.sync(() => Host.resolve(installed ?? { directory: operation.target }))
   const entrypoint = entrypoints.server
   // A TUI-only package is not the server's to list; the TUI loads it from its own config.
-  const found = entrypoint || entrypoints.gui
+  const found = entrypoint
   if (!local && options?.install === false && !found) return { pending: true as const }
   if (!found) return yield* new LoadError({ message: `Plugin entrypoint not found: ${operation.target}` })
   yield* Effect.log({ msg: "loading plugin", id: operation.target, entrypoint: found })
-  // A package with only a GUI part (and maybe a TUI part) has nothing to run here: its id is its package name, and its
-  // other parts load from this listing.
   const server = entrypoint
     ? yield* loadServer(entrypoint, local ? sources : undefined, installed?.revision)
     : undefined
@@ -133,32 +128,13 @@ const load = Effect.fn("PluginModule.load")(function* (
     effect: () => Effect.void,
   }
   const revision = JSON.stringify([operation, server ? server.version : installed?.revision])
-  // A local plugin's `./gui-experimental` bundle is outside the server entry's import graph: watch it, and let its
-  // content change the GUI's revision, so an edit reloads the GUI like a server or TUI edit reloads theirs. A package's
-  // bundle changes only with its installed version. The GUI's revision is a hash: windows receive it, and the operation
-  // holds the options.
-  const gui = local && entrypoints.gui ? fileURLToPath(entrypoints.gui) : undefined
-  if (gui) yield* watch(gui)
-  const bundle = gui ? Hash.sha256(yield* Effect.promise(() => readFile(gui))) : undefined
-  // The GUI receives the same options as the server entry; they cross to the app, so they must be JSON.
-  const guiOptions = entrypoints.gui
-    ? yield* Schema.decodeUnknownEffect(GuiOptions)(operation.options).pipe(
-        Effect.mapError(
-          (cause) => new LoadError({ message: "Plugin options must be JSON to reach its ./gui-experimental", cause }),
-        ),
-      )
-    : {}
   return {
     id: plugin.id,
     features: {
       ...(entrypoint ? { server: true as const } : {}),
       ...(entrypoints.tui ? { tui: true as const } : {}),
       ...(entrypoint && entrypoints.rpc ? { rpc: true as const } : {}),
-      ...(entrypoints.gui ? { gui: true as const } : {}),
     },
-    gui: entrypoints.gui
-      ? { file: entrypoints.gui, revision: Hash.sha256(JSON.stringify([revision, bundle])), options: guiOptions }
-      : undefined,
     revision,
     source: source(operation.target, installed?.version),
     effect: (host) => plugin.effect({ ...host, options: operation.options }),

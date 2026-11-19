@@ -7,7 +7,7 @@ Springs, a shared frame loop and DOM animation controllers for the UI packages.
 
 ## Provenance
 
-Vendored from Kit Langton's `@problems/motion` (`team-board` repo, `packages/motion`, commit `873f5d5`). Behaviour is unchanged. The port applies this repo's formatting and lint rules, removes `else` branches, and moves tests to Bun: pure tests in `core.test.ts`, DOM and Solid tests in `packages/app/test-browser/motion-dom.test.ts` (happy-dom with Solid's browser build). The playground and the SwiftUI comparison script were not carried over. To re-sync, diff the upstream package against `873f5d5` and apply the changes here.
+Vendored from Kit Langton's `@problems/motion` (`team-board` repo, `packages/motion`, commit `873f5d5`). Behaviour is unchanged. The port applies this repo's formatting and lint rules, removes `else` branches, and moves tests to Bun: pure tests in `core.test.ts`, DOM and Solid tests in the package's `test-browser/motion-dom.test.ts` (happy-dom with Solid's browser build). The playground and the SwiftUI comparison script were not carried over. To re-sync, diff the upstream package against `873f5d5` and apply the changes here.
 
 Hot paths deliberately use indexed `for` loops, an intrusive linked list with lazy compaction, numeric field initializers (avoiding V8 `undefined` → `Double` field representation transitions), and a `Float64Array`-cached closed-form damped-harmonic transition matrix, so the frame loop and `Spring.step` allocate nothing per frame. In headless Chromium, 1,000 `springStyle` values with a non-allocating paint callback allocate ~0 bytes/frame during rAF steps (~8.5 KB/frame averaged across 250 ms Solid target updates, and ~58 KB/frame when formatting 1,000 CSS `translate3d(...)` strings).
 
@@ -109,5 +109,5 @@ Call Solid helpers inside an owner; they release jobs and observers on cleanup. 
 ## Verify
 
 - `bun test src/motion` from `packages/ui`
-- `bun test --conditions=browser --isolate --preload ./happydom.ts ./test-browser/motion-dom.test.ts` from `packages/app`
+- `bun test --conditions=browser --isolate --preload ./happydom.ts ./test-browser/motion-dom.test.ts` from `packages/ui`
 - `strobe bench packages/ui/perf/motion.bench.ts --base origin/dev --head .`: retargets and steps 1,000 springs for 60 frames, and compares the CPU it costs with an interval

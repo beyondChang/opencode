@@ -45,11 +45,9 @@ export type PluginSource =
   | { type: "local"; path: string }
   | { type: "sdk" }
 
-export type PluginFeatures = { server?: true; tui?: true; rpc?: true; gui?: true }
+export type PluginFeatures = { server?: true; tui?: true; rpc?: true }
 
 export type PluginState = { status: "active" } | { status: "failed"; error: string; ref?: string }
-
-export type PluginGuiBundle = { code: string; revision: string; options: { [x: string]: JsonValue } }
 
 export type SessionID = string
 
@@ -3070,14 +3068,6 @@ export type AgentNotFoundError = {
 export const isAgentNotFoundError = (value: unknown): value is AgentNotFoundError =>
   typeof value === "object" && value !== null && "_tag" in value && value["_tag"] === "AgentNotFoundError"
 
-export type PluginNotFoundError = {
-  readonly _tag: "PluginNotFoundError"
-  readonly pluginID: string
-  readonly message: string
-}
-export const isPluginNotFoundError = (value: unknown): value is PluginNotFoundError =>
-  typeof value === "object" && value !== null && "_tag" in value && value["_tag"] === "PluginNotFoundError"
-
 export type InvalidCursorError = { readonly _tag: "InvalidCursorError"; readonly message: string }
 export const isInvalidCursorError = (value: unknown): value is InvalidCursorError =>
   typeof value === "object" && value !== null && "_tag" in value && value["_tag"] === "InvalidCursorError"
@@ -3393,13 +3383,6 @@ export type AgentGetOutput = { location: LocationPublicRef; data: AgentInfo }
 export type PluginListInput = { readonly location?: { readonly directory?: string | undefined } | undefined }
 
 export type PluginListOutput = { location: LocationPublicRef; data: Array<PluginInfo> }
-
-export type PluginGuiInput = {
-  readonly location?: { readonly directory?: string | undefined } | undefined
-  readonly id: string
-}
-
-export type PluginGuiOutput = { location: LocationPublicRef; data: PluginGuiBundle }
 
 export type PluginCheckInput = {
   readonly location?: { readonly directory?: string | undefined } | undefined

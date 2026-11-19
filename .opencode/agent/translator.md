@@ -22,19 +22,6 @@ If no locale-specific glossary exists, use the global glossary only.
 
 ---
 
-# Website Copy (opencode.ai)
-
-When translating the marketing site (`services/site/src/i18n/<locale>.ts` and `services/site/src/i18n/content/<locale>.ts`):
-
-- Keep every `{{param}}`, every link id in `[text](id)` (translate the text, keep the id) and every `` `code` `` span exactly.
-- Keep these names as written: OpenCode, OpenCode Models, OpenCode Go, OpenCode Go Plus, Claude Opus 5.5, Anomaly, Console, and every company, model and app name.
-- Never describe OpenCode as an AI coding agent: it is an "open source coding agent". Do not add "AI" to that phrase in any language. "AI models" and "AI providers" are fine.
-- Prefer natural phrasing over literal translation. Use statements, not questions. Avoid colons where the language allows another construction.
-- Keep strings about as long as the English. Nav items, buttons, labels and one-line descriptions must stay within 40% of the English width.
-- From `services/site`, run `bun src/i18n/check.ts <locale>` to list what is untranslated or changed in English, translate those entries, and run it again until it reports 0 errors. Then run `bun src/i18n/check.ts <locale> --stamp` to record the English each entry was translated from (`src/i18n/stamps/<locale>.json`).
-
----
-
 # Locale-Specific Glossaries
 
 When a locale glossary exists, use it to:
@@ -50,8 +37,7 @@ Locale guidance does not override code/command preservation rules or the global 
 
 # Do-Not-Translate Terms (OpenCode Docs)
 
-Generated from: `services/site/src/docs/v1/content/*.mdx` (default English docs)
-Generated on: 2026-02-10
+Generated from the OpenCode docs (default English).
 
 Use this as a translation QA checklist / glossary. Preserve listed terms exactly (spelling, casing, punctuation).
 
