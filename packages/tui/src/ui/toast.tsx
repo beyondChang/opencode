@@ -4,6 +4,7 @@ import { useTheme } from "../context/theme"
 import { useRenderer, useTerminalDimensions } from "@opentui/solid"
 import { SplitBorder } from "./border"
 import { TextAttributes } from "@opentui/core"
+import { t } from "../i18n"
 import { errorMessage } from "../util/error"
 export type ToastOptions = {
   title?: string
@@ -101,7 +102,7 @@ function ToastSurface(props: {
         </Show>
         <Show when={props.pending}>
           <text fg={theme.text.muted} marginTop={1}>
-            +{props.pending} more
+            {t("+{count} more", { count: props.pending })}
           </text>
         </Show>
       </box>

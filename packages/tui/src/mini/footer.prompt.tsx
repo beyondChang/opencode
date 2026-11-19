@@ -304,7 +304,7 @@ export function RunPromptBody(props: {
             </For>
             <Show when={props.images().length > 3}>
               <text fg={props.theme().muted} wrapMode="none" truncate>
-                +{props.images().length - 3} more
+                {t("+{count} more", { count: props.images().length - 3 })}
               </text>
             </Show>
           </box>

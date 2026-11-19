@@ -157,6 +157,28 @@ export const session = {
 
   // Thinking and grouping rows.
   "Thinking: {title}": "思考中：{title}",
+  "Thinking…": "思考中…",
+  "Preparing {noun}…": "正在准备{noun}…",
+  "Running {noun}…": "正在运行{noun}…",
+  command: "命令",
+  code: "代码",
+  read: "读取",
+  write: "写入",
+  subagent: "子 Agent",
+
+  // Low-verbosity activity summary counts.
+  "{count} command": "{count} 个命令",
+  "{count} commands": "{count} 个命令",
+  "{count} edit": "{count} 次编辑",
+  "{count} edits": "{count} 次编辑",
+  "{count} thought": "{count} 条思考",
+  "{count} thoughts": "{count} 条思考",
+  "{count} read": "{count} 次读取",
+  "{count} reads": "{count} 次读取",
+  "{count} tool": "{count} 个工具",
+  "{count} tools": "{count} 个工具",
+  "{count} instruction": "{count} 条指令",
+  "{count} instructions": "{count} 条指令",
   Explored: "已探索",
   Exploring: "探索中",
   "{state}: {names}": "{state}：{names}",
