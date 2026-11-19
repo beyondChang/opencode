@@ -1,10 +1,10 @@
 /** @jsxImportSource @opentui/solid */
 import { expect, test } from "bun:test"
-import { EmbeddedTerminalRenderable } from "@opentui/core"
+import { BoxRenderable, EmbeddedTerminalRenderable, RGBA, type RootRenderable } from "@opentui/core"
 import { extend, testRender } from "@opentui/solid"
 import { onMount } from "solid-js"
 import { ConfigProvider } from "../../../src/config"
-import { ThemeProvider } from "../../../src/context/theme"
+import { ThemeProvider, useTheme } from "../../../src/context/theme"
 import { Toast, ToastProvider, useToast, type ToastContext } from "../../../src/ui/toast"
 import { emptyThemeSource } from "../../fixture/fixture"
 import { createTuiResolvedConfig } from "../../fixture/tui-runtime"
@@ -18,6 +18,56 @@ function captureToast(setToast: (toast: ToastContext) => void) {
     return null
   }
 }
+
+function child(node: BoxRenderable | RootRenderable, index: number) {
+  return node.getChildren()[index] as BoxRenderable
+}
+
+test("toast paints a solid background across its whole surface", async () => {
+  let toast!: ToastContext
+  let expectedBackground!: RGBA
+  const Capture = captureToast((value) => (toast = value))
+  const ThemeCapture = () => {
+    const theme = useTheme()
+    onMount(() => (expectedBackground = theme.background.raised.high))
+    return null
+  }
+  const app = await testRender(
+    () => (
+      <ConfigProvider config={createTuiResolvedConfig()}>
+        <ThemeProvider mode="dark" source={emptyThemeSource}>
+          <ThemeCapture />
+          <ToastProvider>
+            <Capture />
+            <Toast />
+          </ToastProvider>
+        </ThemeProvider>
+      </ConfigProvider>
+    ),
+    { width: 60, height: 12 },
+  )
+  try {
+    await app.renderOnce()
+    toast.show({ message: "Copied to clipboard", variant: "info", duration: 60_000 })
+    await app.renderOnce()
+
+    const boxes: BoxRenderable[] = []
+    const walk = (node: BoxRenderable | RootRenderable) => {
+      for (const item of node.getChildren()) {
+        if (item instanceof BoxRenderable) boxes.push(item)
+        walk(item as BoxRenderable)
+      }
+    }
+    walk(app.renderer.root)
+    // The toast's outer box is the only bordered box in this tree. Its background must cover the
+    // gutter columns too; otherwise the message text overlaps the content underneath.
+    const surface = boxes.find((box) => box.border !== false && box.backgroundColor.a === 1)
+    expect(surface?.backgroundColor.toInts()).toEqual(expectedBackground.toInts())
+    expect(surface!.width).toBeGreaterThan(child(surface!, 0).width)
+  } finally {
+    app.renderer.destroy()
+  }
+})
 
 test("activation runs an action and keeps a queued toast paused", async () => {
   let toast: ToastContext | undefined

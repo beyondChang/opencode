@@ -2059,7 +2059,7 @@ function AssistantFooter(props: { message: SessionMessageAssistant }) {
       <box paddingLeft={3} marginTop={props.message.retry || (props.message.error && !interrupted()) ? 1 : 0}>
         <text>
           <span style={{ fg: props.message.error ? theme.text.muted : local.agent.color(props.message.agent) }}>
-            {Locale.titlecase(props.message.agent)}
+            {t(Locale.titlecase(props.message.agent))}
           </span>
           <Show when={ctx.terminal.width >= 28}>
             <span style={{ fg: theme.text.muted }}> · {model()}</span>
@@ -2068,7 +2068,7 @@ function AssistantFooter(props: { message: SessionMessageAssistant }) {
             <span style={{ fg: theme.text.muted }}> · {Locale.duration(duration())}</span>
           </Show>
           <Show when={config.data.session.tps && tokensPerSecond()}>
-            {(value) => <span style={{ fg: theme.text.muted }}> · {value().toFixed(1)} tok/s</span>}
+            {(value) => <span style={{ fg: theme.text.muted }}> · {value().toFixed(1)} token/s</span>}
           </Show>
           <Show when={interrupted()}>
             <span style={{ fg: theme.text.muted }}>{t(" · interrupted")}</span>
@@ -2093,10 +2093,10 @@ function SessionSwitchMessageV2(props: { message: SessionMessageInfo }) {
     )
   const text = () => {
     if (props.message.type === "agent-switched") {
-      const agent = Locale.titlecase(props.message.agent)
+      const agent = t(Locale.titlecase(props.message.agent))
       if (props.message.previous && props.message.previous !== props.message.agent)
         return t("Switched agent from {from} to {to}", {
-          from: Locale.titlecase(props.message.previous),
+          from: t(Locale.titlecase(props.message.previous)),
           to: agent,
         })
       return t("Switched agent to {agent}", { agent })
@@ -2123,7 +2123,8 @@ function SessionNoticeMessageV2(props: { message: SessionMessageInfo }) {
   const completion = () => source() === "subagent" || source() === "shell"
   const childID = () => (source() === "subagent" ? stringValue(metadata()?.childID) : undefined)
   const state = () => stringValue(metadata()?.state)
-  const actor = () => (source() === "shell" ? t("Shell") : Locale.titlecase(stringValue(metadata()?.agent) ?? t("Subagent")))
+  const actor = () =>
+    source() === "shell" ? t("Shell") : t(Locale.titlecase(stringValue(metadata()?.agent) ?? t("Subagent")))
   const text = () => {
     if (props.message.type === "system") return props.message.description ?? t("Instructions updated")
     if (props.message.type === "synthetic") return props.message.description ?? ""
@@ -3356,7 +3357,7 @@ function Subagent(props: ToolProps) {
         continuation()
           ? t("Continue subagent")
           : t("{agent} Subagent", {
-              agent: Locale.titlecase(stringValue(props.input.agent) ?? stringValue(props.input.subagent_type) ?? "General"),
+              agent: t(Locale.titlecase(stringValue(props.input.agent) ?? stringValue(props.input.subagent_type) ?? "General")),
             })
       } — ${description() ?? t("Subagent")}${model() ? ` · ${model()}` : ""}`}
     </InlineTool>

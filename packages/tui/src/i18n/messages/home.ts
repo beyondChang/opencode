@@ -31,9 +31,7 @@ export const home = {
   "{count} shells": "{count} 个 Shell",
 
   // Composer metadata and startup overlay.
-  // Agent names and reasoning effort shown next to the model in the composer.
-  Build: "编辑",
-  Plan: "计划",
+  // Reasoning effort shown next to the model in the composer.
   "(new worktree)": "（新建 worktree）",
   recent: "最近",
   "+{count} more": "还有 {count} 项",

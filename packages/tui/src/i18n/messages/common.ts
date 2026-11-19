@@ -25,6 +25,9 @@ export const common = {
 
   // Common nouns and status labels.
   Tokens: "Token",
+  // Built-in agent names, shown in the composer and in the assistant turn summary.
+  Build: "编辑",
+  Plan: "计划",
   Context: "上下文",
   Cost: "花费",
   Model: "模型",
