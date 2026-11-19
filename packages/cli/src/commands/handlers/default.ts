@@ -4,7 +4,7 @@ import { run } from "@opencode/tui"
 import { Commands } from "../commands"
 import { Runtime } from "../../framework/runtime"
 import { Config } from "../../config"
-import { Context, Effect, FileSystem, Option, Queue, Schedule, Semaphore } from "effect"
+import { Context, Effect, FileSystem, Option, Queue, Semaphore } from "effect"
 import { ServerConnection } from "../../services/server-connection"
 import { Updater } from "../../services/updater"
 import { UpdatePreflight } from "../../services/update-preflight"
@@ -60,30 +60,33 @@ export default Runtime.handler(Commands, (input) =>
         catch: (cause) => new Error(errorMessage(cause)),
       })) !== undefined
     const updater = yield* Updater.Service
-    let installing: string | undefined
-    let latest: Updater.RunResult | undefined
-    const installListeners = new Set<(version: string) => void>()
+    // Update detection is disabled for this build: the packaged TUI must not poll the public update
+    // service. The background check below and the `/update` lookup in the `updater` prop stay
+    // commented out; restore them to re-enable update detection.
+    // let installing: string | undefined
+    // let latest: Updater.RunResult | undefined
+    // const installListeners = new Set<(version: string) => void>()
     const resultListeners = new Set<(result: Updater.RunResult) => void>()
     // Background checks, `/update` lookups, and manual installs take turns so two installs never overlap.
     const checking = yield* Semaphore.make(1)
-    yield* updater
-      .run((version) => {
-        installing = version
-        installListeners.forEach((notify) => notify(version))
-      })
-      .pipe(
-        Effect.ensuring(Effect.sync(() => (installing = undefined))),
-        Effect.tap((result) =>
-          Effect.sync(() => {
-            if (!result || (result.type === latest?.type && result.version === latest.version)) return
-            latest = result
-            resultListeners.forEach((notify) => notify(result))
-          }),
-        ),
-        checking.withPermits(1),
-        Effect.repeat(Schedule.spaced("10 minutes")),
-        Effect.forkScoped({ startImmediately: true }),
-      )
+    // yield* updater
+    //   .run((version) => {
+    //     installing = version
+    //     installListeners.forEach((notify) => notify(version))
+    //   })
+    //   .pipe(
+    //     Effect.ensuring(Effect.sync(() => (installing = undefined))),
+    //     Effect.tap((result) =>
+    //       Effect.sync(() => {
+    //         if (!result || (result.type === latest?.type && result.version === latest.version)) return
+    //         latest = result
+    //         resultListeners.forEach((notify) => notify(result))
+    //       }),
+    //     ),
+    //     checking.withPermits(1),
+    //     Effect.repeat(Schedule.spaced("10 minutes")),
+    //     Effect.forkScoped({ startImmediately: true }),
+    //   )
     preflight.loading()
     const config = yield* Config.Service
     const npm = yield* Npm.Service
@@ -126,17 +129,19 @@ export default Runtime.handler(Commands, (input) =>
       updater: {
         remote: requestedServer !== undefined,
         subscribe: (notify) => {
-          if (latest) notify(latest)
+          // Update detection is disabled, so no update notice is ever produced.
           resultListeners.add(notify)
           return () => resultListeners.delete(notify)
         },
-        check: (signal, notify) => {
-          if (installing) notify(installing)
-          installListeners.add(notify)
-          return runPromise(checking.withPermits(1)(updater.check()), { signal }).finally(() =>
-            installListeners.delete(notify),
-          )
-        },
+        // Update detection is disabled: the `/update` dialog never queries the update service.
+        // check: (signal, notify) => {
+        //   if (installing) notify(installing)
+        //   installListeners.add(notify)
+        //   return runPromise(checking.withPermits(1)(updater.check()), { signal }).finally(() =>
+        //     installListeners.delete(notify),
+        //   )
+        // },
+        check: () => Promise.resolve(undefined),
         apply: (version) => runPromise(checking.withPermits(1)(updater.apply(version))),
       },
       packages: {
