@@ -167,37 +167,37 @@ const PRECOMPUTED_TAIL_SHARE = 0.4
 /** Failed background summaries after which no new one starts until the next compaction. */
 const PRECOMPUTE_MAX_FAILURES = 2
 
-const SUMMARY_TEMPLATE = `You MUST use this format for your response (you may omit sections that aren't applicable). Do not include the <template> tags in your response.
+const SUMMARY_TEMPLATE = `你必须使用以下格式回复（不适用的章节可以省略）。回复中不要包含 <template> 标签。
 <template>
-## Objective
-- [one or two brief sentences describing what the user is trying to accomplish]
+## 目标
+- [用一两句话说明用户想要完成什么]
 
-## Requirements
-- [constraints, preferences, requirements, and scope boundaries stated by the user, or "(none)"]
+## 需求
+- [用户提出的约束、偏好、要求和范围边界；没有就写“（无）”]
 
-## Decisions
-- [decisions already made and why, or "(none)"]
+## 决策
+- [已经做出的决定及其原因；没有就写“（无）”]
 
-## Work State
-Break the objective into smaller goals and report which are completed, which are being worked on, and which are blocked.
-### Completed
-- [goals that have been completed; otherwise "(none)"]
+## 工作状态
+把目标拆成更小的子目标，说明哪些已完成、哪些正在推进、哪些被阻塞。
+### 已完成
+- [已经完成的子目标；没有就写“（无）”]
 
-### Active
-- [goals currently being worked on; otherwise "(none)"]
+### 进行中
+- [正在推进的子目标；没有就写“（无）”]
 
-### Blocked
-- [anything blocking progress, and why; otherwise "(none)"]
+### 受阻
+- [任何阻碍进展的事项及原因；没有就写“（无）”]
 
-## Next Move
-1. [ordered list of next actions, or "(none)"]
+## 下一步
+1. [按顺序列出接下来的动作；没有就写“（无）”]
 
-## Relevant Files
-List the files and directories, other than the current working directory, that another agent would need to open to continue this work. Include at most 15, most important first. Do not list every file that was read or changed. Include paths outside the current working directory when relevant. If none, write "(none)".
-- \`[file or directory path]\`: [brief reason it matters]
+## 相关文件
+列出另一个 agent 继续这项工作需要打开的文件和目录（当前工作目录除外）。最多 15 项，最重要的写在最前。不要列出每一个读过或修改过的文件。相关时请包含当前工作目录之外的路径。没有就写“（无）”。
+- \`[文件或目录路径]\`：[简要说明为什么重要]
 
-## Important Context
-- [facts the next agent cannot continue without and cannot easily find on its own; or "(none)"]
+## 重要上下文
+- [下一个 agent 缺少就无法继续、且无法自行轻易查到的事实；没有就写“（无）”]
 </template>`
 
 const SUMMARY_RULES = `Rules:
@@ -235,7 +235,7 @@ export const buildPrompt = (update: boolean, legacy = false) => {
         ]
       : []),
     "Newer history always takes precedence over the existing checkpoint. Preserve previous information unless newer history clearly contradicts, supersedes, resolves, or makes it stale. If something is no longer relevant to continuing the work, you may remove it.",
-    "Incorporate newer requirements, decisions, progress, and context. Reconcile Work State and Next Move: move completed work out of Active, remove resolved blockers and answered questions, and preserve unresolved or pending work.",
+    "Incorporate newer requirements, decisions, progress, and context. Reconcile 工作状态 and 下一步: move completed work out of 进行中, remove resolved blockers and answered questions, and preserve unresolved or pending work.",
     "Return only the updated Markdown sections. Do not reproduce the `<conversation-checkpoint>`, `<summary>`, or `<recent-context>` wrapper tags from the previous checkpoint.",
     ...shared,
   ].join("\n\n")
@@ -246,6 +246,23 @@ const NUDGE =
 
 /** Summaries written with the previous template carry this catch-all heading. */
 const LEGACY_HEADING = "## Additional Context"
+
+/**
+ * Section headings of the English template. A session whose checkpoint predates the localized headings can still be
+ * answered in the old format, and refusing that reply would only spend a retry to get the same sections in Chinese.
+ */
+const LEGACY_HEADINGS = [
+  "## Objective",
+  "## Requirements",
+  "## Decisions",
+  "## Work State",
+  "### Completed",
+  "### Active",
+  "### Blocked",
+  "## Next Move",
+  "## Relevant Files",
+  "## Important Context",
+]
 
 export const layer = Layer.effect(
   Service,
@@ -473,7 +490,7 @@ export const layer = Layer.effect(
 
       const previous = previousCompaction(messages)
       const prompt = buildPrompt(previous !== undefined, previous?.summary.includes(LEGACY_HEADING) ?? false)
-      const headings = SUMMARY_TEMPLATE.split("\n").filter((line) => line.startsWith("##"))
+      const headings = [...SUMMARY_TEMPLATE.split("\n").filter((line) => line.startsWith("##")), ...LEGACY_HEADINGS]
       const filled = (text: string) => text.split("\n").some((line) => headings.includes(line.trim()))
       const prepared = yield* prepare(context, messages, budget)
       // Size the unchanged request with the number that decided to compact: the last response's count plus an

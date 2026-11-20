@@ -130,11 +130,11 @@ const it = testEffect(
 test("compaction prompt preserves detailed work state and relevant files", () => {
   const prompt = SessionCompaction.buildPrompt(false)
 
-  expect(prompt).toContain("## Work State")
-  expect(prompt).toContain("### Completed")
-  expect(prompt).toContain("### Active")
-  expect(prompt).toContain("### Blocked")
-  expect(prompt).toContain("## Relevant Files")
+  expect(prompt).toContain("## 工作状态")
+  expect(prompt).toContain("### 已完成")
+  expect(prompt).toContain("### 进行中")
+  expect(prompt).toContain("### 受阻")
+  expect(prompt).toContain("## 相关文件")
 })
 
 it.effect("compaction describes tool media without embedding base64", () =>
@@ -359,16 +359,16 @@ const textUser = (text: string) =>
 test("compaction prompt requires the checkpoint headings in order", () => {
   const prompt = SessionCompaction.buildPrompt(false)
   expect(prompt.match(/^#{2,3} .+$/gm)).toEqual([
-    "## Objective",
-    "## Requirements",
-    "## Decisions",
-    "## Work State",
-    "### Completed",
-    "### Active",
-    "### Blocked",
-    "## Next Move",
-    "## Relevant Files",
-    "## Important Context",
+    "## 目标",
+    "## 需求",
+    "## 决策",
+    "## 工作状态",
+    "### 已完成",
+    "### 进行中",
+    "### 受阻",
+    "## 下一步",
+    "## 相关文件",
+    "## 重要上下文",
   ])
 })
 
