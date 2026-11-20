@@ -61,6 +61,7 @@ import {
 } from "../../util/tool-display"
 import { DialogExecute } from "./dialog-execute"
 import { RetryProvider } from "../../component/retry-provider"
+import type { KeyEvent } from "@opentui/core"
 import { useRenderer, useTerminalDimensions, type JSX } from "@opentui/solid"
 import { useClient } from "../../context/client"
 import { useEditorContext } from "../../context/editor"
@@ -1282,7 +1283,10 @@ export function Session(props: {
       slash: {
         name: "copy",
       },
-      run: () => {
+      run: (_input: string | undefined, event?: KeyEvent) => {
+        // ctrl+c is a copy key rather than an exit key here, so the keystroke must not reach the renderer.
+        event?.preventDefault()
+        event?.stopPropagation()
         const lastAssistantMessage = messagesBeforeRevert().findLast(
           (msg) => msg.type === "assistant" || (msg.type === "compaction" && msg.status === "completed" && msg.summary.trim() !== ""),
         )

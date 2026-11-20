@@ -1344,7 +1344,8 @@ function App() {
       if (!current?.focused) return true
       return current.current.text === ""
     },
-    bindings: ["app.exit"],
+    // ctrl+c copies instead of exiting, so the idle prompt shares the layer that used to own the exit keys.
+    bindings: ["app.exit", "messages.copy"],
   }))
 
   event.on("tui.command.execute", (evt, { directory }) => {
