@@ -229,7 +229,6 @@ describe("ConfigInstructionPlugin.Plugin", () => {
           const watcher = yield* Watcher.Test
           expect(yield* watcher.subscriptions()).toEqual([
             { path: globalFile, type: "file" },
-            { path: path.join(home, ".claude", "CLAUDE.md"), type: "file" },
             { path: packageFile, type: "file" },
             { path: path.join(directory, "CLAUDE.md"), type: "file" },
             { path: path.join(project, "packages", "AGENTS.md"), type: "file" },
@@ -427,13 +426,14 @@ describe("ConfigInstructionPlugin.Plugin", () => {
     ),
   )
 
-  it.live("falls back to CLAUDE.md where no AGENTS.md exists", () =>
+  it.live("creates a global AGENTS.md, ignores ~/.claude/CLAUDE.md, and keeps project CLAUDE.md fallback", () =>
     tmpdirScoped().pipe(
       Effect.flatMap((tmp) => {
         const global = path.join(tmp.path, "global")
         const home = path.join(tmp.path, "home")
         const project = path.join(home, "repo")
         const directory = path.join(project, "packages", "core")
+        const globalAgents = path.join(global, "AGENTS.md")
         const claudeGlobal = path.join(home, ".claude", "CLAUDE.md")
         const projectAgents = path.join(project, "AGENTS.md")
         const packageClaude = path.join(directory, "CLAUDE.md")
@@ -466,18 +466,18 @@ describe("ConfigInstructionPlugin.Plugin", () => {
 
           expect(yield* load()).toBe(
             [
-              `Instructions from: ${claudeGlobal}\nclaude global`,
               `Instructions from: ${packageClaude}\npackage claude`,
               `Instructions from: ${projectAgents}\nproject agents`,
             ].join("\n\n"),
           )
 
-          yield* Effect.promise(async () => {
-            await fs.mkdir(global, { recursive: true })
-            await fs.writeFile(path.join(global, "AGENTS.md"), "global agents")
-          })
+          // The plugin creates the empty global file on first activation, but an
+          // empty placeholder contributes no context until the user fills it in.
+          expect(yield* Effect.promise(() => fs.readFile(globalAgents, "utf8"))).toBe("")
+
+          yield* Effect.promise(() => fs.writeFile(globalAgents, "global agents"))
           const preferred = yield* load()
-          expect(preferred).toContain(`Instructions from: ${path.join(global, "AGENTS.md")}\nglobal agents`)
+          expect(preferred).toContain(`Instructions from: ${globalAgents}\nglobal agents`)
           expect(preferred).not.toContain("claude global")
 
           const disabled = yield* load(false)
@@ -568,7 +568,6 @@ describe("ConfigInstructionPlugin.Plugin", () => {
           const watcher = yield* Watcher.Test
           expect(yield* watcher.subscriptions()).toEqual([
             { path: path.join(global, "AGENTS.md"), type: "file" },
-            { path: path.join(home, ".claude", "CLAUDE.md"), type: "file" },
             { path: path.join(directory, "AGENTS.md"), type: "file" },
             { path: path.join(directory, "CLAUDE.md"), type: "file" },
             { path: path.join(project, "packages", "AGENTS.md"), type: "file" },
@@ -615,7 +614,6 @@ describe("ConfigInstructionPlugin.Plugin", () => {
             const watcher = yield* Watcher.Test
             expect(yield* watcher.subscriptions()).toEqual([
               { path: path.join(global, "AGENTS.md"), type: "file" },
-              { path: path.join(home, ".claude", "CLAUDE.md"), type: "file" },
               { path: path.join(directory, "AGENTS.md"), type: "file" },
               { path: path.join(directory, "CLAUDE.md"), type: "file" },
             ])
@@ -719,7 +717,11 @@ describe("ConfigInstructionPlugin.Plugin", () => {
             ...fs,
             up: () => Effect.succeed([readable, denied]),
             readFileString: (file) =>
-              file === denied ? Effect.fail(readFailure("Unknown", "EPERM", file)) : Effect.succeed("package"),
+              file === denied
+                ? Effect.fail(readFailure("Unknown", "EPERM", file))
+                : file === readable
+                  ? Effect.succeed("package")
+                  : fs.readFileString(file),
           }),
         ),
       ),

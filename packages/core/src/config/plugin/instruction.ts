@@ -39,10 +39,20 @@ export const Plugin = define({
       const project = discovery.project && FSUtil.contains(root, start)
       const stop = FSUtil.contains(home, start) ? home : root
       const globalFile = yield* fs.resolve(join(global.config, "AGENTS.md"))
-      // ~/.claude/CLAUDE.md stands in for the global AGENTS.md when it is missing.
-      const claudeGlobalFile = yield* fs.resolve(join(home, ".claude", "CLAUDE.md"))
       const names = InstructionDiscovery.filenames(discovery)
-      const globalFiles = discovery.claude ? [globalFile, claudeGlobalFile] : [globalFile]
+      const globalFiles = [globalFile]
+      // Materialize an empty global instruction file so there is always a place for
+      // machine-wide guidance. A failed write must not disable instruction discovery.
+      if (discovery.global) {
+        yield* Effect.gen(function* () {
+          if (yield* fs.isFile(globalFile)) return
+          yield* fs.writeWithDirs(globalFile, "")
+        }).pipe(
+          Effect.catchCause((cause) =>
+            Effect.logWarning("failed to create global AGENTS.md", { cause }).pipe(Effect.asVoid),
+          ),
+        )
+      }
       const loaded: { current: Loaded } = { current: { type: "available", files: [] } }
       const configured: { sources: string[]; remote: Map<string, InstructionDiscovery.File> } = {
         sources: [],
@@ -84,7 +94,10 @@ export const Plugin = define({
         for (const candidate of globalFiles) {
           if (!(yield* fs.isFile(candidate))) continue
           const file = yield* read(candidate)
-          return file instanceof InstructionDiscovery.File ? [file] : []
+          // The auto-created file is an empty placeholder; it only becomes context
+          // once the user fills it in. The watcher reloads it when that happens.
+          if (!(file instanceof InstructionDiscovery.File) || file.content.length === 0) continue
+          return [file]
         }
         return []
       })

@@ -551,13 +551,14 @@ require a V2 rewrite. See [Skills](/skills).
 ### Instruction files
 
 Existing `AGENTS.md` files stay in place. V2 discovers the global `~/.config/opencode/AGENTS.md` and ambient `AGENTS.md`
-files from the current directory up to home. For projects outside home, discovery stops at the project root.
+files from the current directory up to home. For projects outside home, discovery stops at the project root. V2 creates
+an empty global `AGENTS.md` on startup if it is missing.
 
-V2 keeps the V1 `CLAUDE.md` fallback: a directory without `AGENTS.md` uses its `CLAUDE.md`, and `~/.claude/CLAUDE.md`
-stands in for a missing global `AGENTS.md`. `OPENCODE_DISABLE_CLAUDE_CODE` skips every `CLAUDE.md`, and so does
-`OPENCODE_DISABLE_CLAUDE_CODE_PROMPT`, which in V1 skipped only `~/.claude/CLAUDE.md`. Unlike V1, which stopped at the
-first file name found anywhere up the tree, V2 picks per directory, so an `AGENTS.md` at the root no longer hides a
-nested `CLAUDE.md`. See [Instructions](/instructions).
+V2 keeps the project-level `CLAUDE.md` fallback: a directory without `AGENTS.md` uses its `CLAUDE.md`. It no longer
+reads `~/.claude/CLAUDE.md` for global guidance — use `~/.config/opencode/AGENTS.md` instead. `OPENCODE_DISABLE_CLAUDE_CODE`
+skips every `CLAUDE.md`, and so does `OPENCODE_DISABLE_CLAUDE_CODE_PROMPT`. Unlike V1, which stopped at the first file name
+found anywhere up the tree, V2 picks per directory, so an `AGENTS.md` at the root no longer hides a nested `CLAUDE.md`.
+See [Instructions](/instructions).
 
 ## Terminal client configuration
 
