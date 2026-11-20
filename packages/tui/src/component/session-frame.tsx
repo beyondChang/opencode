@@ -187,8 +187,8 @@ export function SessionFrame(props: { sessionID: string; verticalTabsWidth: numb
     commands: [
       {
         id: "session.sidebar.toggle",
-        title: rightPane() === "sidebar" ? "Hide sidebar" : "Show sidebar",
-        group: "Session",
+        title: t(rightPane() === "sidebar" ? "Hide sidebar" : "Show sidebar"),
+        group: t("Session"),
         palette: true,
         run: () => {
           toggleSidebar()
@@ -199,8 +199,8 @@ export function SessionFrame(props: { sessionID: string; verticalTabsWidth: numb
         ? [
             {
               id: "terminal.toggle",
-              title: rightPane() === "terminal" ? "Hide terminal pane" : "Show terminal pane",
-              group: "Session",
+              title: t(rightPane() === "terminal" ? "Hide terminal pane" : "Show terminal pane"),
+              group: t("Session"),
               palette: true as const,
               run: () => {
                 dialog.clear()
@@ -222,7 +222,7 @@ export function SessionFrame(props: { sessionID: string; verticalTabsWidth: numb
             {
               id: "terminal.select",
               title: t("Select terminal"),
-              group: "Session",
+              group: t("Session"),
               palette: true as const,
               run: () => {
                 dialog.clear()
@@ -235,7 +235,7 @@ export function SessionFrame(props: { sessionID: string; verticalTabsWidth: numb
             {
               id: "terminal.close",
               title: t("Close terminal pane"),
-              group: "Session",
+              group: t("Session"),
               palette: true as const,
               enabled: rightPane() === "terminal",
               run: () => {
@@ -247,7 +247,7 @@ export function SessionFrame(props: { sessionID: string; verticalTabsWidth: numb
             {
               id: "session.terminal",
               title: t("New terminal"),
-              group: "Session",
+              group: t("Session"),
               palette: true as const,
               slash: { name: "terminal" },
               run: async () => {

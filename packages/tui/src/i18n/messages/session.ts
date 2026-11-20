@@ -331,6 +331,7 @@ export const session = {
   "No shell commands": "没有 Shell 命令",
   Subagents: "子 Agent",
   interrupt: "中断",
+  "again to interrupt": "再按一次中断",
   "show {visibility}": "显示{visibility}",
   inactive: "未运行",
   active: "运行中",

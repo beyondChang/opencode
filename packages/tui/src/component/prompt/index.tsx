@@ -140,7 +140,7 @@ export function PromptInterruptStatus(props: {
     <text fg={props.armed ? armedColor() : props.text} wrapMode="none" truncate flexShrink={1}>
       esc{" "}
       <span style={{ fg: props.armed ? armedColor() : props.subdued }}>
-        {props.armed ? "again to interrupt" : "interrupt"}
+        {props.armed ? t("again to interrupt") : t("interrupt")}
       </span>
     </text>
   )
@@ -503,7 +503,7 @@ export function Prompt(props: PromptProps) {
       {
         title: t("Interrupt session"),
         name: "session.interrupt",
-        category: "Session",
+        category: t("Session"),
         palette: undefined,
         enabled: status() === "running",
         run: () => {
@@ -535,7 +535,7 @@ export function Prompt(props: PromptProps) {
       {
         title: t("Background blocking tools"),
         name: "session.background",
-        category: "Session",
+        category: t("Session"),
         palette: undefined,
         enabled: status() === "running",
         run: () => {
@@ -551,7 +551,7 @@ export function Prompt(props: PromptProps) {
       },
       {
         title: t("Open editor"),
-        category: "Session",
+        category: t("Session"),
         name: "prompt.editor",
         slash: { name: "editor" },
         run: async () => {
@@ -583,7 +583,7 @@ export function Prompt(props: PromptProps) {
         },
       },
       {
-        title: "Skills",
+        title: t("Skills"),
         name: "prompt.skills",
         category: "Prompt",
         slash: { name: "skills" },
@@ -625,7 +625,7 @@ export function Prompt(props: PromptProps) {
         title: t("Manage workspaces"),
         desc: "Manage workspaces",
         name: "session.move",
-        category: "Session",
+        category: t("Session"),
         slash: { name: "worktrees" },
         run: () => {
           move.open()

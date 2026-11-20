@@ -36,10 +36,10 @@ export function CommandPaletteDialog() {
     }),
   )
   const settingOptions = settings.map((setting) => ({
-    title: setting.title,
-    category: setting.category,
+    title: t(setting.title),
+    category: t(setting.category),
     searchText: setting.keywords?.join(" "),
-    searchFooter: t("Settings · {category}", { category: setting.category }),
+    searchFooter: t("Settings · {category}", { category: t(setting.category) }),
     value: `setting:${settingID(setting)}`,
     onSelect: (dialog: DialogContext) => {
       dialog.replace(() => <DialogConfig current={settingID(setting)} />)

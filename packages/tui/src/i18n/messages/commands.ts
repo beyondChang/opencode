@@ -52,6 +52,10 @@ export const commands = {
   "Enable diff wrapping": "启用 diff 换行",
   "Disable paste summary": "关闭粘贴摘要",
   "Enable paste summary": "启用粘贴摘要",
+  "Show sidebar": "显示侧栏",
+  "Hide sidebar": "隐藏侧栏",
+  "Show terminal pane": "显示终端面板",
+  "Hide terminal pane": "隐藏终端面板",
 
   // Toasts, notices, and dialog titles raised by commands.
   "Copied to clipboard": "已复制到剪贴板",
