@@ -11,6 +11,8 @@ import { State } from "./state.js"
 
 export const Info = Command.Info
 export type Info = Command.Info
+export const Source = Command.Source
+export type Source = Command.Source
 export { Event } from "@opencode/schema/command"
 
 export interface Invocation {
@@ -22,6 +24,7 @@ export interface Invocation {
 export interface Definition {
   readonly name: string
   readonly description?: string
+  readonly source: Command.Source
   readonly execute: (input: Invocation) => Effect.Effect<void, unknown>
 }
 
@@ -58,6 +61,7 @@ export const layer = Layer.effect(
       Info.make({
         name: definition.name,
         description: definition.description,
+        source: definition.source,
       })
     const state = State.create<Map<string, Definition>, Editor>({
       name: "command",

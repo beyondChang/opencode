@@ -50,7 +50,11 @@ const isRpcType = (type: string): type is RpcEvent["type"] => type.startsWith("r
 const isRpcEvent = (event: Event.Payload): event is RpcEvent => isRpcType(event.type)
 const isPublicEvent = (event: Event.Payload): event is EventManifest.ServerEvent | RpcEvent =>
   EventManifest.isServer(event) || isRpcEvent(event)
-export const make = Effect.fn("PluginHost.make")(function* (plugin: Pick<Interface, "list">, pluginID: string) {
+export const make = Effect.fn("PluginHost.make")(function* (
+  plugin: Pick<Interface, "list">,
+  pluginID: string,
+  commandSource: Command.Source = 1,
+) {
   const app = yield* App.Service
   const agents = yield* Agent.Service
   const artifacts = yield* Artifact.Service
@@ -260,7 +264,12 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: Pick<Interfa
     command: {
       list: () => response(commands.list()),
       reload: commands.reload,
-      transform: commands.transform,
+      transform: (callback) =>
+        commands.transform((editor) =>
+          callback({
+            add: (definition) => editor.add({ ...definition, source: commandSource }),
+          }),
+        ),
     },
     credential: {
       activate: (input) => integration.connection.activate(input.credentialID),

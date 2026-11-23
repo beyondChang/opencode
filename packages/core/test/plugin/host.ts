@@ -2,6 +2,7 @@ import { Plugin } from "@opencode/plugin/effect"
 import type { IntegrationMethod } from "@opencode/plugin/effect/integration"
 import { Agent } from "@opencode/core/agent"
 import { Credential } from "@opencode/core/credential"
+import { Command } from "@opencode/core/command"
 import { Integration } from "@opencode/core/integration"
 import { Location } from "@opencode/core/location"
 import { Model } from "@opencode/core/model"
@@ -203,6 +204,15 @@ export function host(overrides: Overrides = {}): Plugin.Context {
       },
     },
   }
+}
+
+export function commandTransform(command: Command.Interface, source: Command.Source = 2): Plugin.Context["command"]["transform"] {
+  return (callback) =>
+    command.transform((editor) =>
+      callback({
+        add: (definition) => editor.add({ ...definition, source }),
+      }),
+    )
 }
 
 export function agentHost(agent: Agent.Interface): Plugin.Context["agent"] {

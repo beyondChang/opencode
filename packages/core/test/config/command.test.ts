@@ -34,7 +34,7 @@ import { tmpdir } from "../fixture/tmpdir"
 import { tempGlobalLayer } from "../fixture/global"
 import { offlineModels } from "../fixture/models"
 import { testEffect } from "../lib/effect"
-import { host } from "../plugin/host"
+import { commandTransform, host } from "../plugin/host"
 
 const shellLayer = Layer.succeed(
   ShellSelect.Service,
@@ -114,7 +114,7 @@ describe("ConfigCommandPlugin.Plugin", () => {
           host({
             command: {
               list: () => Effect.die(new Error("unused command.list")),
-              transform: command.transform,
+              transform: commandTransform(command),
               reload: command.reload,
             },
             session: {
@@ -184,7 +184,7 @@ Review files`,
             host({
               command: {
                 list: () => Effect.die("unused command.list"),
-                transform: command.transform,
+                transform: commandTransform(command),
                 reload: command.reload,
               },
               event: { subscribe: () => Stream.fromPubSub(updates) },
@@ -219,9 +219,10 @@ Review files`,
             Command.Info.make({
               name: "review",
               description: "File review",
+              source: 2,
             }),
-            Command.Info.make({ name: "empty" }),
-            Command.Info.make({ name: "nested/docs" }),
+            Command.Info.make({ name: "empty", source: 2 }),
+            Command.Info.make({ name: "nested/docs", source: 2 }),
           ])
           yield* command.execute({
             name: "nested/docs",
@@ -279,7 +280,7 @@ Review files`,
               host({
                 command: {
                   list: () => Effect.die("unused command.list"),
-                  transform: command.transform,
+                  transform: commandTransform(command),
                   reload: command.reload,
                 },
               }),
@@ -321,7 +322,7 @@ Review files`,
             host({
               command: {
                 list: () => Effect.die("unused command.list"),
-                transform: command.transform,
+                transform: commandTransform(command),
                 reload: () => command.reload().pipe(Effect.tap(() => Effect.sync(() => reloads++))),
               },
             }),
@@ -356,7 +357,7 @@ Review files`,
         host({
           command: {
             list: () => Effect.die("unused command.list"),
-            transform: command.transform,
+            transform: commandTransform(command),
             reload: () => command.reload().pipe(Effect.tap(() => Effect.sync(() => reloads++))),
           },
           event: { subscribe: () => bus.subscribe(Event.Updated) },
@@ -385,7 +386,7 @@ Review files`,
             host({
               command: {
                 list: () => Effect.die("unused command.list"),
-                transform: command.transform,
+                transform: commandTransform(command),
                 reload: () => command.reload().pipe(Effect.tap(() => Effect.sync(() => reloads++))),
               },
             }),
@@ -431,7 +432,7 @@ describeNative("ConfigCommandPlugin native watcher", () => {
           host({
             command: {
               list: () => Effect.die("unused command.list"),
-              transform: command.transform,
+              transform: commandTransform(command),
               reload: command.reload,
             },
           }),

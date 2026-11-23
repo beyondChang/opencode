@@ -300,7 +300,7 @@ export type PermissionSource = { type: "tool"; messageID: string; id: string }
 
 export type PermissionSavedID = string
 
-export type CommandInfo = { name: string; description?: string }
+export type CommandSource = 0 | 1 | 2
 
 export type RpcOutput = { output?: any }
 
@@ -840,6 +840,8 @@ export type PermissionSavedInfo = {
   resource: string
   time: { created: number; updated: number }
 }
+
+export type CommandInfo = { name: string; description?: string; source: CommandSource }
 
 export type Pty = {
   id: PtyID

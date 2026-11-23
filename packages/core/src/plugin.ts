@@ -9,6 +9,7 @@ import { LayerNode } from "@opencode/util/effect/layer-node"
 import type { PersistentPty } from "./persistent-pty.js"
 import { Cause, Context, Effect, Exit, Latch, Layer, Logger, Queue, References, Scope, Semaphore } from "effect"
 import { Bus } from "./bus.js"
+import { Command } from "./command.js"
 import { PluginHost } from "./plugin/host.js"
 import { type Failure, type Generation, Service } from "./plugin/service.js"
 import { State } from "./state.js"
@@ -76,7 +77,10 @@ const layer = Layer.effect(
           release: holdUnsafe(),
         })
       })
-      const host = yield* PluginHost.make({ list }, plugin.id).pipe(Effect.provideContext(hostContext))
+      // Config commands come from project files; other built-ins are core commands, everything else is a plugin.
+      const commandSource: Command.Source =
+        plugin.source?.type !== "builtin" ? 1 : plugin.id === "opencode.config.command" ? 2 : 0
+      const host = yield* PluginHost.make({ list }, plugin.id, commandSource).pipe(Effect.provideContext(hostContext))
       const exit = yield* Effect.suspend(() => plugin.effect(host)).pipe(
         grouped,
         inherit,

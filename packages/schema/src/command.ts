@@ -6,10 +6,14 @@ import { optional } from "./schema.js"
 
 const Updated = ephemeral({ type: "command.updated", schema: {} })
 
+export const Source = Schema.Literals([0, 1, 2]).annotate({ identifier: "Command.Source" })
+export type Source = typeof Source.Type
+
 export interface Info extends Schema.Schema.Type<typeof Info> {}
 export const Info = Schema.Struct({
   name: Schema.String,
   description: Schema.String.pipe(optional),
+  source: Source,
 }).annotate({ identifier: "Command.Info" })
 
 export const Event = {

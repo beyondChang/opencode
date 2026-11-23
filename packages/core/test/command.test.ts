@@ -16,12 +16,13 @@ describe("Command", () => {
         editor.add({
           name: "goal",
           description: "Manage the session goal",
+          source: 0,
           execute: (input) => Effect.sync(() => calls.push(input)),
         })
       })
 
       expect(yield* command.get("goal")).toEqual(
-        Command.Info.make({ name: "goal", description: "Manage the session goal" }),
+        Command.Info.make({ name: "goal", description: "Manage the session goal", source: 0 }),
       )
       const invocation = {
         sessionID: Session.ID.make("ses_test"),
@@ -37,11 +38,11 @@ describe("Command", () => {
     Effect.gen(function* () {
       const command = yield* Command.Service
       yield* command.transform((editor) => {
-        editor.add({ name: "goal", description: "First", execute: () => Effect.void })
-        editor.add({ name: "goal", description: "Second", execute: () => Effect.void })
+        editor.add({ name: "goal", description: "First", source: 0, execute: () => Effect.void })
+        editor.add({ name: "goal", description: "Second", source: 0, execute: () => Effect.void })
       })
 
-      expect(yield* command.list()).toEqual([Command.Info.make({ name: "goal", description: "Second" })])
+      expect(yield* command.list()).toEqual([Command.Info.make({ name: "goal", description: "Second", source: 0 })])
     }),
   )
 
@@ -51,6 +52,7 @@ describe("Command", () => {
       yield* command.transform((editor) => {
         editor.add({
           name: "fail",
+          source: 0,
           execute: () => Effect.fail(new Error("command failed")),
         })
       })
