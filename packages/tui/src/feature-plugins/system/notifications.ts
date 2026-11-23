@@ -86,11 +86,12 @@ export default Plugin.define({
         }
         errored.add(sessionID)
         if (event.data.error.type !== "provider.free-limit" && event.data.error.type !== "provider.go-limit") {
-          notify(context, sessionID, event.data.error.message, "error")
+          const message = t(event.data.error.message)
+          notify(context, sessionID, message, "error")
           context.ui.toast.show({
             sessionID,
             title: t("Session failed"),
-            message: event.data.error.message,
+            message,
             variant: "error",
           })
         }

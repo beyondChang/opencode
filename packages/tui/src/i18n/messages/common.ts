@@ -35,6 +35,8 @@ export const common = {
   Session: "会话",
   "Session done": "会话完成",
   "Session failed": "会话失败",
+  "Step interrupted": "步骤已中断",
+  "Error:": "错误：",
   "Permission required": "需要权限",
   "Input needs response": "输入需要响应",
   "Permission needs input": "权限需要确认",

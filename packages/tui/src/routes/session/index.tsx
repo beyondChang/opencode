@@ -1980,7 +1980,7 @@ function ExecutionError(props: { error: NonNullable<Extract<SessionMessageInfo, 
   const theme = useTheme()
   return (
     <box paddingLeft={3}>
-      <text fg={theme.text.feedback.error.base}>Error: {errorMessage(props.error)}</text>
+      <text fg={theme.text.feedback.error.base}>{t("Error:")} {t(errorMessage(props.error))}</text>
     </box>
   )
 }
@@ -2049,7 +2049,7 @@ function AssistantFooter(props: { message: SessionMessageAssistant }) {
         <Switch
           fallback={
             <box paddingLeft={3}>
-              <text fg={theme.text.feedback.error.base}>Error: {errorMessage(props.message.error)}</text>
+              <text fg={theme.text.feedback.error.base}>{t("Error:")} {t(errorMessage(props.message.error))}</text>
             </box>
           }
         >
