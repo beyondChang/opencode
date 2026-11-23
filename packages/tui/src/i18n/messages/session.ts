@@ -214,6 +214,7 @@ export const session = {
   "Full session": "完整会话",
   "Forking session…": "正在分叉会话…",
   "Message Actions": "消息操作",
+  "Search actions": "搜索操作",
   "Jump to": "跳转到",
   "view message in session": "在会话中查看消息",
   Revert: "还原",
