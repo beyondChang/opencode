@@ -8,6 +8,7 @@ import { Tooltip } from "@opencode/ui/tooltip"
 import { useI18n } from "@opencode/ui/context/i18n"
 import { createCopyFeedback } from "./copy"
 import { createDisclosure } from "./disclosure"
+import { serverErrorCopy } from "./server-error-copy"
 
 export interface ToolErrorCardProps extends Omit<ComponentProps<typeof Card>, "children" | "variant"> {
   tool: string
@@ -104,8 +105,12 @@ export function ToolErrorCard(props: ToolErrorCardProps) {
     return value
   })
 
+  // A fixed server message reads as Chinese; anything else keeps the server's own wording.
+  const translated = createMemo(() => serverErrorCopy(i18n, cleaned()))
+  const translatedTail = createMemo(() => serverErrorCopy(i18n, tail()))
+
   const summary = createMemo(() => {
-    const head = (tail().split(": ")[0] ?? "").trim()
+    const head = (translatedTail().split(": ")[0] ?? "").trim()
 
     if (!head) return i18n.t("ui.toolErrorCard.failed")
 
@@ -127,7 +132,7 @@ export function ToolErrorCard(props: ToolErrorCardProps) {
         onMouseDown={(e) => e.preventDefault()}
         onClick={(e) => {
           e.stopPropagation()
-          copy.copy(cleaned())
+          copy.copy(translated())
         }}
         aria-label={copied() ? i18n.t("ui.message.copied") : i18n.t("ui.toolErrorCard.copyError")}
       />
@@ -193,7 +198,7 @@ export function ToolErrorCard(props: ToolErrorCardProps) {
             <Show when={state.clipped && split.subtitle}>
               {(text) => <p data-slot="tool-error-card-subtitle">{text()}</p>}
             </Show>
-            <CardDescription>{cleaned()}</CardDescription>
+            <CardDescription>{translated()}</CardDescription>
           </div>
         </Collapsible.Content>
       </Collapsible>

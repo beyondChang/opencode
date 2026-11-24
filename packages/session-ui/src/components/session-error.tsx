@@ -1,19 +1,23 @@
 import { createMemo, Show } from "solid-js"
 import { Card } from "@opencode/ui/card"
 import { Icon } from "@opencode/ui/icon"
+import { useI18n } from "@opencode/ui/context/i18n"
 import { LinkedText } from "./linked-text"
+import { serverErrorCopy } from "./server-error-copy"
 
 export function SessionErrorMessage(props: { message: string; links?: boolean }) {
+  const i18n = useI18n()
+  const message = createMemo(() => serverErrorCopy(i18n, props.message))
   const content = createMemo(() => {
     // Only a colon before the first URL ends a title, so a scheme or port never splits a URL.
-    const url = props.message.search(/https?:\/\//)
-    const separator = props.message.slice(0, url === -1 ? undefined : url).indexOf(":")
+    const url = message().search(/https?:\/\//)
+    const separator = message().slice(0, url === -1 ? undefined : url).indexOf(":")
 
-    if (separator === -1) return { detail: props.message }
+    if (separator === -1) return { detail: message() }
 
     return {
-      title: props.message.slice(0, separator + 1),
-      detail: props.message.slice(separator + 1),
+      title: message().slice(0, separator + 1),
+      detail: message().slice(separator + 1),
     }
   })
 

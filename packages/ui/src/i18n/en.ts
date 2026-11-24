@@ -316,6 +316,21 @@ const source = {
   "ui.toolErrorCard.failed": "Failed",
   "ui.toolErrorCard.copyError": "Copy error",
 
+  // Fixed server messages that reach the UI as an English source string.
+  "ui.serverError.stepInterrupted": "Step interrupted",
+  "ui.serverError.toolExecutionInterrupted": "Tool execution interrupted",
+  "ui.serverError.compactionCancelled": "Compaction cancelled",
+  "ui.serverError.compactionInterrupted": "Compaction was interrupted",
+  "ui.serverError.toolResultMissing": "Provider did not return a tool result",
+  "ui.serverError.maxSteps": "Tools are disabled after the maximum agent steps",
+  "ui.serverError.unknownFinishReason": "The provider response ended with an unknown finish reason.",
+  "ui.serverError.outputLimit": "Response still truncated after two output token limit continuations",
+  "ui.serverError.incompleteToolArguments":
+    "Tool call arguments were not completed and were not executed. Reissue the call with complete arguments.",
+  "ui.serverError.executionInterrupted":
+    "Execution was interrupted repeatedly and will not be resumed automatically.",
+  "ui.serverError.subagentCancelled": "Subagent cancelled",
+
   "ui.common.file.one": "file",
   "ui.common.file.other": "files",
   "ui.common.fileCount.one": "{{count}} file",

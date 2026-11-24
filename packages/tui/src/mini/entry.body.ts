@@ -1,5 +1,6 @@
 import { toolEntryBody } from "./tool"
 import { monoPrefix, monoToolText } from "./mono"
+import { t } from "../i18n"
 import type { RunEntryBody, ScrollbackOptions, StreamCommit } from "./types"
 
 export type EntryFlags = {
@@ -220,7 +221,7 @@ export function entryBody(commit: StreamCommit, options?: ScrollbackOptions): Ru
     }
 
     if (commit.phase === "final") {
-      return commit.interrupted ? textBody("assistant interrupted") : RUN_ENTRY_NONE
+      return commit.interrupted ? textBody(t("assistant interrupted")) : RUN_ENTRY_NONE
     }
 
     return markdownBody(raw)
@@ -232,10 +233,17 @@ export function entryBody(commit: StreamCommit, options?: ScrollbackOptions): Ru
     }
 
     if (commit.phase === "final") {
-      return commit.interrupted ? textBody("reasoning interrupted") : RUN_ENTRY_NONE
+      return commit.interrupted ? textBody(t("reasoning interrupted")) : RUN_ENTRY_NONE
     }
 
     return reasoningBody(raw, mono, options?.markdown !== "source")
+  }
+
+  // Error text comes from the server, so it is an English source string until the catalog knows it.
+  if (commit.kind === "error") {
+    const body = textBody(t(raw.trim()))
+    if (!mono || body.type !== "text") return body
+    return textBody(monoPrefix(body.content, true))
   }
 
   const body = systemBody(raw, commit.phase)

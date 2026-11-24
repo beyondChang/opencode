@@ -95,6 +95,8 @@ export const mini = {
   " select  ": " 选择  ",
   " confirm  ": " 确认  ",
   "error": "错误",
+  "assistant interrupted": "助手已中断",
+  "reasoning interrupted": "思考已中断",
   "running": "运行中",
   "Open editor": "打开编辑器",
   "Show status": "显示状态",
