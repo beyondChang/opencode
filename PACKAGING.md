@@ -11,14 +11,14 @@
 
 ## 2. 版本号是怎么决定的
 
-版本号**不来自源码里的 `package.json`**（仓库中全部是 `2.4.0`），而是在构建时通过环境变量注入：
+版本号**不来自源码里的 `package.json`**（仓库中全部是 `2.4.1`），而是在构建时通过环境变量注入：
 
 | 环境变量 | 作用 |
 | --- | --- |
 | `OPENCODE_VERSION` | 注入到二进制的 `OPENCODE_VERSION`，即 `opencode --version` 显示的版本 |
 | `OPENCODE_CHANNEL` | 可选；不设置时，若 `OPENCODE_VERSION` 非 `0.0.0-*` 则自动为 `latest` |
 
-- 设置 `OPENCODE_VERSION=2.4.0` → `channel=latest`、`version=2.4.0`，产物 `dist/cli-windows-x64/package.json` 的 `version` 同样是 `2.4.0`。
+- 设置 `OPENCODE_VERSION=2.4.1` → `channel=latest`、`version=2.4.1`，产物 `dist/cli-windows-x64/package.json` 的 `version` 同样是 `2.4.1`。
 - 不设置时：`channel` 取当前分支名，版本为 `0.0.0-<branch>-<时间戳>`（预览版）。
 - 注入点：`packages/cli/script/build.ts` 中的 `define: { OPENCODE_VERSION: ... }`；`packages/cli/src/version.ts` 在运行期读取它。
 
@@ -27,7 +27,7 @@
 在仓库根目录用 Git Bash 执行：
 
 ```bash
-OPENCODE_VERSION=2.4.0 bun run --cwd packages/cli build --single --skip-install
+OPENCODE_VERSION=2.4.1 bun run --cwd packages/cli build --single --skip-install
 ```
 
 参数说明：
@@ -70,14 +70,14 @@ mv packages/app/dist/_assets /c/Users/<用户名>/AppData/Local/Temp/opencode-ap
 
 ```
 bin/opencode.exe      # 约 255 MB，独立可执行文件
-package.json          # {"name":"@opencode/cli-windows-x64","version":"2.4.0",...}
+package.json          # {"name":"@opencode/cli-windows-x64","version":"2.4.1",...}
 ```
 
 校验版本：
 
 ```bash
 packages/cli/dist/cli-windows-x64/bin/opencode.exe --version
-# 期望输出：opencode v2.4.0
+# 期望输出：opencode v2.4.1
 ```
 
 ## 6. 部署到 `D:\soft\opencode`
@@ -96,7 +96,7 @@ cp /d/soft/opencode/opencode.exe /c/Users/<用户名>/AppData/Local/Temp/opencod
 cp packages/cli/dist/cli-windows-x64/bin/opencode.exe /d/soft/opencode/opencode.exe
 
 # 4) 校验部署结果
-/d/soft/opencode/opencode.exe --version   # 期望 opencode v2.4.0
+/d/soft/opencode/opencode.exe --version   # 期望 opencode v2.4.1
 ```
 
 回滚：把临时目录里的 `opencode.exe.bak-<时间戳>` 复制回 `D:\soft\opencode\opencode.exe` 即可。
@@ -140,7 +140,7 @@ ts=$(date +%Y%m%d%H%M%S)
 mv packages/app/dist/_assets /c/Users/<用户名>/AppData/Local/Temp/opencode-app-dist-assets-$ts
 
 # 2) 打包
-OPENCODE_VERSION=2.4.0 bun run --cwd packages/cli build --single --skip-install
+OPENCODE_VERSION=2.4.1 bun run --cwd packages/cli build --single --skip-install
 
 # 3) 校验
 packages/cli/dist/cli-windows-x64/bin/opencode.exe --version
