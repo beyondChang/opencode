@@ -224,6 +224,7 @@ const planAgent = {
 export const reviewCommand = {
   name: "review",
   description: "Review changes",
+  source: 0,
 } satisfies CommandInfo
 
 export function makeSession(

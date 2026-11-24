@@ -253,7 +253,10 @@ describe("acp prompt turns over the wire", () => {
 
   test("routes slash commands and compact through their session endpoints", async () => {
     await using acp = await startWire()
-    acp.server.catalog.commands = [reviewCommand, { name: "compact", description: "Server compact" }]
+    acp.server.catalog.commands = [
+      reviewCommand,
+      { name: "compact", description: "Server compact", source: 0 },
+    ]
     await acp.initialize()
     const session = await acp.newSession()
 

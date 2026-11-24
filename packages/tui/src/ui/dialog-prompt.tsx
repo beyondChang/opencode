@@ -1,10 +1,10 @@
 import { TextareaRenderable } from "@opentui/core"
 import { Keymap } from "../context/keymap"
 import { useTheme } from "../context/theme"
-import { DialogFooter, DialogHeader, DialogLayout, useDialog, type DialogSize } from "./dialog"
+import { DialogButtons, DialogFooter, DialogHeader, DialogLayout, useDialog, type DialogSize } from "./dialog"
 import { Show, createEffect, createSignal, onMount, type JSX } from "solid-js"
 import { Spinner } from "../component/spinner"
-import { useCursorStyle } from "../config"
+import { useCursorStyle, useNewDesigns } from "../config"
 import { useRenderer } from "@opentui/solid"
 import { t } from "../i18n"
 
@@ -37,6 +37,7 @@ export function DialogPrompt(props: DialogPromptProps) {
   const renderer = useRenderer()
   const theme = useTheme().surface("dialog")
   const cursorStyle = useCursorStyle()
+  const newDesigns = useNewDesigns()
   const [textareaTarget, setTextareaTarget] = createSignal<TextareaRenderable>()
   let textarea: TextareaRenderable
 
@@ -130,7 +131,6 @@ export function DialogPrompt(props: DialogPromptProps) {
 
   return (
     <DialogLayout
-      footerGap={2}
       header={
         <DialogHeader
           title={props.title}
@@ -140,14 +140,11 @@ export function DialogPrompt(props: DialogPromptProps) {
           }}
         />
       }
-      footer={{
-        actions: {
-          primary: [
-            ...extraActions(),
-            { title: t("submit"), command: "dialog.prompt.submit", disabled: props.busy, onTrigger: confirm },
-          ],
-        },
-      }}
+      buttons={
+        newDesigns() ? (
+          <DialogButtons buttons={[{ label: t("submit"), run: confirm }]} active={0} hints={extraActions()} />
+        ) : undefined
+      }
       legacyFooter={
         <Show when={!props.busy} fallback={<text fg={theme.text.muted}>{t("processing…")}</text>}>
           <DialogFooter
